@@ -1,0 +1,56 @@
+group 'BidonDispenser'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2'
+
+    compile group: 'com.pi4j', name: 'pi4j-core', version: '1.1'
+}
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+task createJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'BidonDispenser',
+                'Implementation-Version': version,
+                'Main-Class': 'nl.saxion.bidondispenser.Main'
+    }
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+buildscript {
+    ext.kotlin_version = '1.2.21'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
