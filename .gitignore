@@ -1,0 +1,16 @@
+## General GitIgnore
+
+
+# All possible Directories
+/RaspberryPi/Hardware/
+#/RaspberryPi/Software/
+/MicroController/Hardware/
+/MicroController/Software/
+
+
+
+# Soap-UI and Groovy stuff
+/RaspberryPi/global-groovy.log
+/RaspberryPi/soapui.log
+/RaspberryPi/soapui-errors.log
+
