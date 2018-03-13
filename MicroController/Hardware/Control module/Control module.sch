@@ -9480,6 +9480,9 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="C9" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="C-US" device="C0805"/>
 <part name="C10" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="E2.5-6"/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="P+22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
+<part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9599,6 +9602,9 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="C9" gate="G$1" x="50.8" y="88.9"/>
 <instance part="C10" gate="G$1" x="58.42" y="88.9"/>
 <instance part="GND14" gate="1" x="58.42" y="78.74"/>
+<instance part="GND15" gate="1" x="297.18" y="111.76"/>
+<instance part="P+22" gate="VCC" x="297.18" y="157.48"/>
+<instance part="GND16" gate="1" x="284.48" y="137.16"/>
 </instances>
 <busses>
 </busses>
@@ -9918,6 +9924,22 @@ In this library the device names are the same as the pin names of the symbols, t
 <pinref part="C10" gate="G$1" pin="-"/>
 <wire x1="58.42" y1="81.28" x2="58.42" y2="83.82" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="VSS"/>
+<pinref part="GND15" gate="1" pin="GND"/>
+<wire x1="302.26" y1="119.38" x2="297.18" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="297.18" y1="119.38" x2="297.18" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="VEE"/>
+<wire x1="302.26" y1="124.46" x2="297.18" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="297.18" y1="124.46" x2="297.18" y2="119.38" width="0.1524" layer="91"/>
+<junction x="297.18" y="119.38"/>
+</segment>
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="INH"/>
+<pinref part="GND16" gate="1" pin="GND"/>
+<wire x1="302.26" y1="144.78" x2="284.48" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="284.48" y1="144.78" x2="284.48" y2="139.7" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -10040,6 +10062,12 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="63.5" y1="96.52" x2="58.42" y2="96.52" width="0.1524" layer="91"/>
 <junction x="58.42" y="96.52"/>
 </segment>
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="VDD"/>
+<wire x1="302.26" y1="149.86" x2="297.18" y2="149.86" width="0.1524" layer="91"/>
+<pinref part="P+22" gate="VCC" pin="VCC"/>
+<wire x1="297.18" y1="149.86" x2="297.18" y2="154.94" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="+12V" class="0">
 <segment>
@@ -10156,6 +10184,27 @@ In this library the device names are the same as the pin names of the symbols, t
 <pinref part="C7" gate="G$1" pin="1"/>
 <wire x1="40.64" y1="129.54" x2="40.64" y2="132.08" width="0.1524" layer="91"/>
 <junction x="40.64" y="132.08"/>
+</segment>
+</net>
+<net name="A" class="0">
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="A"/>
+<wire x1="302.26" y1="139.7" x2="297.18" y2="139.7" width="0.1524" layer="91"/>
+<label x="297.18" y="139.7" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="B" class="0">
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="B"/>
+<wire x1="302.26" y1="134.62" x2="297.18" y2="134.62" width="0.1524" layer="91"/>
+<label x="297.18" y="134.62" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="C" class="0">
+<segment>
+<pinref part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" pin="C"/>
+<wire x1="302.26" y1="129.54" x2="297.18" y2="129.54" width="0.1524" layer="91"/>
+<label x="297.18" y="129.54" size="1.016" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 </nets>
