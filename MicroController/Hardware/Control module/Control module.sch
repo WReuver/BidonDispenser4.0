@@ -9678,6 +9678,12 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <part name="P+28" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+30" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
+<part name="P+31" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
+<part name="GND32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND34" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="P+32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
+<part name="C13" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="C-US" device="C0805"/>
 </parts>
 <sheets>
 <sheet>
@@ -9687,7 +9693,7 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <text x="-2.54" y="198.12" size="1.778" layer="91">-</text>
 </plain>
 <instances>
-<instance part="U1" gate="U1" x="213.36" y="68.58"/>
+<instance part="U1" gate="U1" x="195.58" y="121.92" rot="MR0"/>
 <instance part="U$1" gate="G$1" x="114.3" y="134.62"/>
 <instance part="MOTOR_CONTROL_DEMULTIPLEXER" gate="A" x="203.2" y="180.34" smashed="yes">
 <attribute name="NAME" x="180.0606" y="200.6854" size="2.0828" layer="95" ratio="10" rot="SR0"/>
@@ -9850,6 +9856,15 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <instance part="P+28" gate="VCC" x="322.58" y="167.64"/>
 <instance part="P+29" gate="VCC" x="345.44" y="147.32"/>
 <instance part="P+30" gate="VCC" x="322.58" y="147.32"/>
+<instance part="P+31" gate="VCC" x="66.04" y="167.64"/>
+<instance part="GND32" gate="1" x="66.04" y="157.48"/>
+<instance part="GND33" gate="1" x="175.26" y="93.98"/>
+<instance part="GND34" gate="1" x="170.18" y="124.46"/>
+<instance part="P+32" gate="VCC" x="175.26" y="147.32"/>
+<instance part="C13" gate="G$1" x="297.18" y="170.18" smashed="yes">
+<attribute name="NAME" x="298.196" y="170.815" size="1.27" layer="95"/>
+<attribute name="VALUE" x="298.196" y="165.989" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -10278,6 +10293,23 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <wire x1="325.12" y1="137.16" x2="322.58" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="322.58" y1="137.16" x2="322.58" y2="134.62" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="GND32" gate="1" pin="GND"/>
+<pinref part="U$1" gate="G$1" pin="AGND"/>
+<wire x1="66.04" y1="160.02" x2="78.74" y2="160.02" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U1" gate="U1" pin="GND"/>
+<pinref part="GND33" gate="1" pin="GND"/>
+<wire x1="182.88" y1="101.6" x2="175.26" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="175.26" y1="101.6" x2="175.26" y2="96.52" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U1" gate="U1" pin="EN"/>
+<pinref part="GND34" gate="1" pin="GND"/>
+<wire x1="182.88" y1="129.54" x2="170.18" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="129.54" x2="170.18" y2="127" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="VCC" class="0">
 <segment>
@@ -10453,6 +10485,17 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <pinref part="U$5" gate="G$1" pin="1"/>
 <wire x1="345.44" y1="144.78" x2="345.44" y2="142.24" width="0.1524" layer="91"/>
 <wire x1="345.44" y1="142.24" x2="347.98" y2="142.24" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+31" gate="VCC" pin="VCC"/>
+<pinref part="U$1" gate="G$1" pin="AVCC"/>
+<wire x1="66.04" y1="165.1" x2="78.74" y2="165.1" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+32" gate="VCC" pin="VCC"/>
+<pinref part="U1" gate="U1" pin="VCC"/>
+<wire x1="175.26" y1="144.78" x2="175.26" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="175.26" y1="139.7" x2="182.88" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -10647,6 +10690,104 @@ Mating connector PHR-3 &lt;br&gt;</description>
 <pinref part="U$9" gate="G$1" pin="2"/>
 <wire x1="325.12" y1="139.7" x2="322.58" y2="139.7" width="0.1524" layer="91"/>
 <label x="322.58" y="139.7" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA3" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN2"/>
+<wire x1="208.28" y1="134.62" x2="210.82" y2="134.62" width="0.1524" layer="91"/>
+<label x="210.82" y="134.62" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA4" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN3"/>
+<wire x1="208.28" y1="132.08" x2="210.82" y2="132.08" width="0.1524" layer="91"/>
+<label x="210.82" y="132.08" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA5" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN4"/>
+<wire x1="208.28" y1="129.54" x2="210.82" y2="129.54" width="0.1524" layer="91"/>
+<label x="210.82" y="129.54" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA6" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN5"/>
+<wire x1="208.28" y1="127" x2="210.82" y2="127" width="0.1524" layer="91"/>
+<label x="210.82" y="127" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA7" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN6"/>
+<wire x1="208.28" y1="124.46" x2="210.82" y2="124.46" width="0.1524" layer="91"/>
+<label x="210.82" y="124.46" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA8" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN7"/>
+<wire x1="208.28" y1="121.92" x2="210.82" y2="121.92" width="0.1524" layer="91"/>
+<label x="210.82" y="121.92" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA9" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN8"/>
+<wire x1="208.28" y1="119.38" x2="210.82" y2="119.38" width="0.1524" layer="91"/>
+<label x="210.82" y="119.38" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA10" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN9"/>
+<wire x1="208.28" y1="116.84" x2="210.82" y2="116.84" width="0.1524" layer="91"/>
+<label x="210.82" y="116.84" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA11" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN10"/>
+<wire x1="208.28" y1="114.3" x2="210.82" y2="114.3" width="0.1524" layer="91"/>
+<label x="210.82" y="114.3" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA12" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN11"/>
+<wire x1="208.28" y1="111.76" x2="210.82" y2="111.76" width="0.1524" layer="91"/>
+<label x="210.82" y="111.76" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA13" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN12"/>
+<wire x1="208.28" y1="109.22" x2="210.82" y2="109.22" width="0.1524" layer="91"/>
+<label x="210.82" y="109.22" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA14" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN13"/>
+<wire x1="208.28" y1="106.68" x2="210.82" y2="106.68" width="0.1524" layer="91"/>
+<label x="210.82" y="106.68" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA15" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN14"/>
+<wire x1="208.28" y1="104.14" x2="210.82" y2="104.14" width="0.1524" layer="91"/>
+<label x="210.82" y="104.14" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="ULTRA16" class="0">
+<segment>
+<pinref part="U1" gate="U1" pin="CHAN15"/>
+<wire x1="208.28" y1="101.6" x2="210.82" y2="101.6" width="0.1524" layer="91"/>
+<label x="210.82" y="101.6" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 </nets>
