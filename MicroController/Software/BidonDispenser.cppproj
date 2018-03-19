@@ -165,15 +165,53 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controllers\CoolingController.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Controllers\CoolingController.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Controllers\MotorController.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Controllers\MotorController.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="IOController.cpp">
+    <Compile Include="Master\RaspberryPi.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="IOController.h">
+    <Compile Include="Master\RaspberryPi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Sensors\DistanceSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\DistanceSensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\RotationSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\RotationSensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\Sensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\TemperatureSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sensors\TemperatureSensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers" />
+    <Folder Include="Master" />
+    <Folder Include="Sensors" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
