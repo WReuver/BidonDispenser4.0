@@ -7,24 +7,18 @@
 
 #define F_CPU 2000000UL
 
-#include <avr/io.h>
 #include <util/delay.h>
+#include <stdint.h>
 
-#define OUTPUT 1
-#define INPUT 0
-#define HIGH 1
-#define LOW 0
+#include "Hardware/Gpio.h"
 
 int main() 
 {
-	PORTA.DIRSET = (OUTPUT << 0);
+	Hardware::SetPinDirection(Hardware::GpioPin::PinA0, Hardware::GpioDir::Output);
 	
 	while (1) 
 	{
-		PORTA.OUTSET |= (HIGH << 0);
-		_delay_ms(1000);
-		PORTA.OUTCLR |= (HIGH << 0);
-		_delay_ms(1000);
+		Hardware::TogglePinValue(Hardware::GpioPin::PinA0);
+		_delay_ms(250);
 	}
-	
 }
