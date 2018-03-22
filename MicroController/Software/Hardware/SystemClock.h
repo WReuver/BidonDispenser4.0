@@ -29,45 +29,48 @@ namespace Hardware
 		// System Clock Prescaler A
 		enum class PrescalerA
 		{
-			None		= 0b00000,
-			DivideBy2	= 0b00001,
-			DivideBy4	= 0b00011,
-			DivideBy8	= 0b00101,
-			DivideBy16	= 0b00111,
-			DivideBy32	= 0b01001,
-			DivideBy64	= 0b01011,
-			DivideBy128	= 0b01101,
-			DivideBy256	= 0b01111,
-			DivideBy512	= 0b10001
+			None		= 0b0000000,
+			DivideBy2	= 0b0000100,
+			DivideBy4	= 0b0001100,
+			DivideBy8	= 0b0010100,
+			DivideBy16	= 0b0011100,
+			DivideBy32	= 0b0100100,
+			DivideBy64	= 0b0101100,
+			DivideBy128	= 0b0110100,
+			DivideBy256	= 0b0111100,
+			DivideBy512	= 0b1000100
 		};
 		
 		// System Clock Prescaler B & C
 		enum class PrescalerBC
 		{
-			None_None,
-			None_Two,
-			Four_None,
-			Two_Two
+			None_None   = 0b00,
+			None_Two    = 0b01,
+			Four_None   = 0b10,
+			Two_Two     = 0b11
 		};
 		
 		// RTC Sources
 		enum class SourceRtc
 		{
-			ULP		= 0b000,
-			TOSC	= 0b001,
-			RCOSC	= 0b010,
-			TOSC32	= 0b101,
-			RCOSC32	= 0b110,
-			EXTCLK	= 0b111
+			ULP		= 0b0000,
+			TOSC	= 0b0010,
+			RCOSC	= 0b0100,
+			TOSC32	= 0b1010,
+			RCOSC32	= 0b1100,
+			EXTCLK	= 0b1110
 		};
 		
 		
 		// Functions
 		void SetClockSource(Source source);
 		void SetClockPrescaler(PrescalerA pa, PrescalerBC pbc);
+		void SetClockPrescaler(PrescalerA pa);
+		void SetClockPrescaler(PrescalerBC pbc);
 		void LockClockSourceAndPrescaler();
 		void SetClockSourceRtc(SourceRtc sourceRtc);
 		void EnableClockSourceRtc();
+		void DisableClockSourceRtc();
 		void EnableClockSource(Source source);
 		bool IsClockSourceReady(Source source);
 		

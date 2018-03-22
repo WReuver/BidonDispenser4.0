@@ -9,30 +9,51 @@
 
 void Hardware::SystemClock::SetClockSource(Source source)
 {
-	EnableClockSource(source);
-	while (!IsClockSourceReady(source));
-	AtxMega::SetChangeProtectionMode(AtxMega::ChangeProtectionMode::IOREG);
-	CLK.CTRL = (uint8_t) source;
+	EnableClockSource(source);														// Enable the clock source
+	while (!IsClockSourceReady(source));											// Wait until the clock source is ready
+	AtxMega::SetChangeProtectionMode(AtxMega::ChangeProtectionMode::IOREG);			// Set the Configuration Change Protection mode to "IOREG"
+	CLK.CTRL = (uint8_t) source;													// Set the clock source
 }
 
 void Hardware::SystemClock::SetClockPrescaler(PrescalerA pa, PrescalerBC pbc)
 {
-	
+	uint8_t prescReg = (uint8_t) pa | (uint8_t) pbc;                                // Combine the two prescaler enumerations into one
+	AtxMega::SetChangeProtectionMode(AtxMega::ChangeProtectionMode::IOREG);			// Set the Configuration Change Protection mode to "IOREG"
+    CLK.PSCTRL = prescReg;                                                          // Set the clock prescaler
+}
+
+void Hardware::SystemClock::SetClockPrescaler(PrescalerA pa)
+{
+    uint8_t prescReg = (CLK.PSCTRL & 0b10000011) | (uint8_t) pa;                    // Combine the new prescaler value with the not changing one
+    AtxMega::SetChangeProtectionMode(AtxMega::ChangeProtectionMode::IOREG);			// Set the Configuration Change Protection mode to "IOREG"
+    CLK.PSCTRL = prescReg;                                                          // Set the clock prescaler
+}
+
+void Hardware::SystemClock::SetClockPrescaler(PrescalerBC pbc)
+{
+    uint8_t prescReg = (CLK.PSCTRL & 0b11111100) | (uint8_t) pbc;                   // Combine the new prescaler value with the not changing one
+    AtxMega::SetChangeProtectionMode(AtxMega::ChangeProtectionMode::IOREG);			// Set the Configuration Change Protection mode to "IOREG"
+    CLK.PSCTRL = prescReg;                                                          // Set the clock prescaler
 }
 
 void Hardware::SystemClock::LockClockSourceAndPrescaler()
 {
-	CLK.LOCK = 1;
+	CLK.LOCK = 1;			// Lock the clock and prescaler configuration until the micro controller is reset
 }
 
 void Hardware::SystemClock::SetClockSourceRtc(SourceRtc sourceRtc)
 {
-	
+	CLK.RTCCTRL = (CLK.RTCCTRL & 0b0001) | (uint8_t) sourceRtc;       // Configure the selected RTC as source
 }
 
 void Hardware::SystemClock::EnableClockSourceRtc()
 {
-	
+    CLK.RTCCTRL |= 0b0001;          // Enable the selected RTC
+}
+
+void Hardware::SystemClock::DisableClockSourceRtc()
+{
+	CLK.RTCCTRL &= 0b1110;          // Disable the selected RTC
 }
 
 void Hardware::SystemClock::EnableClockSource(Source source)
