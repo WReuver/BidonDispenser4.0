@@ -7,7 +7,9 @@
 
 #include "Gpio.h"
 
-void Hardware::SetPinDirection(GpioPin pin, GpioDir dir)
+using namespace Hardware::Gpio;
+
+void Hardware::Gpio::SetPinDirection(Pin pin, Dir dir)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port
 	uint8_t pinNo = (uint8_t) GetPinNumber(pin);	// Get the selected pin number
@@ -19,14 +21,14 @@ void Hardware::SetPinDirection(GpioPin pin, GpioDir dir)
 	port->DIR = temp;								// Apply the configuration
 }
 
-void Hardware::TogglePinDirection(GpioPin pin)
+void Hardware::Gpio::TogglePinDirection(Pin pin)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port
 	uint8_t pinNo = (uint8_t) GetPinNumber(pin);	// Get the selected pin number
 	port->DIRTGL |= 1 << pinNo;						// Toggle the pin direction
 }
 
-void Hardware::SetPinValue(GpioPin pin, GpioValue val)
+void Hardware::Gpio::SetPinValue(Pin pin, Value val)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port
 	uint8_t pinNo = (uint8_t) GetPinNumber(pin);	// Get the selected pin number
@@ -38,14 +40,14 @@ void Hardware::SetPinValue(GpioPin pin, GpioValue val)
 	port->OUT = temp;								// Apply the configuration
 }
 
-void Hardware::TogglePinValue(GpioPin pin)
+void Hardware::Gpio::TogglePinValue(Pin pin)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port
 	uint8_t pinNo = (uint8_t) GetPinNumber(pin);	// Get the selected pin number
 	port->OUTTGL |= 1 << pinNo;						// Toggle the pin value
 }
 
-void Hardware::SetPinMode(GpioPin pin, GpioMode mode)
+void Hardware::Gpio::SetPinMode(Pin pin, Mode mode)
 {
 	register8_t* CtrlReg = GetPinConfigReg(pin);	// Get a pointer to the selected pin configuration register
 	uint8_t temp = *CtrlReg;						// Copy the current configuration
@@ -56,7 +58,7 @@ void Hardware::SetPinMode(GpioPin pin, GpioMode mode)
 	*CtrlReg = temp;								// Apply the configuration
 }
 
-PORT_t* Hardware::GetPort(GpioPin pin)
+PORT_t* Hardware::Gpio::GetPort(Pin pin)
 {
 	switch ( (Port) ((uint8_t) pin >> 3) )			// Bit shift the pin part off
 	{												// And return a pointer to the corresponding port
@@ -70,25 +72,25 @@ PORT_t* Hardware::GetPort(GpioPin pin)
 	}
 }
 
-Hardware::Pin Hardware::GetPinNumber(GpioPin pin)
+PinNo Hardware::Gpio::GetPinNumber(Pin pin)
 {
-	return (Pin) ((uint8_t) pin & 0b111);			// Remove the port part
+	return (PinNo) ((uint8_t) pin & 0b111);			// Remove the port part
 }
 
-register8_t* Hardware::GetPinConfigReg(GpioPin pin)
+register8_t* Hardware::Gpio::GetPinConfigReg(Pin pin)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port
 	
-	switch ( (Pin) ((uint8_t) pin & 0b111) )		// Remove the port part
+	switch ( (PinNo) ((uint8_t) pin & 0b111) )		// Remove the port part
 	{												// And return a pointer to the corresponding pin configuration register
-		case Pin::Pin0:		return &port->PIN0CTRL;
-		case Pin::Pin1:		return &port->PIN1CTRL;
-		case Pin::Pin2:		return &port->PIN2CTRL;
-		case Pin::Pin3:		return &port->PIN3CTRL;
-		case Pin::Pin4:		return &port->PIN4CTRL;
-		case Pin::Pin5:		return &port->PIN5CTRL;
-		case Pin::Pin6:		return &port->PIN6CTRL;
-		case Pin::Pin7:		return &port->PIN7CTRL;
-		default:			return nullptr;
+		case PinNo::Pin0:		return &port->PIN0CTRL;
+		case PinNo::Pin1:		return &port->PIN1CTRL;
+		case PinNo::Pin2:		return &port->PIN2CTRL;
+		case PinNo::Pin3:		return &port->PIN3CTRL;
+		case PinNo::Pin4:		return &port->PIN4CTRL;
+		case PinNo::Pin5:		return &port->PIN5CTRL;
+		case PinNo::Pin6:		return &port->PIN6CTRL;
+		case PinNo::Pin7:		return &port->PIN7CTRL;
+		default:				return nullptr;
 	}
 }

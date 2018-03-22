@@ -13,124 +13,129 @@
 
 namespace Hardware 
 {
-	// Ports
-	enum class Port
+	namespace Gpio 
 	{
-		PortA,
-		PortB,
-		PortC,
-		PortD,
-		PortE,
-		PortF,
-		PortR
-	};
+		// Ports
+		enum class Port
+		{
+			PortA,
+			PortB,
+			PortC,
+			PortD,
+			PortE,
+			PortF,
+			PortR
+		};
+		
+		// Pin numbers
+		enum class PinNo
+		{
+			Pin0,
+			Pin1,
+			Pin2,
+			Pin3,
+			Pin4,
+			Pin5,
+			Pin6,
+			Pin7
+		};
+		
+		// Pin - consist out of a port and pin number
+		enum class Pin
+		{
+			A0 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin0,
+			A1 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin1,
+			A2 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin2,
+			A3 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin3,
+			A4 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin4,
+			A5 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin5,
+			A6 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin6,
+			A7 = ((uint8_t) Port::PortA << 3) + (uint8_t) PinNo::Pin7,
+			B0 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin0,
+			B1 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin1,
+			B2 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin2,
+			B3 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin3,
+			B4 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin4,
+			B5 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin5,
+			B6 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin6,
+			B7 = ((uint8_t) Port::PortB << 3) + (uint8_t) PinNo::Pin7,
+			C0 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin0,
+			C1 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin1,
+			C2 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin2,
+			C3 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin3,
+			C4 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin4,
+			C5 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin5,
+			C6 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin6,
+			C7 = ((uint8_t) Port::PortC << 3) + (uint8_t) PinNo::Pin7,
+			D0 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin0,
+			D1 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin1,
+			D2 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin2,
+			D3 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin3,
+			D4 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin4,
+			D5 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin5,
+			D6 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin6,
+			D7 = ((uint8_t) Port::PortD << 3) + (uint8_t) PinNo::Pin7,
+			E0 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin0,
+			E1 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin1,
+			E2 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin2,
+			E3 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin3,
+			E4 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin4,
+			E5 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin5,
+			E6 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin6,
+			E7 = ((uint8_t) Port::PortE << 3) + (uint8_t) PinNo::Pin7,
+			F0 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin0,
+			F1 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin1,
+			F2 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin2,
+			F3 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin3,
+			F4 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin4,
+			F5 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin5,
+			F6 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin6,
+			F7 = ((uint8_t) Port::PortF << 3) + (uint8_t) PinNo::Pin7,
+			R0 = ((uint8_t) Port::PortR << 3) + (uint8_t) PinNo::Pin0,
+			R1 = ((uint8_t) Port::PortR << 3) + (uint8_t) PinNo::Pin1
+		};
+		
+		// Pin Directions
+		enum class Dir
+		{
+			Input,
+			Output
+		};
 	
-	// Pins
-	enum class Pin
-	{
-		Pin0,
-		Pin1,
-		Pin2,
-		Pin3,
-		Pin4,
-		Pin5,
-		Pin6,
-		Pin7
-	};
+		// Pin Values
+		enum class Value
+		{
+			Low,
+			High
+		};
 	
-	// GpioPin - consist out of the port and the pin combined
-	enum class GpioPin
-	{
-		PinA0 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin0,
-		PinA1 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin1,
-		PinA2 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin2,
-		PinA3 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin3,
-		PinA4 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin4,
-		PinA5 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin5,
-		PinA6 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin6,
-		PinA7 = ((uint8_t) Port::PortA << 3) + (uint8_t) Pin::Pin7,
-		PinB0 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin0,
-		PinB1 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin1,
-		PinB2 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin2,
-		PinB3 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin3,
-		PinB4 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin4,
-		PinB5 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin5,
-		PinB6 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin6,
-		PinB7 = ((uint8_t) Port::PortB << 3) + (uint8_t) Pin::Pin7,
-		PinC0 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin0,
-		PinC1 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin1,
-		PinC2 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin2,
-		PinC3 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin3,
-		PinC4 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin4,
-		PinC5 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin5,
-		PinC6 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin6,
-		PinC7 = ((uint8_t) Port::PortC << 3) + (uint8_t) Pin::Pin7,
-		PinD0 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin0,
-		PinD1 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin1,
-		PinD2 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin2,
-		PinD3 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin3,
-		PinD4 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin4,
-		PinD5 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin5,
-		PinD6 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin6,
-		PinD7 = ((uint8_t) Port::PortD << 3) + (uint8_t) Pin::Pin7,
-		PinE0 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin0,
-		PinE1 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin1,
-		PinE2 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin2,
-		PinE3 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin3,
-		PinE4 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin4,
-		PinE5 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin5,
-		PinE6 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin6,
-		PinE7 = ((uint8_t) Port::PortE << 3) + (uint8_t) Pin::Pin7,
-		PinF0 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin0,
-		PinF1 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin1,
-		PinF2 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin2,
-		PinF3 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin3,
-		PinF4 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin4,
-		PinF5 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin5,
-		PinF6 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin6,
-		PinF7 = ((uint8_t) Port::PortF << 3) + (uint8_t) Pin::Pin7,
-		PinR0 = ((uint8_t) Port::PortR << 3) + (uint8_t) Pin::Pin0,
-		PinR1 = ((uint8_t) Port::PortR << 3) + (uint8_t) Pin::Pin1
-	};
-	
-	// Pin Directions
-	enum class GpioDir
-	{
-		Input,
-		Output
-	};
-	
-	// Pin Values
-	enum class GpioValue
-	{
-		Low,
-		High
-	};
-	
-	// Pin Modes
-	enum class GpioMode
-	{
-		Totem			= 0b00000000,
-		BusKeeper		= 0b00001000,
-		PullDown		= 0b00010000,
-		PullUp			= 0b00011000,
-		WiredOr			= 0b00100000,
-		WiredAnd		= 0b00101000,
-		WiredOrPullDown	= 0b00110000,
-		WiredAndPullUp	= 0b00111000
-	};
-	
-	
-	// Functions
-	void SetPinDirection(GpioPin pin, GpioDir dir);
-	void TogglePinDirection(GpioPin pin);
-	void SetPinValue(GpioPin pin, GpioValue val);
-	void TogglePinValue(GpioPin pin);
-	void SetPinMode(GpioPin pin, GpioMode mode);
-	
-	PORT_t* GetPort(GpioPin pin);
-	Pin GetPinNumber(GpioPin pin);
-	register8_t* GetPinConfigReg(GpioPin pin);
+		// Pin Modes
+		enum class Mode
+		{
+			Totem			= 0b00000000,
+			BusKeeper		= 0b00001000,
+			PullDown		= 0b00010000,
+			PullUp			= 0b00011000,
+			WiredOr			= 0b00100000,
+			WiredAnd		= 0b00101000,
+			WiredOrPullDown	= 0b00110000,
+			WiredAndPullUp	= 0b00111000
+		};
+		
+		
+		// Functions
+		void SetPinDirection(Pin pin, Dir dir);
+		void TogglePinDirection(Pin pin);
+		void SetPinValue(Pin pin, Value val);
+		void TogglePinValue(Pin pin);
+		void SetPinMode(Pin pin, Mode mode);
+		
+		PORT_t* GetPort(Pin pin);
+		PinNo GetPinNumber(Pin pin);
+		register8_t* GetPinConfigReg(Pin pin);
+		
+		
+	}
 }
 
 #endif //__GPIO_H__
