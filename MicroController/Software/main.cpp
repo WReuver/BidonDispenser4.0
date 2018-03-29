@@ -27,11 +27,17 @@ int main()
 	Gpio::SetPinDirection(Gpio::Pin::A0, Hardware::Gpio::Dir::Output);
 	Gpio::SetPinDirection(Gpio::Pin::C0, Hardware::Gpio::Dir::Output);
 	
-	TCC0.CTRLA = 0b00000110;    // Use the regular clock as the source clock and divide it by 2
-	TCC0.CTRLB = 0b11110011;    // Single Slope PWM mode
-	//TCC0.CTRLC = 
-	//TCC0.CTRLD = 
-	//TCC0.CTRLE = 
+    PR.PRGEN = 0;
+    
+	TCC0.CTRLA  = 0b00000010;
+    TCC0.CTRLB  = 0b00010011;
+    
+	TCC1.CTRLA = 0b00000010;
+	TCC1.CTRLB = 0b00010011;
+	//TCC2.CTRLA = 0b00000010;
+	//TCC2.CTRLB = 0b01000100;
+    
+    
 	
 	while (1) 
 	{
