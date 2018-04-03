@@ -40,6 +40,13 @@ void Hardware::Gpio::SetPinValue(Pin pin, Value val)
 	port->OUT = temp;								// Apply the configuration
 }
 
+Hardware::Gpio::Value Hardware::Gpio::GetPinValue(Pin pin)
+{
+    PORT_t* port = GetPort(pin);                    // Get a pointer to the selected port
+    uint8_t pinNo = (uint8_t) GetPinNumber(pin);    // Get the selected pin number
+    return (Value) (port->IN & (1 << pinNo));       // Return the pin value
+}
+
 void Hardware::Gpio::TogglePinValue(Pin pin)
 {
 	PORT_t* port = GetPort(pin);					// Get a pointer to the selected port

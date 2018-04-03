@@ -127,6 +127,7 @@ namespace Hardware
 		void SetPinDirection(Pin pin, Dir dir);
 		void TogglePinDirection(Pin pin);
 		void SetPinValue(Pin pin, Value val);
+        Value GetPinValue(Pin pin);
 		void TogglePinValue(Pin pin);
 		void SetPinMode(Pin pin, Mode mode);
 		
