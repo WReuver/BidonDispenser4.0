@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-03-29T13:04:03.988</Modified>
+      <Modified>2018-04-03T07:37:25.115</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\BidonDispenser.exe">
       <PackagePath>entrypoint\BidonDispenser.exe</PackagePath>
-      <Modified>2018-03-29T13:04:03.320</Modified>
+      <Modified>2018-04-03T07:37:23.287</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\NuGetPackages\microsoft.csharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -535,7 +535,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\BidonDispenser.xr.xml">
       <PackagePath>BidonDispenser.xr.xml</PackagePath>
-      <Modified>2018-03-29T13:04:03.122</Modified>
+      <Modified>2018-04-03T07:37:22.990</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.16299.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -544,11 +544,11 @@
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-03-29T13:04:03.830</Modified>
+      <Modified>2018-04-03T07:37:24.725</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\Core\BidonDispenser.exe">
       <PackagePath>BidonDispenser.exe</PackagePath>
-      <Modified>2018-03-29T13:04:03.985</Modified>
+      <Modified>2018-04-03T07:37:25.100</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

@@ -211,3 +211,4 @@ C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\obj\
 C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\obj\x64\Debug\qualifiers.txt.intermediate
 C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\obj\x64\Debug\MultipleQualifiersPerDimensionFound.txt
 C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\obj\x64\Debug\ProjectArchitectures.txt
+C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\obj\x64\Debug\BidonDispenser.csprojResolveAssemblyReference.cache

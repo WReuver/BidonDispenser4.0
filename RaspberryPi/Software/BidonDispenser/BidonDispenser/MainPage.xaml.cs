@@ -17,22 +17,20 @@ namespace BidonDispenser
 {
     public sealed partial class MainPage : Page
     {
-        public sealed partial class MainPage : Page {
-            private HelloViewModel viewModel = new HelloViewModel();
+        private HelloViewModel viewModel = new HelloViewModel();
 
-            public MainPage() {
-                this.InitializeComponent();
-                DispatcherTimer t = new DispatcherTimer();
-                t.Interval = TimeSpan.FromSeconds(0.5);
-                t.Tick += T_Tick;
-                t.Start();
-            }
+        public MainPage() {
+            this.InitializeComponent();
+            DispatcherTimer t = new DispatcherTimer();
+            t.Interval = TimeSpan.FromSeconds(0.5);
+            t.Tick += T_Tick;
+            t.Start();
+        }
 
-            static int index = 0;
-            private void T_Tick(object sender, object e) {
-                index++;
-                viewModel.DisplayLanguage = (HelloViewModel.Language)(index % 3);
-            }
+        static int index = 0;
+        private void T_Tick(object sender, object e) {
+            index++;
+            viewModel.DisplayLanguage = (HelloViewModel.Language)(index % 3);
         }
     }
 }
