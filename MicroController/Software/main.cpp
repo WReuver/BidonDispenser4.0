@@ -37,12 +37,15 @@ static uint8_t reset()
     
     SetLow;                                 // Pull the pin low
     TxMode;                                 // Set the pin to output again
-    _delay_us(480);                         // Wait a bit
+    _delay_us(500);                         // Wait a bit
     
     RxMode;                                 // Let the pin float
-    _delay_us(60);                          // Wait a bit
+    _delay_us(65);                          // Wait a bit
     
-    return (uint8_t) GetValue;              // Return the response
+    uint8_t response = (uint8_t) GetValue;  // Read the reset response
+    _delay_us(490);
+    
+    return response;                        // Return the response
 }
 
 static void write_bit(uint8_t bit) 
@@ -106,27 +109,56 @@ static uint8_t read()
     return val;
 }
 
+static void skip() {
+    write(0xCC);
+}
+
+static void readTemperature() {
+    write(0x44);
+}
+
 int main() 
 {
     initialize();
 	Gpio::SetPinDirection(Gpio::Pin::A0, Gpio::Dir::Output);
 	
     volatile uint8_t resetResult = 2;
-    resetResult = reset();
-    _delay_ms(10);
+    volatile uint8_t rom[8] = {0};
+    volatile uint8_t temperature[2] = {0};
+    volatile int16_t tempTemp = 0;
+    volatile float realTemp = 0.0;
+        
+    //resetResult = reset();
+    //_delay_ms(1);
     
-    volatile uint8_t rom[10] = {0};
-    write(0x33);
-    
-    for (int i = 0; i < 10; i++)
-    {
-        rom[i] = read();
-    }
+    //write(0x33);                                        // Get ROM Command
+    //for (int i = 0; i < 10; i++) rom[i] = read();
+    //_delay_ms(1);
     
 	while (1) 
 	{
 		Gpio::TogglePinValue(Gpio::Pin::A0);
-		_delay_ms(250);
+        _delay_ms(500);
+        
+        resetResult = reset();
+        skip();
+        readTemperature();
+        while (!read_bit());
+        //_delay_ms(1000);
+        
+        resetResult = reset();
+        skip();
+        write(0xBE);                                            // Read scratchpad command
+        //for (int i = 0; i < 2; i++) temperature[i] = read();    // Read the scratchpad
+        tempTemp = read();
+        tempTemp += (int16_t) read() * 256;
+        _delay_ms(1000);
+        
+        //tempTemp = (uint16_t) temperature[1] << 8 | (uint16_t) temperature[0];
+        realTemp = (float) tempTemp / 16;
+        
+        Gpio::TogglePinValue(Gpio::Pin::A0);
+        _delay_ms(500);
 	}
 	
 }
