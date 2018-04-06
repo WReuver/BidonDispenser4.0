@@ -80,3 +80,16 @@ namespace Sensors
 }
 
 #endif //__TEMPERATURESENSOR_H__
+
+/** EXAMPLE
+
+    volatile float realTemp = -100;
+    
+    Gpio::Pin pins[1] = {Gpio::Pin::B0};
+    TemperatureSensor* ts = new TemperatureSensor(pins);
+    
+    void* dataLocation = ts->GetData();
+    realTemp = *((float*) dataLocation);
+    
+    delete ts;
+*/
