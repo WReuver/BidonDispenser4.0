@@ -7,22 +7,13 @@
 
 #include "DistanceSensor.h"
 
- Sensors::DistanceSensor::DistanceSensor()
+Sensors::DistanceSensor::~DistanceSensor()
 {
 
 }
 
- Sensors::DistanceSensor::~DistanceSensor()
-{
 
-}
-
-bool Sensors::DistanceSensor::initialize()
-{
-	return false;
-}
-
-uint8_t* Sensors::DistanceSensor::getData()
+void* Sensors::DistanceSensor::GetData()
 {
 	return 0;
 }

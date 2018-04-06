@@ -7,22 +7,12 @@
 
 #include "RotationSensor.h"
 
- Sensors::RotationSensor::RotationSensor()
+Sensors::RotationSensor::~RotationSensor()
 {
 
 }
 
- Sensors::RotationSensor::~RotationSensor()
-{
-
-}
-
-bool Sensors::RotationSensor::initialize()
-{
-	return false;
-}
-
-uint8_t* Sensors::RotationSensor::getData()
+void* Sensors::RotationSensor::GetData()
 {
 	return 0;
 }

@@ -21,10 +21,8 @@ namespace Sensors
 		
 		// Methods
 		public:
-		DistanceSensor();
 		~DistanceSensor();
-		virtual bool initialize();
-		virtual uint8_t* getData();
+		virtual void* GetData();
 
 		protected:
 		private:

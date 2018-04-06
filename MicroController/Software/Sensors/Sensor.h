@@ -8,17 +8,36 @@
 #ifndef __SENSOR_H__
 #define __SENSOR_H__
 
-#include <stdint.h>
+#include "../includes.h"
+#include "../Hardware/Gpio.h"
+#include "../Hardware/Communication/OneWire.h"
 
 namespace Sensors
 {
 	class Sensor
 	{
+        // Variables
+        public:
+        protected:
+        Hardware::Gpio::Pin* pins;
+        private:
+        
+        
 		// Methods
 		public:
-		virtual bool initialize() = 0;		// Initialize the sensor (if needed)
-		virtual uint8_t* getData() = 0;		// Returns a pointer to the data, the first byte contains the size of the data (in bytes), the bytes after that are the data
-		virtual ~Sensor();					// Basic destructor
+        Sensor(Hardware::Gpio::Pin* pins) 
+        {
+            this->pins = pins;
+        }
+        
+        /* Returns a pointer to the data */
+		virtual void* GetData() = 0;
+        
+        /* Basic Destructor */
+		virtual ~Sensor() {};
+        
+        protected:
+        private:
 		
 	}; //Sensor
 }

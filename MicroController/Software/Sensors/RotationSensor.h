@@ -21,10 +21,8 @@ namespace Sensors
 
 		// Methods
 		public:
-		RotationSensor();
 		~RotationSensor();
-		virtual bool initialize();
-		virtual uint8_t* getData();
+		virtual void* GetData();
 		
 		protected:
 		private:
