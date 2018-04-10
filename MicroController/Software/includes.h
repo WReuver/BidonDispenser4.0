@@ -21,6 +21,14 @@ void operator delete(void* obj);
 #include <util/delay.h>
 
 
+/* I/O */
+#include "Hardware/Gpio.h"
+
+
+/* AtxMega */
+#include "Hardware/AtxMega.h"
+
+
 /* Conversions */
 uint32_t FloatToUint32(float data);
 float Uint32ToFloat(uint32_t data);

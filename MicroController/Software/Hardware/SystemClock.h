@@ -8,9 +8,7 @@
 #ifndef __SYSTEMCLOCK_H__
 #define __SYSTEMCLOCK_H__
 
-#include <stdint.h>
-#include <avr/io.h>
-#include "AtxMega.h"
+#include "../includes.h"
 
 namespace Hardware 
 {

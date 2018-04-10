@@ -43,25 +43,25 @@ void Hardware::SystemClock::LockClockSourceAndPrescaler()
 
 void Hardware::SystemClock::SetClockSourceRtc(SourceRtc sourceRtc)
 {
-	CLK.RTCCTRL = (CLK.RTCCTRL & 0b0001) | (uint8_t) sourceRtc;       // Configure the selected RTC as source
+	CLK.RTCCTRL = (CLK.RTCCTRL & 0b0001) | (uint8_t) sourceRtc;         // Configure the selected RTC as source
 }
 
 void Hardware::SystemClock::EnableClockSourceRtc()
 {
-    CLK.RTCCTRL |= 0b0001;          // Enable the selected RTC
+    CLK.RTCCTRL |= 0b0001;                                              // Enable the selected RTC
 }
 
 void Hardware::SystemClock::DisableClockSourceRtc()
 {
-	CLK.RTCCTRL &= 0b1110;          // Disable the selected RTC
+	CLK.RTCCTRL &= 0b1110;                                              // Disable the selected RTC
 }
 
 void Hardware::SystemClock::EnableClockSource(Source source)
 {
-	OSC.CTRL |= 1 << (uint8_t) source;					// Enable the selected clock source
+	OSC.CTRL |= 1 << (uint8_t) source;					                // Enable the selected clock source
 }
 
 bool Hardware::SystemClock::IsClockSourceReady(Source source)
 {
-	return OSC.STATUS & (1 << (uint8_t) source);		// Get the ready bit of the selected clock source
+	return OSC.STATUS & (1 << (uint8_t) source);		                // Get the ready bit of the selected clock source
 }
