@@ -101,3 +101,8 @@ register8_t* Hardware::Gpio::GetPinConfigReg(Pin pin)
 		default:				return nullptr;
 	}
 }
+
+Hardware::Gpio::Pin Hardware::Gpio::GetPinFromPortAndPinNo(Port port, PinNo pinNo)
+{
+    return (Pin) ( ((uint8_t) port << 3) + (uint8_t) pinNo );
+}

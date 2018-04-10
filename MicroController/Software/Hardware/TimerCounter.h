@@ -15,31 +15,26 @@ namespace Hardware
     namespace TimerCounter
     {
         // Timer/Counters
-        enum class TC
+        enum class TcNo
         {
             TC0, 
-            TC1, 
-            TC2
+            TC1
         };
         
         // Timer/Counter Mapping
-        enum class TimerCounter
+        enum class TC
         {
-            TC0C = ((uint8_t) TC::TC0 << 3) + (uint8_t) Gpio::Port::PortC,
-            TC0D = ((uint8_t) TC::TC0 << 3) + (uint8_t) Gpio::Port::PortD,
-            TC0E = ((uint8_t) TC::TC0 << 3) + (uint8_t) Gpio::Port::PortE,
-            TC0F = ((uint8_t) TC::TC0 << 3) + (uint8_t) Gpio::Port::PortF,
-            TC1C = ((uint8_t) TC::TC1 << 3) + (uint8_t) Gpio::Port::PortC,
-            TC1D = ((uint8_t) TC::TC1 << 3) + (uint8_t) Gpio::Port::PortD,
-            TC1E = ((uint8_t) TC::TC1 << 3) + (uint8_t) Gpio::Port::PortE,
-            TC2C = ((uint8_t) TC::TC2 << 3) + (uint8_t) Gpio::Port::PortC,
-            TC2D = ((uint8_t) TC::TC2 << 3) + (uint8_t) Gpio::Port::PortD,
-            TC2E = ((uint8_t) TC::TC2 << 3) + (uint8_t) Gpio::Port::PortE,
-            TC2F = ((uint8_t) TC::TC2 << 3) + (uint8_t) Gpio::Port::PortF
+            TC0C = ((uint8_t) TcNo::TC0 << 3) + (uint8_t) Gpio::Port::PortC,
+            TC0D = ((uint8_t) TcNo::TC0 << 3) + (uint8_t) Gpio::Port::PortD,
+            TC0E = ((uint8_t) TcNo::TC0 << 3) + (uint8_t) Gpio::Port::PortE,
+            TC0F = ((uint8_t) TcNo::TC0 << 3) + (uint8_t) Gpio::Port::PortF,
+            TC1C = ((uint8_t) TcNo::TC1 << 3) + (uint8_t) Gpio::Port::PortC,
+            TC1D = ((uint8_t) TcNo::TC1 << 3) + (uint8_t) Gpio::Port::PortD,
+            TC1E = ((uint8_t) TcNo::TC1 << 3) + (uint8_t) Gpio::Port::PortE
         };
         
         // Prescaler Values
-        enum class PrescalerValue
+        enum class ClockValue
         {
             ClockOff,
             Div1,
@@ -66,22 +61,25 @@ namespace Hardware
         
         // Functions
         // ClockFreq / TargetFreq = Presc * (Period + 1)    32M / 60k = 1 * (532 + 1)
-        uint8_t SetPrescaler(TimerCounter tc, PrescalerValue prescval);
-        uint8_t SetPeriod(TimerCounter tc, uint16_t period);
-        uint8_t EnableOnPin(TimerCounter tc, Gpio::Pin pin);
-        uint8_t DisbaleOnPin(TimerCounter tc, Gpio::Pin pin);
-        uint8_t SetWaveformGenMode(TimerCounter tc, WaveformGenMode wgm);
-        uint8_t SetDutyCycle(TimerCounter tc, uint8_t dutyCycle);
-        uint16_t GetCount(TimerCounter tc);
+        uint8_t SetClock(TC tc, ClockValue prescval);
+        uint8_t SetPeriod(TC tc, uint16_t period);
+        uint8_t EnableOnPin(TC tc, Gpio::PinNo pinNo);
+        uint8_t DisbaleOnPin(TC tc, Gpio::PinNo pinNo);
+        uint8_t SetWaveformGenMode(TC tc, WaveformGenMode wgm);
+        uint8_t SetDutyCycleOnPin(TC tc, uint8_t dutyCycle, Gpio::PinNo pinNo);
+        uint16_t GetCount(TC tc);
         
-        uint8_t getTcNumber(TimerCounter tc);
-        void* getTcAddress(TimerCounter tc);
+        uint8_t GetTcNumber(TC tc);
+        void* GetTcAddress(TC tc);
+        Gpio::Port GetPort(TC tc);
         
         
         
         /* 
 		* Functionalities not included:
 		* - - - - - - - - - - - - - - - - - - - - - -
+        * Timer/Counter 2
+        * 
 		* Anything to do with "Control Register C"
 		* Anything to do with "Control Register D"
 		* Anything to do with "Control Register E"

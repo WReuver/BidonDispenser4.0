@@ -130,10 +130,10 @@ namespace Hardware
         Value GetPinValue(Pin pin);
 		void TogglePinValue(Pin pin);
 		void SetPinMode(Pin pin, Mode mode);
-		
 		PORT_t* GetPort(Pin pin);
 		PinNo GetPinNumber(Pin pin);
 		register8_t* GetPinConfigReg(Pin pin);
+        Pin GetPinFromPortAndPinNo(Port port, PinNo pinNo);
 		
 		
 	}

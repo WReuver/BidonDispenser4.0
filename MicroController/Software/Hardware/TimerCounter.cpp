@@ -7,127 +7,194 @@
 
 #include "TimerCounter.h"
 
-uint8_t Hardware::TimerCounter::SetPrescaler(TimerCounter tc, PrescalerValue prescval)
+uint8_t Hardware::TimerCounter::SetClock(TC tc, ClockValue clockValue)
 {
-    void* tcPointer = getTcAddress(tc);
+    void* tcPointer = GetTcAddress(tc);
     
-    switch ( getTcNumber(tc) )
+    switch ( GetTcNumber(tc) )
     {
-        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 2:     ((TC2_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        default:    return 0;
-    }
-}
-
-uint8_t Hardware::TimerCounter::SetPeriod(TimerCounter tc, uint16_t period)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     ((TC0_t*) tcPointer)->PER = period;
-                    return 1;
-        case 1:     ((TC1_t*) tcPointer)->PER = period;
-                    return 1;
-        case 2:     ((TC2_t*) tcPointer)->HPER = period >> 8;
-                    ((TC2_t*) tcPointer)->LPER = period & 0xFF;
-                    return 1;
-        default:    return 0;
-    }
-}
-
-uint8_t Hardware::TimerCounter::EnableOnPin(TimerCounter tc, Gpio::Pin pin)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 2:     ((TC2_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        default:    return 0;
-    }
-}
-
-uint8_t Hardware::TimerCounter::DisbaleOnPin(TimerCounter tc, Gpio::Pin pin)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 2:     ((TC2_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        default:    return 0;
-    }
-}
-
-uint8_t Hardware::TimerCounter::SetWaveformGenMode(TimerCounter tc, WaveformGenMode wgm)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 2:     ((TC2_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        default:    return 0;
-    }
-}
-
-uint8_t Hardware::TimerCounter::SetDutyCycle(TimerCounter tc, uint8_t dutyCycle)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        case 2:     ((TC2_t*) tcPointer)->CTRLA = (uint8_t) prescval;   return 1;
-        default:    return 0;
-    }
-}
-
-uint16_t Hardware::TimerCounter::GetCount(TimerCounter tc)
-{
-    void* tcPointer = getTcAddress(tc);
-    
-    switch ( getTcNumber(tc) )
-    {
-        case 0:     return ((TC0_t*) tcPointer)->CNT;
-        case 1:     return ((TC1_t*) tcPointer)->CNT;
-        case 2:     return ( (((TC2_t*) tcPointer)->HCNT << 8) | ((TC2_t*) tcPointer)->LCNT );
+        case 0:     ((TC0_t*) tcPointer)->CTRLA = (uint8_t) clockValue;   return 0;
+        case 1:     ((TC1_t*) tcPointer)->CTRLA = (uint8_t) clockValue;   return 0;
         default:    return 1;
     }
 }
 
-uint8_t Hardware::TimerCounter::getTcNumber(TimerCounter tc)
+uint8_t Hardware::TimerCounter::SetPeriod(TC tc, uint16_t period)
 {
-    switch ( (TC) ( ((uint8_t) tc >> 3) & 0b111) )
+    void* tcPointer = GetTcAddress(tc);
+    uint8_t tcNumber = GetTcNumber(tc);
+    float modifier = 0;
+    
+    switch ( tcNumber )
     {
-        case TC::TC0: return 0;
-        case TC::TC1: return 1;
-        case TC::TC2: return 2;
-        default:      return 255;
+        // Get the previous period
+        case 0:     modifier = period / ((TC0_t*) tcPointer)->PER; break;
+        case 1:     modifier = period / ((TC1_t*) tcPointer)->PER; break;
+        default:    return 1;
+    }
+    
+    switch ( tcNumber )
+    {
+        // Assign the new period
+        case 0:     ((TC0_t*) tcPointer)->PER = period; break;
+        case 1:     ((TC1_t*) tcPointer)->PER = period; break;
+        default:    return 1;
+    }
+    
+    switch ( tcNumber )
+    {
+        // Update the Duty Cycles with the new period
+        case 0:
+            ((TC0_t*) tcPointer)->CCA *= modifier;
+            ((TC0_t*) tcPointer)->CCB *= modifier;
+            ((TC0_t*) tcPointer)->CCC *= modifier;
+            ((TC0_t*) tcPointer)->CCD *= modifier;
+            break;
+            
+        case 1:
+            ((TC1_t*) tcPointer)->CCA *= modifier;
+            ((TC1_t*) tcPointer)->CCB *= modifier;
+            break;
+            
+        default:
+            return 1;
+    }
+    
+    return 0;
+}
+
+uint8_t Hardware::TimerCounter::EnableOnPin(TC tc, Gpio::PinNo pinNo)
+{
+    if ((uint8_t) pinNo > 3) return 1;      // Quick check whether the pin has TC capabilities or not
+    void* tcPointer = GetTcAddress(tc);     // Get a pointer to the correct TC
+    
+    Gpio::Port port = GetPort(tc);
+    Gpio::Pin pin = Gpio::GetPinFromPortAndPinNo(port, pinNo);
+    Gpio::SetPinDirection(pin, Gpio::Dir::Output);
+    
+    switch ( GetTcNumber(tc) )
+    {
+        // Set the specified bit
+        case 0:     ((TC0_t*) tcPointer)->CTRLB |= 1 << (((uint8_t) pinNo) + 4);   return 0;
+        case 1:     ((TC1_t*) tcPointer)->CTRLB |= 1 << (((uint8_t) pinNo) + 4);   return 0;
+        default:    return 1;
     }
 }
 
-void* Hardware::TimerCounter::getTcAddress(TimerCounter tc)
+uint8_t Hardware::TimerCounter::DisbaleOnPin(TC tc, Gpio::PinNo pinNo)
+{
+    if ((uint8_t) pinNo > 3) return 1;      // Quick check whether the pin has TC capabilities or not
+    void* tcPointer = GetTcAddress(tc);     // Get a pointer to the correct TC
+    
+    switch ( GetTcNumber(tc) )
+    {
+        // Reset the specified bit
+        case 0:     ((TC0_t*) tcPointer)->CTRLB &= ~(1 << (((uint8_t) pinNo) + 4));   return 0;
+        case 1:     ((TC1_t*) tcPointer)->CTRLB &= ~(1 << (((uint8_t) pinNo) + 4));   return 0;
+        default:    return 1;
+    }
+}
+
+uint8_t Hardware::TimerCounter::SetWaveformGenMode(TC tc, WaveformGenMode wgm)
+{
+    void* tcPointer = GetTcAddress(tc);
+    
+    switch ( GetTcNumber(tc) )
+    {
+        //           Clear the Waveform Generation Mode bits     Configure the chosen Waveform Generation Mode
+        case 0:     ((TC0_t*) tcPointer)->CTRLB &= 0b11110000;  ((TC0_t*) tcPointer)->CTRLB = (uint8_t) wgm;    return 0;
+        case 1:     ((TC1_t*) tcPointer)->CTRLB &= 0b11110000;  ((TC1_t*) tcPointer)->CTRLB = (uint8_t) wgm;    return 0;
+        default:    return 1;
+    }
+}
+
+uint8_t Hardware::TimerCounter::SetDutyCycleOnPin(TC tc, uint8_t dutyCycle, Gpio::PinNo pinNo)
+{
+    void* tcPointer = GetTcAddress(tc);
+    uint8_t tcNumber = GetTcNumber(tc);
+    uint16_t period = 0;
+    uint16_t compareCapture = 0;
+    
+    switch ( tcNumber )
+    {
+        case 0:     period = ((TC0_t*) tcPointer)->PER; break;
+        case 1:     period = ((TC1_t*) tcPointer)->PER; break;
+        default:    return 1;
+    }
+    
+    compareCapture = ( period * dutyCycle ) / 100;
+    
+    if (tcNumber == 0)
+    {
+        switch (pinNo)
+        {
+            case Gpio::PinNo::Pin0: ((TC0_t*) tcPointer)->CCA = compareCapture; return 0;
+            case Gpio::PinNo::Pin1: ((TC0_t*) tcPointer)->CCB = compareCapture; return 0;
+            case Gpio::PinNo::Pin2: ((TC0_t*) tcPointer)->CCC = compareCapture; return 0;
+            case Gpio::PinNo::Pin3: ((TC0_t*) tcPointer)->CCD = compareCapture; return 0;
+            default: return 1;
+        }
+    }
+    else if (tcNumber == 1)
+    {
+        switch (pinNo)
+        {
+            case Gpio::PinNo::Pin0: ((TC1_t*) tcPointer)->CCA = compareCapture; return 0;
+            case Gpio::PinNo::Pin1: ((TC1_t*) tcPointer)->CCB = compareCapture; return 0;
+            default: return 1;
+        }
+    }
+    else 
+        return 1;
+}
+
+uint16_t Hardware::TimerCounter::GetCount(TC tc)
+{
+    void* tcPointer = GetTcAddress(tc);
+    
+    switch ( GetTcNumber(tc) )
+    {
+        case 0:     return ((TC0_t*) tcPointer)->CNT;
+        case 1:     return ((TC1_t*) tcPointer)->CNT;
+        default:    return 1;
+    }
+}
+
+uint8_t Hardware::TimerCounter::GetTcNumber(TC tc)
+{
+    switch ( (TcNo) ( ((uint8_t) tc >> 3) & 0b111) )
+    {
+        case TcNo::TC0: return 0;
+        case TcNo::TC1: return 1;
+        default:        return 255;
+    }
+}
+
+void* Hardware::TimerCounter::GetTcAddress(TC tc)
 {
     switch ( tc )
     {
-        case TimerCounter::TC0C:    return (void*) &TCC0;
-        case TimerCounter::TC0D:    return (void*) &TCD0;
-        case TimerCounter::TC0E:    return (void*) &TCE0;
-        case TimerCounter::TC0F:    return (void*) &TCF0;
-        case TimerCounter::TC1C:    return (void*) &TCC1;
-        case TimerCounter::TC1D:    return (void*) &TCD1;
-        case TimerCounter::TC1E:    return (void*) &TCE1;
-        case TimerCounter::TC2C:    return (void*) &TCC2;
-        case TimerCounter::TC2D:    return (void*) &TCD2;
-        case TimerCounter::TC2E:    return (void*) &TCE2;
-        case TimerCounter::TC2F:    return (void*) &TCF2;
-        default:                    return nullptr;
+        case TC::TC0C:    return (void*) &TCC0;
+        case TC::TC0D:    return (void*) &TCD0;
+        case TC::TC0E:    return (void*) &TCE0;
+        case TC::TC0F:    return (void*) &TCF0;
+        case TC::TC1C:    return (void*) &TCC1;
+        case TC::TC1D:    return (void*) &TCD1;
+        case TC::TC1E:    return (void*) &TCE1;
+        default:          return nullptr;
+    }
+}
+
+Hardware::Gpio::Port Hardware::TimerCounter::GetPort(TC tc)
+{
+    switch ( tc )
+    {
+        case TC::TC0C:    return Gpio::Port::PortC;
+        case TC::TC0D:    return Gpio::Port::PortD;
+        case TC::TC0E:    return Gpio::Port::PortE;
+        case TC::TC0F:    return Gpio::Port::PortF;
+        case TC::TC1C:    return Gpio::Port::PortC;
+        case TC::TC1D:    return Gpio::Port::PortD;
+        case TC::TC1E:    return Gpio::Port::PortE;
     }
 }
