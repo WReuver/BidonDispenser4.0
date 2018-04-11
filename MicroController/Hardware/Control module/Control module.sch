@@ -14391,6 +14391,9 @@ Source: &lt;a href=http://de.farnell.com/molex/0446200002/buchse-rj45-geschirmt/
 <text x="-10.16" y="205.74" size="1.778" layer="91">Input power screw terminal</text>
 <text x="-2.54" y="200.66" size="1.778" layer="91">+</text>
 <text x="-2.54" y="198.12" size="1.778" layer="91">-</text>
+<text x="20.32" y="5.08" size="1.778" layer="91">BLUE</text>
+<text x="60.96" y="5.08" size="1.778" layer="91">WHITE</text>
+<text x="101.6" y="5.08" size="1.778" layer="91">RED</text>
 </plain>
 <instances>
 <instance part="U1" gate="U1" x="241.3" y="-2.54" rot="MR0"/>
