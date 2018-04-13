@@ -7,12 +7,15 @@
 
 #include "RotationSensor.h"
 
-Sensors::RotationSensor::~RotationSensor()
+ Sensors::RotationSensor::RotationSensor(Hardware::Gpio::Pin* pins) : Sensor(pins)
 {
-
+    Hardware::Gpio::SetPinDirection(pins[0], Hardware::Gpio::Dir::Input);
 }
+
+Sensors::RotationSensor::~RotationSensor() {}
 
 void* Sensors::RotationSensor::GetData()
 {
-	return 0;
+    buffer = Hardware::Gpio::GetPinValue(pins[0]) == Hardware::Gpio::Value::High;
+    return &buffer;
 }

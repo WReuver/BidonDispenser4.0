@@ -22,7 +22,7 @@ void* Sensors::TemperatureSensor::GetData()
 
 bool Sensors::TemperatureSensor::SetResolution(Resolution resolution)
 {
-    return false;       // WIP
+    return false;       // Probably won't be added
 }
 
 uint8_t Sensors::TemperatureSensor::initializationSequence()

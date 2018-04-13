@@ -10,7 +10,7 @@
 
 #include "Sensor.h"
 #include "../Hardware/Communication/OneWire.h"
-#include <stdlib.h>
+#include "../includes.h"
 
 using namespace Hardware::Communication;
 

@@ -23,15 +23,6 @@ uint8_t Hardware::TimerCounter::SetPeriod(TC tc, uint16_t period)
 {
     void* tcPointer = GetTcAddress(tc);
     uint8_t tcNumber = GetTcNumber(tc);
-    float modifier = 0;
-    
-    switch ( tcNumber )
-    {
-        // Get the previous period
-        case 0:     modifier = period / ((TC0_t*) tcPointer)->PER; break;
-        case 1:     modifier = period / ((TC1_t*) tcPointer)->PER; break;
-        default:    return 1;
-    }
     
     switch ( tcNumber )
     {
@@ -39,25 +30,6 @@ uint8_t Hardware::TimerCounter::SetPeriod(TC tc, uint16_t period)
         case 0:     ((TC0_t*) tcPointer)->PER = period; break;
         case 1:     ((TC1_t*) tcPointer)->PER = period; break;
         default:    return 1;
-    }
-    
-    switch ( tcNumber )
-    {
-        // Update the Duty Cycles with the new period
-        case 0:
-            ((TC0_t*) tcPointer)->CCA *= modifier;
-            ((TC0_t*) tcPointer)->CCB *= modifier;
-            ((TC0_t*) tcPointer)->CCC *= modifier;
-            ((TC0_t*) tcPointer)->CCD *= modifier;
-            break;
-            
-        case 1:
-            ((TC1_t*) tcPointer)->CCA *= modifier;
-            ((TC1_t*) tcPointer)->CCB *= modifier;
-            break;
-            
-        default:
-            return 1;
     }
     
     return 0;
@@ -160,6 +132,18 @@ uint16_t Hardware::TimerCounter::GetCount(TC tc)
     }
 }
 
+uint8_t Hardware::TimerCounter::ClearCount(TC tc)
+{
+    void* tcPointer = GetTcAddress(tc);
+    
+    switch ( GetTcNumber(tc) )
+    {
+        case 0:     ((TC0_t*) tcPointer)->CNT = 0; return 0;
+        case 1:     ((TC1_t*) tcPointer)->CNT = 0; return 0;
+        default:    return 1;
+    }
+}
+
 uint8_t Hardware::TimerCounter::GetTcNumber(TC tc)
 {
     switch ( (TcNo) ( ((uint8_t) tc >> 3) & 0b111) )
@@ -168,6 +152,32 @@ uint8_t Hardware::TimerCounter::GetTcNumber(TC tc)
         case TcNo::TC1: return 1;
         default:        return 255;
     }
+}
+
+uint8_t Hardware::TimerCounter::DidTcOverflow(TC tc)
+{
+    void* tcPointer = GetTcAddress(tc);
+    uint8_t tcNumber = GetTcNumber(tc);
+    uint8_t didOVerflow = 0;
+    
+    switch ( tcNumber )
+    {
+        // Assign the new period
+        case 0:
+            didOVerflow = ((TC0_t*) tcPointer)->INTFLAGS & 0b00000001;
+            if (didOVerflow == 1) ((TC0_t*) tcPointer)->INTFLAGS |= 0b00000001;
+            break;
+            
+        case 1:
+            didOVerflow = ((TC1_t*) tcPointer)->INTFLAGS & 0b00000001;
+            if (didOVerflow == 1) ((TC1_t*) tcPointer)->INTFLAGS |= 0b00000001;
+            break;
+            
+        default:
+            return 0;
+    }
+    
+    return didOVerflow;
 }
 
 void* Hardware::TimerCounter::GetTcAddress(TC tc)
@@ -196,5 +206,40 @@ Hardware::Gpio::Port Hardware::TimerCounter::GetPort(TC tc)
         case TC::TC1C:    return Gpio::Port::PortC;
         case TC::TC1D:    return Gpio::Port::PortD;
         case TC::TC1E:    return Gpio::Port::PortE;
+        default:          return Gpio::Port::PortC;
     }
+}
+
+float Hardware::TimerCounter::TicksToMicoSeconds(uint16_t prescval, uint16_t ticks)
+{
+    float secondsPerTick = 1.0 / (F_CPU / prescval);
+    float microsecondsPerTick = secondsPerTick * 1000000;
+    return microsecondsPerTick * ticks;
+}
+
+float Hardware::TimerCounter::TicksToMilliSeconds(uint16_t prescval, uint16_t ticks)
+{
+    return TicksToMicoSeconds(prescval, ticks) / 1000;
+}
+
+float Hardware::TimerCounter::TicksToSeconds(uint16_t prescval, uint16_t ticks)
+{
+    return TicksToMilliSeconds(prescval, ticks) / 1000;
+}
+
+float Hardware::TimerCounter::MicroSecondsToTicks(uint16_t prescval, uint32_t microSeconds)
+{
+    volatile float ticksPerSecond = F_CPU / prescval;
+    volatile float ticksPerMicroSeconds = ticksPerSecond / 1000000;
+    return ticksPerMicroSeconds * microSeconds;
+}
+
+float Hardware::TimerCounter::MilliSecondsToTicks(uint16_t prescval, uint32_t milliSeconds)
+{
+    return MicroSecondsToTicks(prescval, milliSeconds*1000);
+}
+
+float Hardware::TimerCounter::SecondsToTicks(uint16_t prescval, uint16_t seconds)
+{
+    return MilliSecondsToTicks(prescval, seconds*1000);
 }
