@@ -8,59 +8,71 @@
 #include "includes.h"
 #include "Hardware/SystemClock.h"
 #include "Hardware/TimerCounter.h"
+#include "Sensors/DistanceSensor.h"
 
 using namespace Hardware;
+using namespace Gpio;
+
+#define TRIGGER1    Gpio::Pin::D2
+#define TRIGGER0    Gpio::Pin::D1
+#define ECHO        Gpio::Pin::D0
+
+#define S0          Gpio::Pin::C7
+#define S1          Gpio::Pin::C6
+#define S2          Gpio::Pin::C5
+
+Gpio::Pin muxPins[3] = { S0, S1, S2 };
+
+Gpio::Pin leds[3] = { Gpio::Pin::A0, Gpio::Pin::A1, Gpio::Pin::A2 };
 
 static void initialize(void)
 {
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
-    Gpio::SetPinDirection(Gpio::Pin::A0, Gpio::Dir::Input);
-    Gpio::SetPinDirection(Gpio::Pin::B0, Gpio::Dir::Output);
+    
+    for (Gpio::Pin pin : muxPins)
+    Gpio::SetPinDirection(pin, Gpio::Dir::Output);
+    
+    for (Gpio::Pin pin : leds)
+    Gpio::SetPinDirection(pin, Gpio::Dir::Output);
+}
+
+static void setChannel(uint8_t channel)
+{
+    for (int i = 0; i < 3; i++)
+    Gpio::SetPinValue(muxPins[i], (Gpio::Value) (( channel >> i ) & 0b1));
+    _delay_ms(100);
 }
 
 int main() 
 {
     initialize();
     
-    //TCC0.CTRLA = 0b00000001;
-    TimerCounter::SetClock(TimerCounter::TC::TC0C, TimerCounter::ClockValue::Div1);
+    Gpio::Pin pins0[2] = { TRIGGER0, ECHO };
+    Gpio::Pin pins1[2] = { TRIGGER1, ECHO };
+    //Sensors::DistanceSensor* dss[3] = { new Sensors::DistanceSensor(pins), new Sensors::DistanceSensor(pins), new Sensors::DistanceSensor(pins) };
+    Sensors::DistanceSensor* ds0 = new Sensors::DistanceSensor(pins0);
+    Sensors::DistanceSensor* ds1 = new Sensors::DistanceSensor(pins1);
+    Sensors::DistanceSensor* ds2 = new Sensors::DistanceSensor(pins1);
+    volatile float dists[3] = {0.0, 0.0, 0.0};
+    //volatile float dist = 0.0;
     
-    //TCC0.CTRLB = 0b00010011;
-    TimerCounter::SetWaveformGenMode(TimerCounter::TC::TC0C, TimerCounter::WaveformGenMode::SingleSlope);
-    TimerCounter::EnableOnPin(TimerCounter::TC::TC0C, Gpio::PinNo::Pin0);
+    //TimerCounter::SetClock(TimerCounter::TC::TC0D, TimerCounter::ClockValue::Div256);
     
-    //TCC0.PER   = 532;              // Max amount of ticks
-    TimerCounter::SetPeriod(TimerCounter::TC::TC0C, 532);
-    
-    
-    //TCD0.CTRLA = 0b00000111;        // Prescaler val = 1024
-    TimerCounter::SetClock(TimerCounter::TC::TC0D, TimerCounter::ClockValue::Div1024);
-    
-    //TCD0.PER = 0x7A12;
-    TimerCounter::SetPeriod(TimerCounter::TC::TC0D, 0x7A12);
-    
-    // Counter test
     while (1)
     {
-        Gpio::TogglePinValue(Gpio::Pin::B0);
-        while (TCD0.CNT < 0x7A12);
-        Gpio::TogglePinValue(Gpio::Pin::B0);
-        while (TCD0.CNT < 0x7A12);
+        setChannel(0);
+        //Gpio::SetPinValue(leds[0], Gpio::GetPinValue(ECHO));
+        dists[0] = *( (float*) ds0->GetData() );
+        _delay_ms(1000);
+        
+        setChannel(1);
+        //Gpio::SetPinValue(leds[1], Gpio::GetPinValue(ECHO));
+        dists[1] = *( (float*) ds1->GetData() );
+        _delay_ms(1000);
+        
+        setChannel(2);
+        //Gpio::SetPinValue(leds[2], Gpio::GetPinValue(ECHO));
+        dists[2] = *( (float*) ds2->GetData() );
+        _delay_ms(1000);
     }
-    
-    // PWM test
-    //while (1)
-    //{
-        ////TCC0.CCA = TCC0.PER / 2;
-        //status = TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0C, 50, Gpio::PinNo::Pin0);
-        //_delay_ms(500);
-        //while (Gpio::GetPinValue(Gpio::Pin::A0) == Gpio::Value::Low);
-        ////_delay_us(10);
-        ////while (Gpio::GetPinValue(Gpio::Pin::A0) == Gpio::Value::Low);
-        ////TCC0.CCA = 0;
-        //status = TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0C, 0, Gpio::PinNo::Pin0);
-        //_delay_ms(3000);
-    //}
-    
-    
 }

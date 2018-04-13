@@ -35,7 +35,7 @@ void* Sensors::DistanceSensor::GetData()
 void Sensors::DistanceSensor::sendTtl(Hardware::Gpio::Pin pin)
 {
     Hardware::Gpio::SetPinValue(pin, Hardware::Gpio::Value::High);
-    _delay_us(10);
+    _delay_us(15);
     Hardware::Gpio::SetPinValue(pin, Hardware::Gpio::Value::Low);
 }
 
