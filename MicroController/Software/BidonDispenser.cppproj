@@ -202,6 +202,12 @@
     <Compile Include="Hardware\Communication\OneWire.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Hardware\Communication\USART.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Hardware\Communication\USART.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Hardware\Gpio.cpp">
       <SubType>compile</SubType>
     </Compile>

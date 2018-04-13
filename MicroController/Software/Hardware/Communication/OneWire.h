@@ -9,7 +9,6 @@
 #define __ONEWIRE_H__
 
 #include "../../includes.h"
-#include "../Gpio.h"
 
 namespace Hardware
 {
