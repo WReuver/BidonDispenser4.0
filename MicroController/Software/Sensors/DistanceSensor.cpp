@@ -1,4 +1,4 @@
-/* 
+/*
 * DistanceSensor.cpp
 *
 * Created: 19-Mar-18 14:38:47
@@ -12,7 +12,11 @@ using namespace Hardware;
 // pins[0] = Trigger
 // pins[1] = Echo
 
- Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* pins) : Sensor(pins)
+// Precision calculation (cm/tick) = (1 / ((F_CPU / Presc) / 1000000)) / 58
+// Presc =  256:   0.13793103448 cm/tick
+// Presc = 1024:   0.55172413793 cm/tick
+
+Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* pins) : Sensor(pins)
 {
     Gpio::SetPinDirection(pins[0], Gpio::Dir::Output);
     Gpio::SetPinDirection(pins[1], Gpio::Dir::Input);
@@ -22,12 +26,9 @@ Sensors::DistanceSensor::~DistanceSensor() {}
 
 void* Sensors::DistanceSensor::GetData()
 {
-    TimerCounter::SetClock(TimerCounter::TC::TC0D, TimerCounter::ClockValue::Div256);       // Start the clock for TC0D and set the prescaler to 256
-    _delay_us(10);                                                                          // Wait a bit
-    
     sendTtl(pins[0]);
     uint16_t echo = getPulseWidth(pins[1]);
-    buffer = ticksToCentimeters(256, echo);
+    buffer = ticksToCentimeters(1024, echo);
     
     return &buffer;
 }
@@ -42,9 +43,9 @@ void Sensors::DistanceSensor::sendTtl(Hardware::Gpio::Pin pin)
 uint16_t Sensors::DistanceSensor::getPulseWidth(Gpio::Pin pin)
 {
     while (Gpio::GetPinValue(pin) == Gpio::Value::Low);
-    TimerCounter::ClearCount(TimerCounter::TC::TC0D);
+    TimerCounter::ClearCount(TimerCounter::GetGenericTC());
     while (Gpio::GetPinValue(pin) == Gpio::Value::High);
-    return TimerCounter::GetCount(TimerCounter::TC::TC0D);
+    return TimerCounter::GetCount(TimerCounter::GetGenericTC());
 }
 
 float Sensors::DistanceSensor::ticksToCentimeters(uint16_t prescval, uint16_t ticks)

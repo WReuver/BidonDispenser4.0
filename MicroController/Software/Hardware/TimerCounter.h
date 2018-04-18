@@ -9,6 +9,7 @@
 #define __TIMERCOUNTER_H__
 
 #include "../includes.h"
+#include "Gpio.h"
 
 namespace Hardware
 {

@@ -10,7 +10,7 @@
 
 #include "Sensor.h"
 #include "../includes.h"
-#include "../Hardware/TimerCounter.h"
+#include "../Hardware/GenericTC.h"
 
 namespace Sensors 
 {

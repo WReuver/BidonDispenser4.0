@@ -190,6 +190,12 @@
     <Compile Include="Controllers\MotorController.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="CppCore\CppCore.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="CppCore\CppCore.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Hardware\AtxMega.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -206,6 +212,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Hardware\Communication\USART.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Hardware\GenericTC.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Hardware\GenericTC.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Hardware\Gpio.cpp">
@@ -235,9 +247,6 @@
     <Compile Include="Master\RaspberryPi.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="includes.cpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="includes.h">
       <SubType>compile</SubType>
     </Compile>
@@ -265,6 +274,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers" />
+    <Folder Include="CppCore\" />
     <Folder Include="Hardware\Communication\" />
     <Folder Include="Master" />
     <Folder Include="Hardware" />

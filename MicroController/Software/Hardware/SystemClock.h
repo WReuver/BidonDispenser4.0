@@ -9,6 +9,7 @@
 #define __SYSTEMCLOCK_H__
 
 #include "../includes.h"
+#include "AtxMega.h"
 
 namespace Hardware 
 {

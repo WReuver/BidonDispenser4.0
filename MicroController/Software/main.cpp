@@ -5,102 +5,59 @@
 * Author: Robin C. Pel
 */
 
+// REMINDER: The distance sensor class needs to be re-tested, the default clock has been repalced by the generic clock
+
 #include "includes.h"
 #include "Hardware/SystemClock.h"
-#include "Hardware/TimerCounter.h"
+#include "Hardware/Communication/USART.h"
 
 using namespace Hardware;
-using namespace Gpio;
-
-Gpio::Pin sensorPins[2] = { Gpio::Pin::A0, Gpio::Pin::A1 };
-Gpio::Pin muxPins[3] = { Gpio::Pin::E5, Gpio::Pin::E6, Gpio::Pin::E7 };
-
-// USART
-#define RX          Gpio::Pin::C2
-#define TX          Gpio::Pin::C3
+using namespace Communication;
 
 static void initialize(void)
 {
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
-    for (Gpio::Pin pin : muxPins) Gpio::SetPinDirection(pin, Gpio::Dir::Output);
-    //for (Gpio::Pin pin : sensorPins) Gpio::SetPinDirection(pin, Gpio::Dir::Input);
-    
-    Gpio::SetPinDirection(Gpio::Pin::A0, Gpio::Dir::Input);
-    Gpio::SetPinDirection(Gpio::Pin::A1, Gpio::Dir::Input);
-    
-    PORTA.INTCTRL  |= 0b00001111;
-    PORTA.PIN0CTRL |= 0b00000001;
-    PORTA.PIN1CTRL |= 0b00000001;
-    PORTA.INT0MASK |= 0b00000001;
-    PORTA.INT1MASK |= 0b00000010;
+    TimerCounter::InitializeGenericTC();
+    Gpio::SetPinDirection(Gpio::Pin::A0, Gpio::Dir::Output);
 }
 
-static void setChannel(uint8_t channel)
-{
-    for (int i = 0; i < 3; i++) Gpio::SetPinValue(muxPins[i], (Gpio::Value) (( channel >> i ) & 0b1));
-    _delay_ms(1);
-}
-
-int main() 
+int main()
 {
     initialize();
     
-    //// USART
-    //// Step 1
-    //Gpio::SetPinValue(TX, Value::High);
-    //
-    //// Step 2
-    //Gpio::SetPinDirection(TX, Dir::Output);
-    //Gpio::SetPinDirection(RX, Dir::Input);
-    //
-    //// Step 3
-    //USARTD0.BAUDCTRLA   = 0b00000000;
-    //USARTD0.BAUDCTRLB   = 0b00000000;
-    //USARTD0.CTRLA       = 0b00000000;
-    //USARTD0.CTRLB       = 0b00000000;
-    //USARTD0.CTRLC       = 0b00000000;
-    //USARTD0.DATA        = 0b00000000;
-    //USARTD0.STATUS      = 0b00000000;
+    // Initialize the Usart
+    Usart::Initialize(Usart::RxTx::C2_C3);
+    // Set the baud rate to 9600
+    Usart::SetBaudrate(Usart::RxTx::C2_C3, Usart::Baudrate::b9600);
+    // Enable Rx
+    Usart::EnableReceiver(Usart::RxTx::C2_C3);
+    // Enable Tx
+    Usart::EnableTransmitter(Usart::RxTx::C2_C3);
     
+    volatile uint8_t response = 0;
     
-    TimerCounter::SetClock(TimerCounter::TC::TC0D, TimerCounter::ClockValue::Div1);
-    TimerCounter::SetWaveformGenMode(TimerCounter::TC::TC0D, TimerCounter::WaveformGenMode::SingleSlope);
-    TimerCounter::EnableOnPin(TimerCounter::TC::TC0D, Gpio::PinNo::Pin3);
-    TimerCounter::SetPeriod(TimerCounter::TC::TC0D, 532);
-    PORTA.INTFLAGS = 0b11;
-    
-    // Infinite Loop
+    // Infinite loop
     while (1)
     {
-        _delay_ms(1000);
-        setChannel(0);
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 50, Gpio::PinNo::Pin3);
-        while (!(PORTA.INTFLAGS & 0b10));
-        PORTA.INTFLAGS = 0b11;
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 0, Gpio::PinNo::Pin3);
-        
-        _delay_ms(1000);
-        setChannel(1);
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 50, Gpio::PinNo::Pin3);
-        while (!(PORTA.INTFLAGS & 0b01));
-        PORTA.INTFLAGS = 0b11;
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 0, Gpio::PinNo::Pin3);
-        
-        /*
-        _delay_ms(1000);
-        setChannel(0);
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 50, Gpio::PinNo::Pin3);
-        while (PORTA.INTFLAGS & 0b10);
-        PORTA.INTFLAGS = 0b11;
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 0, Gpio::PinNo::Pin3);
-        
-        _delay_ms(1000);
-        setChannel(1);
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 50, Gpio::PinNo::Pin3);
-        while (PORTA.INTFLAGS & 0b01);
-        PORTA.INTFLAGS = 0b11;
-        TimerCounter::SetDutyCycleOnPin(TimerCounter::TC::TC0D, 0, Gpio::PinNo::Pin3);
-        */
-        
+        // Transmit some data
+        Usart::TransmitData(Usart::RxTx::C2_C3, 0x88);
+        // Wait for new data to be available
+        //while (!Usart::IsNewDataAvailable(Usart::RxTx::C2_C3));
+        if (Usart::WaitForDataWithTimeout(Usart::RxTx::C2_C3))
+        {
+            // ERROR
+            Gpio::TogglePinValue(Gpio::Pin::A0);
+            _delay_ms(200);
+            Gpio::TogglePinValue(Gpio::Pin::A0);
+            _delay_ms(200);
+            Gpio::TogglePinValue(Gpio::Pin::A0);
+            _delay_ms(200);
+            Gpio::TogglePinValue(Gpio::Pin::A0);
+            _delay_ms(200);
+        }
+        // Read the available data
+        response = Usart::ReadData(Usart::RxTx::C2_C3);
+        // Wait a bit
+        _delay_ms(500);
     }
 }
