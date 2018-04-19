@@ -9,10 +9,7 @@
 #define __TEMPERATURESENSOR_H__
 
 #include "Sensor.h"
-#include "../Hardware/Communication/OneWire.h"
-#include "../includes.h"
-
-using namespace Hardware::Communication;
+#include "../Communication/OneWire.h"
 
 namespace Sensors
 {
@@ -56,26 +53,25 @@ namespace Sensors
 		public:
 		protected:
 		private:
-        Resolution resolution = Resolution::TwelveBit;
-        float buffer = 0;
+        Resolution resolution = Resolution::TwelveBit;      // The resolution of the temperature sensor
+		bool buffer = 0;                                    // Buffer for the data
 
 		// Methods
 		public:
-        TemperatureSensor(Hardware::Gpio::Pin* pins): Sensor(pins) {  };
-		~TemperatureSensor();
-		void* GetData();
-        bool SetResolution(Resolution resolution);
+        TemperatureSensor(Hardware::Gpio::Pin* pins);       // Default constructor
+		~TemperatureSensor();                               // Default destructor
+		void* GetData();                                    // Get the data from the sensor
+        //bool SetResolution(Resolution resolution);          // Set the resolution of the temperature sensor
 		
 		protected:
 		private:
-        uint8_t initializationSequence();
-        void convertData();
-        int16_t readRawTemperature();
-        float rawToCelsius(int16_t raw);
-        uint8_t resolutionDivider();        // 2^(1+resolution)
+        uint8_t initializationSequence();                   // Send the initialization sequence to the sensor
+        void convertData();                                 // Send the convert command to the sensor
+        int16_t readRawTemperature();                       // Get the temperature data out of the sensor
+        float rawToCelsius(int16_t raw);                    // Convert the temperature data from a value to Celsius
+        uint8_t resolutionDivider();                        // Get the resolution divider, the resolution divider is calculated like this: 2^(1+resolution)
         
         
-		
 	}; //TemperatureSensor
 }
 

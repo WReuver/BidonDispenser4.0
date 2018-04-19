@@ -178,6 +178,18 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Communication\OneWire.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Communication\OneWire.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Communication\USART.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Communication\USART.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Controllers\CoolingController.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -200,18 +212,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Hardware\AtxMega.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Hardware\Communication\OneWire.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Hardware\Communication\OneWire.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Hardware\Communication\USART.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Hardware\Communication\USART.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Hardware\GenericTC.cpp">
@@ -273,9 +273,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Communication\" />
     <Folder Include="Controllers" />
     <Folder Include="CppCore\" />
-    <Folder Include="Hardware\Communication\" />
     <Folder Include="Master" />
     <Folder Include="Hardware" />
     <Folder Include="Sensors" />

@@ -9,7 +9,6 @@
 #define __ROTATIONSENSOR_H__
 
 #include "Sensor.h"
-#include "../includes.h"
 
 namespace Sensors
 {
@@ -19,13 +18,13 @@ namespace Sensors
 		public:
 		protected:
 		private:
-		bool buffer = 0;
+		bool buffer = 0;                                    // Buffer for the data
         
 		// Methods
 		public:
-        RotationSensor(Hardware::Gpio::Pin* pins);
-		~RotationSensor();
-		virtual void* GetData();
+        RotationSensor(Hardware::Gpio::Pin* pins);          // Default constructor
+		~RotationSensor();                                  // Default destructor
+		virtual void* GetData();                            // Get the data from the sensor
 		
 		protected:
 		private:

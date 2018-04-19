@@ -9,7 +9,6 @@
 #define __DISTANCESENSOR_H__
 
 #include "Sensor.h"
-#include "../includes.h"
 #include "../Hardware/GenericTC.h"
 
 namespace Sensors 
@@ -20,19 +19,19 @@ namespace Sensors
 		public:
 		protected:
 		private:
-		float buffer = 0;
+		float buffer = 0;                                               // Buffer for the data
 		
 		// Methods
 		public:
-        DistanceSensor(Hardware::Gpio::Pin* pins);
-		~DistanceSensor();
-		virtual void* GetData();
+        DistanceSensor(Hardware::Gpio::Pin* pins);                      // Default constructor
+		~DistanceSensor();                                              // Default destructor
+		virtual void* GetData();                                        // Get the data from the sensor
 
 		protected:
 		private:
-        void sendTtl(Hardware::Gpio::Pin pin);
-        uint16_t getPulseWidth(Hardware::Gpio::Pin pin);
-        float ticksToCentimeters(uint16_t prescval, uint16_t ticks);
+        void sendTtl(Hardware::Gpio::Pin pin);                          // Send a TTL pulse on the given pin
+        uint16_t getPulseWidth(Hardware::Gpio::Pin pin);                // Get the width of a pulse on the given pin
+        float ticksToCentimeters(uint16_t prescval, uint16_t ticks);    // Convert the amount of ticks to centimeters
 		
 	}; //DistanceSensor
 }

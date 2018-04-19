@@ -7,7 +7,7 @@
 
 #include "OneWire.h"
 
-uint8_t Hardware::Communication::OneWire::Initialize(Gpio::Pin pin)
+uint8_t Communication::OneWire::Initialize(Gpio::Pin pin)
 {
     pinFloat(pin);
     while (Gpio::GetPinValue(Gpio::Pin::B0) == Gpio::Value::Low);       // Wait until the pin is high
@@ -24,7 +24,7 @@ uint8_t Hardware::Communication::OneWire::Initialize(Gpio::Pin pin)
      return response;                                                   // Return the response
 }
 
-void Hardware::Communication::OneWire::WriteBit(Gpio::Pin pin, uint8_t bit)
+void Communication::OneWire::WriteBit(Gpio::Pin pin, uint8_t bit)
 {
     if (bit)
     {
@@ -42,7 +42,7 @@ void Hardware::Communication::OneWire::WriteBit(Gpio::Pin pin, uint8_t bit)
     }
 }
 
-uint8_t Hardware::Communication::OneWire::ReadBit(Gpio::Pin pin)
+uint8_t Communication::OneWire::ReadBit(Gpio::Pin pin)
 {
     uint8_t val = 0;
     
@@ -58,7 +58,7 @@ uint8_t Hardware::Communication::OneWire::ReadBit(Gpio::Pin pin)
     return val;
 }
 
-void Hardware::Communication::OneWire::Write(Gpio::Pin pin, uint8_t byte)
+void Communication::OneWire::Write(Gpio::Pin pin, uint8_t byte)
 {
     for (uint8_t mask = 1; mask; mask <<= 1)
     {
@@ -68,7 +68,7 @@ void Hardware::Communication::OneWire::Write(Gpio::Pin pin, uint8_t byte)
     pinFloat(pin);
 }
 
-uint8_t Hardware::Communication::OneWire::Read(Gpio::Pin pin)
+uint8_t Communication::OneWire::Read(Gpio::Pin pin)
 {
     uint8_t value = 0;
     
@@ -83,13 +83,13 @@ uint8_t Hardware::Communication::OneWire::Read(Gpio::Pin pin)
     return value;
 }
 
-void Hardware::Communication::OneWire::pinLow(Gpio::Pin pin)
+void Communication::OneWire::pinLow(Gpio::Pin pin)
 {
     Gpio::SetPinValue(pin, Gpio::Value::Low);
     Gpio::SetPinDirection(pin, Gpio::Dir::Output);
 }
 
-void Hardware::Communication::OneWire::pinFloat(Gpio::Pin pin)
+void Communication::OneWire::pinFloat(Gpio::Pin pin)
 {
     Gpio::SetPinDirection(pin, Gpio::Dir::Input);
     Gpio::SetPinValue(pin, Gpio::Value::High);

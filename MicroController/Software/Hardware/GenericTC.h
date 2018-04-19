@@ -16,20 +16,14 @@ namespace Hardware
     {
         namespace GTC
         {
-            static TimerCounter::TC genericTC = Hardware::TimerCounter::TC::TC0F;
+            // A variable where the current Timer Counter - which is being used as the Generic TC - is stored
+            volatile static TimerCounter::TC genericTC = Hardware::TimerCounter::TC::TC0F;
         }
         
-        // Initialize the Generic TC with a prescaler of 1024
-        void InitializeGenericTC();
-        
-        // Stops the current Generic TC and resets it's configuration
-        void TerminateGenericTC();
-        
-        // Get the Generic TC
-        TC GetGenericTC();
-        
-        // Set the Generic TC, if the previous Generic TC was initialized it should be terminated first
-        void SetGenericTC(TC tc);
+        void InitializeGenericTC();     // Initialize the Generic TC with a prescaler of 1024
+        void TerminateGenericTC();      // Stops the current Generic TC and resets it's configuration
+        TC GetGenericTC();              // Get the Generic TC
+        void SetGenericTC(TC tc);       // Set the Generic TC, if the previous Generic TC was initialized it should be terminated first
     }
 }
 

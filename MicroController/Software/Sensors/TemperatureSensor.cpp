@@ -7,6 +7,8 @@
 
 #include "TemperatureSensor.h"
 
+Sensors::TemperatureSensor::TemperatureSensor(Hardware::Gpio::Pin* pins) : Sensor(pins) {}
+
 Sensors::TemperatureSensor::~TemperatureSensor() {}
 
 void* Sensors::TemperatureSensor::GetData()
@@ -20,31 +22,31 @@ void* Sensors::TemperatureSensor::GetData()
 	return &buffer;
 }
 
-bool Sensors::TemperatureSensor::SetResolution(Resolution resolution)
-{
-    return false;       // Probably won't be added
-}
+//bool Sensors::TemperatureSensor::SetResolution(Resolution resolution)
+//{
+//    return false;       // Probably won't be added
+//}
 
 uint8_t Sensors::TemperatureSensor::initializationSequence()
 {
-    uint8_t result = Hardware::Communication::OneWire::Initialize(pins[0]);
-    OneWire::Write(pins[0], (uint8_t) RomCommand::Skip);
+    uint8_t result = Communication::OneWire::Initialize(pins[0]);
+    Communication::OneWire::Write(pins[0], (uint8_t) RomCommand::Skip);
     return result;
 }
 
 void Sensors::TemperatureSensor::convertData()
 {
-    OneWire::Write(pins[0], (uint8_t) FunctionCommand::Convert);
-    while (!OneWire::ReadBit(pins[0]));
+    Communication::OneWire::Write(pins[0], (uint8_t) FunctionCommand::Convert);
+    while (!Communication::OneWire::ReadBit(pins[0]));
 }
 
 int16_t Sensors::TemperatureSensor::readRawTemperature()
 {
-    OneWire::Write(pins[0], (uint8_t) FunctionCommand::ReadScratchPad);
+    Communication::OneWire::Write(pins[0], (uint8_t) FunctionCommand::ReadScratchPad);
     int16_t rawTemperature = 0;
     
-    rawTemperature = OneWire::Read(pins[0]);
-    rawTemperature += (int16_t) OneWire::Read(pins[0]) * 256;
+    rawTemperature = Communication::OneWire::Read(pins[0]);
+    rawTemperature += (int16_t) Communication::OneWire::Read(pins[0]) * 256;
     
     return rawTemperature;
 }

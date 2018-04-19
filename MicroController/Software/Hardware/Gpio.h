@@ -124,16 +124,16 @@ namespace Hardware
 		
 		
 		// Functions
-		void SetPinDirection(Pin pin, Dir dir);
-		void TogglePinDirection(Pin pin);
-		void SetPinValue(Pin pin, Value val);
-        Value GetPinValue(Pin pin);
-		void TogglePinValue(Pin pin);
-		void SetPinMode(Pin pin, Mode mode);
-		PORT_t* GetPort(Pin pin);
-		PinNo GetPinNumber(Pin pin);
-		register8_t* GetPinConfigReg(Pin pin);
-        Pin GetPinFromPortAndPinNo(Port port, PinNo pinNo);
+		void SetPinDirection(Pin pin, Dir dir);                 // Configure the given direction on the given pin
+		void TogglePinDirection(Pin pin);                       // Toggle the direction on the given pin
+		void SetPinValue(Pin pin, Value val);                   // Set the given value on the given pin
+        Value GetPinValue(Pin pin);                             // Get the value of the given pin
+		void TogglePinValue(Pin pin);                           // Toggle the value of the given pin
+		void SetPinMode(Pin pin, Mode mode);                    // Configure the given mode on the given pin
+		PORT_t* GetPort(Pin pin);                               // Get a pointer to the port of the given pin
+		PinNo GetPinNumber(Pin pin);                            // Get the pin number of the given pin
+		register8_t* GetPinConfigReg(Pin pin);                  // Get the pin configuration register of the given pin
+        Pin GetPinFromPortAndPinNo(Port port, PinNo pinNo);     // Get a pin from the given port and pin number
 		
 		
 	}

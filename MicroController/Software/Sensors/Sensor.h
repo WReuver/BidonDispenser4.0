@@ -10,7 +10,6 @@
 
 #include "../includes.h"
 #include "../Hardware/Gpio.h"
-#include "../Hardware/Communication/OneWire.h"
 
 namespace Sensors
 {
@@ -19,22 +18,22 @@ namespace Sensors
         // Variables
         public:
         protected:
-        Hardware::Gpio::Pin* pins;
+        Hardware::Gpio::Pin* pins;                  // The pins the sensor is connected to
         private:
         
         
 		// Methods
 		public:
-        Sensor(Hardware::Gpio::Pin* pins) 
+        Sensor(Hardware::Gpio::Pin* pins)           // Default constructor
         {
             this->pins = pins;
         }
         
         /* Returns a pointer to the data */
-		virtual void* GetData() = 0;
+		virtual void* GetData() = 0;                // Get the data from the sensor
         
         /* Basic Destructor */
-		virtual ~Sensor() {};
+		virtual ~Sensor() {};                       // Default destructor
         
         protected:
         private:

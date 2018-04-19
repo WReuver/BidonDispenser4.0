@@ -15,13 +15,14 @@ namespace Hardware
 {
 	namespace AtxMega
 	{
+        // The Change Protection Modes
 		enum class ChangeProtectionMode
 		{
 			SPM		= 0x9D,
 			IOREG	= 0xD8
 		};
 		
-		void SetChangeProtectionMode(ChangeProtectionMode mode);
+		void SetChangeProtectionMode(ChangeProtectionMode mode);        // Set the change protection mode to the given mode
 		
 		
 	}

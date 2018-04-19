@@ -8,6 +8,10 @@
 #ifndef __SYSTEMCLOCK_H__
 #define __SYSTEMCLOCK_H__
 
+// PLL_CLK [FREQUENCY]      // Uncomment this and set the correct frequency when using the PLL
+// EXT_CLK [FREQUENCY]      // Uncomment this and set the correct frequency when using an external oscillator or clock
+//#define F_CPU 2000000UL     // The default CPU frequency
+
 #include "../includes.h"
 #include "AtxMega.h"
 
@@ -28,16 +32,16 @@ namespace Hardware
 		// System Clock Prescaler A
 		enum class PrescalerA
 		{
-			None		= 0b0000000,
-			DivideBy2	= 0b0000100,
-			DivideBy4	= 0b0001100,
-			DivideBy8	= 0b0010100,
-			DivideBy16	= 0b0011100,
-			DivideBy32	= 0b0100100,
-			DivideBy64	= 0b0101100,
-			DivideBy128	= 0b0110100,
-			DivideBy256	= 0b0111100,
-			DivideBy512	= 0b1000100
+			None		= 0b00000000,
+			DivideBy2	= 0b00000100,
+			DivideBy4	= 0b00001100,
+			DivideBy8	= 0b00010100,
+			DivideBy16	= 0b00011100,
+			DivideBy32	= 0b00100100,
+			DivideBy64	= 0b00101100,
+			DivideBy128	= 0b00110100,
+			DivideBy256	= 0b00111100,
+			DivideBy512	= 0b01000100
 		};
 		
 		// System Clock Prescaler B & C
@@ -62,16 +66,19 @@ namespace Hardware
 		
 		
 		// Functions
-		void SetClockSource(Source source);
-		void SetClockPrescaler(PrescalerA pa, PrescalerBC pbc);
-		void SetClockPrescaler(PrescalerA pa);
-		void SetClockPrescaler(PrescalerBC pbc);
-		void LockClockSourceAndPrescaler();
-		void SetClockSourceRtc(SourceRtc sourceRtc);
-		void EnableClockSourceRtc();
-		void DisableClockSourceRtc();
-		void EnableClockSource(Source source);
-		bool IsClockSourceReady(Source source);
+		void SetClockSource(Source source);                         // Set the preferred clock source as the CPU source
+		void SetClockPrescaler(PrescalerA pa, PrescalerBC pbc);     // Set the preferred prescalers
+		void SetClockPrescaler(PrescalerA pa);                      // Set the preferred A prescaler
+		void SetClockPrescaler(PrescalerBC pbc);                    // Set the preferred B and C prescaler
+		void LockClockSourceAndPrescaler();                         // Disable the possibility to change the CPU source and prescalers until a reset occurs
+		void SetClockSourceRtc(SourceRtc sourceRtc);                // Set the preferred RTC source
+		void EnableClockSourceRtc(SourceRtc sourceRtc);             // Enable the preferred RTC source
+		void DisableClockSourceRtc(SourceRtc sourceRtc);            // Disable the preferred RTC source
+		void EnableClockSource(Source source);                      // Enable the preferred CPU source
+		bool IsClockSourceReady(Source source);                     // Check whether the CPU source is ready or not
+        
+        // This function does not work as it was supposed to
+        void RedefineF_Cpu();                                       // Redefine F_CPU so all the delay functions will keep functioning
 		
 		/* 
 		* Functionalities not included:

@@ -7,7 +7,7 @@
 
 #include "Usart.h"
 
-void Hardware::Communication::Usart::Initialize(RxTx pins)
+void Communication::Usart::Initialize(RxTx pins)
 {
     Gpio::Pin txPin = GetTx(pins);
     Gpio::Pin rxPin = GetRx(pins);
@@ -17,24 +17,24 @@ void Hardware::Communication::Usart::Initialize(RxTx pins)
     Gpio::SetPinDirection(rxPin, Gpio::Dir::Input);
 }
 
-void Hardware::Communication::Usart::TransmitData(RxTx pins, uint8_t data)
+void Communication::Usart::TransmitData(RxTx pins, uint8_t data)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->DATA = data;
 }
 
-uint8_t Hardware::Communication::Usart::ReadData(RxTx pins)
+uint8_t Communication::Usart::ReadData(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return usart->DATA;
 }
 
-void Hardware::Communication::Usart::WaitForData(RxTx pins)
+void Communication::Usart::WaitForData(RxTx pins)
 {
     while (!IsNewDataAvailable(pins));
 }
 
-uint8_t Hardware::Communication::Usart::WaitForDataWithTimeout(RxTx pins)
+uint8_t Communication::Usart::WaitForDataWithTimeout(RxTx pins)
 {
     TimerCounter::ClearCount(TimerCounter::GetGenericTC());                         // Clear the TC count
     TimerCounter::DidTcOverflow(TimerCounter::GetGenericTC());                      // Reset the overflow flag
@@ -47,140 +47,140 @@ uint8_t Hardware::Communication::Usart::WaitForDataWithTimeout(RxTx pins)
     return 0;
 }
 
-bool Hardware::Communication::Usart::IsNewDataAvailable(RxTx pins)
+bool Communication::Usart::IsNewDataAvailable(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b10000000);
 }
 
-bool Hardware::Communication::Usart::IsTransmitComplete(RxTx pins)
+bool Communication::Usart::IsTransmitComplete(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b01000000);
 }
 
-bool Hardware::Communication::Usart::IsTransmitRegisterEmpty(RxTx pins)
+bool Communication::Usart::IsTransmitRegisterEmpty(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b00100000);
 }
 
-bool Hardware::Communication::Usart::DidFrameErrorOccur(RxTx pins)
+bool Communication::Usart::DidFrameErrorOccur(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b00010000);
 }
 
-bool Hardware::Communication::Usart::DidReceiveBufferOverflow(RxTx pins)
+bool Communication::Usart::DidReceiveBufferOverflow(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b00001000);
 }
 
-bool Hardware::Communication::Usart::DidParityErrorOccur(RxTx pins)
+bool Communication::Usart::DidParityErrorOccur(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     return (bool) (usart->STATUS & 0b00000100);
 }
 
-void Hardware::Communication::Usart::SetReceiveCompleteInterruptLevel(RxTx pins, uint8_t level)
+void Communication::Usart::SetReceiveCompleteInterruptLevel(RxTx pins, uint8_t level)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLA & 0b00001111;
     usart->CTRLA = (reg | ((level & 0b11) << 4));
 }
 
-void Hardware::Communication::Usart::SetTransmitCompleteInterruptLevel(RxTx pins, uint8_t level)
+void Communication::Usart::SetTransmitCompleteInterruptLevel(RxTx pins, uint8_t level)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLA & 0b00110011;
     usart->CTRLA = (reg | ((level & 0b11) << 2));
 }
 
-void Hardware::Communication::Usart::SetDataRegisterEmptyInterruptLevel(RxTx pins, uint8_t level)
+void Communication::Usart::SetDataRegisterEmptyInterruptLevel(RxTx pins, uint8_t level)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLA & 0b00111100;
     usart->CTRLA = (reg | ((level & 0b11) << 0));
 }
 
-void Hardware::Communication::Usart::EnableReceiver(RxTx pins)
+void Communication::Usart::EnableReceiver(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB |= 0b00010000;
 }
 
-void Hardware::Communication::Usart::DisableReceiver(RxTx pins)
+void Communication::Usart::DisableReceiver(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB &= ~(0b00010000);
 }
 
-void Hardware::Communication::Usart::EnableTransmitter(RxTx pins)
+void Communication::Usart::EnableTransmitter(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB |= 0b00001000;
 }
 
-void Hardware::Communication::Usart::DisableTransmitter(RxTx pins)
+void Communication::Usart::DisableTransmitter(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB &= ~(0b00001000);
 }
 
-void Hardware::Communication::Usart::EnableDoubleTransmissionSpeed(RxTx pins)
+void Communication::Usart::EnableDoubleTransmissionSpeed(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB |= 0b00000100;
 }
 
-void Hardware::Communication::Usart::DisableDoubleTransmissionSpeed(RxTx pins)
+void Communication::Usart::DisableDoubleTransmissionSpeed(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB &= ~(0b00000100);
 }
 
-void Hardware::Communication::Usart::EnableMultiprocessorCommunicationMode(RxTx pins)
+void Communication::Usart::EnableMultiprocessorCommunicationMode(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB |= 0b00000010;
 }
 
-void Hardware::Communication::Usart::DisableMultiprocessorCommunicationMode(RxTx pins)
+void Communication::Usart::DisableMultiprocessorCommunicationMode(RxTx pins)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     usart->CTRLB &= ~(0b00000010);
 }
 
-void Hardware::Communication::Usart::SetCommunicationMode(RxTx pins, CMode cmode)
+void Communication::Usart::SetCommunicationMode(RxTx pins, CMode cmode)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLC & 0b00111111;
     usart->CTRLC = (reg | ((uint8_t) cmode << 6));
 }
 
-void Hardware::Communication::Usart::SetParityMode(RxTx pins, PMode pmode)
+void Communication::Usart::SetParityMode(RxTx pins, PMode pmode)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLC & 0b11001111;
     usart->CTRLC = (reg | ((uint8_t) pmode << 4));
 }
 
-void Hardware::Communication::Usart::SetStopBitMode(RxTx pins, SbMode sbmode)
+void Communication::Usart::SetStopBitMode(RxTx pins, SbMode sbmode)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLC & 0b11110111;
     usart->CTRLC = (reg | ((uint8_t) sbmode << 3));
 }
 
-void Hardware::Communication::Usart::SetCharacterSize(RxTx pins, CharSize csize)
+void Communication::Usart::SetCharacterSize(RxTx pins, CharSize csize)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     uint8_t reg = usart->CTRLC & 0b11111000;
     usart->CTRLC = (reg | ((uint8_t) csize << 0));
 }
 
-void Hardware::Communication::Usart::SetBaudrate(RxTx pins, Baudrate br)
+void Communication::Usart::SetBaudrate(RxTx pins, Baudrate br)
 {
     USART_t* usart = UsartPinsToAddress(pins);
     // 0        = BSCALE
@@ -190,7 +190,7 @@ void Hardware::Communication::Usart::SetBaudrate(RxTx pins, Baudrate br)
     usart->BAUDCTRLB = (uint8_t) ((uint16_t) br >> 8) & 0xff;
 }
 
-USART_t* Hardware::Communication::Usart::UsartPinsToAddress(RxTx pins)
+USART_t* Communication::Usart::UsartPinsToAddress(RxTx pins)
 {
     switch (pins)
     {
@@ -204,13 +204,13 @@ USART_t* Hardware::Communication::Usart::UsartPinsToAddress(RxTx pins)
     }
 }
 
-Hardware::Gpio::Pin Hardware::Communication::Usart::GetRx(RxTx pins)
+Hardware::Gpio::Pin Communication::Usart::GetRx(RxTx pins)
 {
     uint8_t rawPin = ((uint16_t) pins >> 8) & 0xff;
     return (Gpio::Pin) rawPin;
 }
 
-Hardware::Gpio::Pin Hardware::Communication::Usart::GetTx(RxTx pins)
+Hardware::Gpio::Pin Communication::Usart::GetTx(RxTx pins)
 {
     uint8_t rawPin = (uint16_t) pins & 0xff;
     return (Gpio::Pin) rawPin;
