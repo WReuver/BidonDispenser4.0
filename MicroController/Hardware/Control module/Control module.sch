@@ -16598,14 +16598,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="LED_3" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PF5"/>
-<wire x1="172.72" y1="116.84" x2="175.26" y2="116.84" width="0.1524" layer="91"/>
-<label x="175.26" y="116.84" size="1.016" layer="95" xref="yes"/>
-</segment>
-<segment>
 <pinref part="R30" gate="G$1" pin="2"/>
 <wire x1="246.38" y1="162.56" x2="243.84" y2="162.56" width="0.1524" layer="91"/>
 <label x="243.84" y="162.56" size="1.016" layer="95" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="PF6"/>
+<wire x1="172.72" y1="114.3" x2="175.26" y2="114.3" width="0.1524" layer="91"/>
+<label x="175.26" y="114.3" size="1.016" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$4" class="0">
