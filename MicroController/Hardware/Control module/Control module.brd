@@ -166,11 +166,11 @@
 <hole x="97" y="10" drill="3"/>
 <hole x="87" y="67" drill="3"/>
 <hole x="3" y="67" drill="3"/>
-<text x="85.2" y="10.6" size="1.778" layer="21">Blue</text>
+<text x="83.6" y="10.6" size="1.778" layer="21">Blue</text>
 <text x="83.6" y="29.6" size="1.778" layer="21">White</text>
-<text x="85.2" y="50" size="1.778" layer="21">Red</text>
-<text x="18.53625625" y="60.391428125" size="2.54" layer="21">+</text>
-<text x="28.83625625" y="60.291428125" size="2.54" layer="21">+</text>
+<text x="83.6" y="50" size="1.778" layer="21">Red</text>
+<text x="20.83625625" y="67.391428125" size="2.54" layer="21">+</text>
+<text x="31.03625625" y="67.491428125" size="2.54" layer="21">+</text>
 </plain>
 <libraries>
 <library name="adafruit" urn="urn:adsk.eagle:library:420">
@@ -1326,7 +1326,7 @@ Your Eurocircuits Team
 </element>
 <element name="U4" library="Texas Instruments_By_element14_Batch_1" package="SOIC127P600X175-16N" value="CD4051BM" x="25" y="42" smashed="yes" rot="R90">
 <attribute name="MPN" value="CD4051BM" x="25" y="42" size="1.778" layer="27" rot="R90" display="off"/>
-<attribute name="NAME" x="14.1857375" y="38.74215" size="0.8128" layer="25" ratio="10" rot="SR45"/>
+<attribute name="NAME" x="26.75785" y="38.9857375" size="0.8128" layer="25" ratio="10" rot="SR90"/>
 <attribute name="OC_FARNELL" value="8388970" x="25" y="42" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="OC_NEWARK" value="05B5595" x="25" y="42" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="PACKAGE" value="SOIC-16" x="25" y="42" size="1.778" layer="27" rot="R90" display="off"/>
@@ -1442,7 +1442,9 @@ Your Eurocircuits Team
 <attribute name="NAME" x="34.0015" y="62.045284375" size="0.8128" layer="25" rot="R180" align="bottom-center"/>
 <attribute name="PROD_ID" value="RES-08585" x="33.74569375" y="64.910328125" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="24V" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="1X2-3.5MM" value="1X2-3.5MM" x="27.4" y="66" rot="R180"/>
+<element name="24V" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="1X2-3.5MM" value="1X2-3.5MM" x="27.4" y="66" smashed="yes" rot="R180">
+<attribute name="NAME" x="26.2" y="61.2" size="1.27" layer="25"/>
+</element>
 <element name="U3" library="Texas Instruments_By_element14_Batch_1" package="SOT230P700X180-4N" value="TLV1117-33CDCY" x="23.25" y="48.247634375" smashed="yes" rot="R180">
 <attribute name="MPN" value="TLV1117-33CDCY" x="23.25" y="48.247634375" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="NAME" x="22.614128125" y="43.838484375" size="0.8128" layer="25" ratio="10" rot="SR0"/>
@@ -1462,7 +1464,7 @@ Your Eurocircuits Team
 <attribute name="VALUE" value="1.0uF" x="83.189" y="36.686" size="1.27" layer="27" rot="R180"/>
 </element>
 <element name="C9" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF" x="35.480565625" y="46.938946875" smashed="yes" rot="R90">
-<attribute name="NAME" x="34.63818125" y="43.987896875" size="0.8128" layer="25"/>
+<attribute name="NAME" x="34.83818125" y="44.287896875" size="0.8128" layer="25"/>
 <attribute name="PROD_ID" value="CAP-11625" x="35.480565625" y="46.938946875" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="VALUE" value="1.0uF" x="37.766565625" y="46.049946875" size="1.27" layer="27" rot="R90"/>
 </element>
@@ -1548,7 +1550,7 @@ Your Eurocircuits Team
 <attribute name="VALUE" x="80.807" y="42.116" size="0.4064" layer="27" font="vector" rot="R270"/>
 </element>
 <element name="C4" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="153CLV-0505" value="22uF" x="31.15" y="46.1" smashed="yes" rot="R90">
-<attribute name="NAME" x="27.394090625" y="46.5685" size="0.8128" layer="25" rot="R270"/>
+<attribute name="NAME" x="28.5315" y="42.494090625" size="0.8128" layer="25"/>
 <attribute name="VALUE" x="35.385" y="43.325" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="LED2" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="CHIPLED_0805" value="" x="21.3" y="23.2" smashed="yes" rot="R180">
@@ -1573,7 +1575,7 @@ Your Eurocircuits Team
 <attribute name="VALUE" x="15.555" y="19.81" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="C8" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF" x="69.7" y="18.6" smashed="yes" rot="R270">
-<attribute name="NAME" x="69.011" y="15.716" size="0.8128" layer="25"/>
+<attribute name="NAME" x="69.011" y="16.016" size="0.8128" layer="25"/>
 <attribute name="PROD_ID" value="CAP-11625" x="69.7" y="18.6" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="VALUE" value="1.0uF" x="67.414" y="19.489" size="1.27" layer="27" rot="R270"/>
 </element>
@@ -1639,7 +1641,10 @@ Your Eurocircuits Team
 <attribute name="MPN" value="0446200002" x="74.5" y="65" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="9251910" x="74.5" y="65" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="U5" library="SparkFun" package="SSOP24" value="TB6621FNG" x="63.84356875" y="18.607615625"/>
+<element name="U5" library="SparkFun" package="SSOP24" value="TB6621FNG" x="63.84356875" y="18.607615625" smashed="yes">
+<attribute name="NAME" x="59.322384375" y="17.93356875" size="0.8128" layer="25" rot="R90"/>
+<attribute name="VALUE" x="60.03356875" y="18.607615625" size="0.4064" layer="27"/>
+</element>
 <element name="U6" library="Texas Instruments_By_element14_Batch_1" package="SOP65P640X120-20N" value="TXB0108PWR" x="79" y="48.5" smashed="yes">
 <attribute name="MPN" value="TXB0108PWR" x="67.2" y="63.1" size="0.6096" layer="27" display="off"/>
 <attribute name="NAME" x="78.4804" y="52.0164" size="0.8128" layer="25" ratio="10" rot="SR0"/>
@@ -1776,7 +1781,7 @@ Your Eurocircuits Team
 <attribute name="VALUE" value="1.0uF" x="47.286" y="56.811" size="1.27" layer="27" rot="R90"/>
 </element>
 <element name="C19" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF" x="72.4" y="14.7" smashed="yes" rot="R180">
-<attribute name="NAME" x="71.511" y="12.716" size="0.8128" layer="25"/>
+<attribute name="NAME" x="71.311" y="12.816" size="0.8128" layer="25"/>
 <attribute name="PROD_ID" value="CAP-11625" x="72.4" y="14.7" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="VALUE" value="1.0uF" x="73.289" y="16.986" size="1.27" layer="27" rot="R180"/>
 </element>
@@ -1801,7 +1806,9 @@ Your Eurocircuits Team
 </element>
 <element name="FAN_2" library="adafruit" package="1X2-3.5MM" value="1X2-3.5MM" x="83.7" y="4.2"/>
 <element name="FAN_1" library="adafruit" package="1X2-3.5MM" value="1X2-3.5MM" x="91.9" y="4.2"/>
-<element name="12V" library="adafruit" package="1X2-3.5MM" value="1X2-3.5MM" x="17.1" y="66.1" rot="R180"/>
+<element name="12V" library="adafruit" package="1X2-3.5MM" value="1X2-3.5MM" x="17.1" y="66.1" smashed="yes" rot="R180">
+<attribute name="NAME" x="15.6" y="61.3" size="1.27" layer="25"/>
+</element>
 <element name="C21" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF" x="24.9" y="53.1" smashed="yes" rot="R180">
 <attribute name="NAME" x="24.011" y="54.216" size="0.8128" layer="25"/>
 <attribute name="PROD_ID" value="CAP-11625" x="24.9" y="53.1" size="1.778" layer="27" rot="R180" display="off"/>
@@ -1841,7 +1848,7 @@ Your Eurocircuits Team
 <attribute name="VALUE" x="53.3" y="46.311" size="0.6096" layer="27" font="vector" ratio="20" align="top-center"/>
 </element>
 <element name="C26" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF" x="39.4" y="48.8" smashed="yes" rot="R180">
-<attribute name="NAME" x="39.4" y="47.911" size="0.8128" layer="25" ratio="20" rot="R180" align="bottom-center"/>
+<attribute name="NAME" x="39" y="47.089" size="0.8128" layer="25" ratio="20" align="bottom-center"/>
 <attribute name="PROD_ID" value="CAP-11625" x="39.4" y="48.8" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="VALUE" x="39.4" y="49.689" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center"/>
 </element>
