@@ -7,7 +7,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock Text="{x:Bind viewModel.Message, Mode=OneWay}" />
+    <Grid 
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+
+        <Image 
+            x:Name="promotionImage"
+            Source="{x:Bind mainModel.source, Mode=OneWay}"
+            Height="1313"
+            VerticalAlignment="Top"
+            Margin="-8, 0, 0, 0" />
+
+        <TextBlock
+            Text="Hello World!"
+            Margin="0, 1313, 0, 0" />
     </Grid>
 </Page>

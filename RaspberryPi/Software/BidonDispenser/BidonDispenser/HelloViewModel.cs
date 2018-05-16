@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 
 namespace BidonDispenser {
@@ -12,10 +9,10 @@ namespace BidonDispenser {
             English, Dutch, German
         }
 
-        private Dictionary<Language, string> model = new Dictionary<Language, string>() {
-            [Language.English] = "Hello World!",
-            [Language.Dutch] = "Hallo Wereld!",
-            [Language.German] = "Tbh, I can't be bothered."
+        private Dictionary<Language, string> languages = new Dictionary<Language, string>() {
+            [Language.English]  = "Hello World!",
+            [Language.Dutch]    = "Hallo Wereld!",
+            [Language.German]   = "Tbh, I cannot be bothered."
         };
 
         private Language _DisplayLanguage = Language.English;
@@ -26,10 +23,10 @@ namespace BidonDispenser {
             get => _DisplayLanguage;
             set {
                 _DisplayLanguage = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Message)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(message)));
             }
         }
 
-        public string Message => model[DisplayLanguage];
+        public string message => languages[DisplayLanguage];
     }
 }

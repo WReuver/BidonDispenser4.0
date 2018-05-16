@@ -7,8 +7,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock x:ConnectionId='2'                                                />
+    <Grid 
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
+        Width="480" 
+        Height="848">
+
+        <MediaElement x:ConnectionId='2' 
+            x:Name="mediaPlayer"
+                                              
+            PosterSource="thumbnail.jpg"
+            Height="270"
+            Width="480"
+            VerticalAlignment="Top"
+            AutoPlay="True"/>
+
+        <TextBlock
+            Text="Hello World!"
+            Margin="0, 270, 0, 0" />
     </Grid>
 </Page>
 
