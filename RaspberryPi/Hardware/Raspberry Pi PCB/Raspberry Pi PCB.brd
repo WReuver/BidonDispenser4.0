@@ -764,80 +764,112 @@ chip</description>
 <class number="0" name="default" width="0" drill="0">
 </class>
 </classes>
-<designrules name="default">
-<description language="de">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
+<designrules name="eC_2Layer_PClass6_BaseCopperO18_eCDefault">
+<description language="de">
+
 &lt;p&gt;
-Die Standard-Design-Rules sind so gewählt, dass sie für 
-die meisten Anwendungen passen. Sollte ihre Platine 
-besondere Anforderungen haben, treffen Sie die erforderlichen
-Einstellungen hier und speichern die Design Rules unter 
-einem neuen Namen ab.</description>
-<description language="en">&lt;b&gt;EAGLE Design Rules&lt;/b&gt;
+&lt;b&gt;Eurocircuits-EAGLE design rules&lt;/b&gt;&lt;br&gt;
+&lt;br&gt;
+Setup for &lt;b&gt;2-layer PatternClass6 BaseCopperO18 eCDefault&lt;/b&gt;
 &lt;p&gt;
-The default Design Rules have been set to cover
-a wide range of applications. Your particular design
-may have different requirements, so please make the
-necessary adjustments and save your customized
-design rules under a new name.</description>
+ The option &lt;b&gt;Sizes-Minimum Drill&lt;/b&gt; is set to 0.35mm. This minimum drill endsize can be set lower if needed. Values below 0.25mm will result in a higher DrillClassification. For details see the Eurocircuits Classification overview.
+&lt;p&gt;
+&lt;u&gt;Extra Notes:&lt;/u&gt;&lt;br&gt;
+- The option &lt;b&gt;Distance-Copper/Dimension&lt;/b&gt; is set to 0.25mm, the default for boards with a routed boardoutline. If you require Vcut on your board this parameter should be set to 0.45mm.&lt;br&gt;
+- The option &lt;b&gt;Supply-Generate thermals for vias&lt;/b&gt; is on by default but may be changed if required.&lt;br&gt;
+- The option &lt;b&gt;Mask-Stop&lt;/b&gt; is set to 0mm oversize which is the preffered value.&lt;br&gt;
+- The option &lt;b&gt;Mask-Cream&lt;/b&gt; is set to 0mm oversize by default, but may be changed if required&lt;br&gt;
+- The option &lt;b&gt;Mask-Limit&lt;/b&gt; is set to 0.45mm, resulting in covered or tented via holes for vias of 0.45mm and smaller. The option may be changed if required.&lt;br&gt;
+- The options &lt;b&gt;Shapes&lt;/b&gt; and &lt;b&gt;Misc&lt;/b&gt; are not relevant. Values for &lt;b&gt;Shapes-Smds-Roundness&lt;/b&gt; are not critical and can be set as you require.
+&lt;p&gt;
+&lt;p&gt;
+You can set higher minimum values if you wish, setting lower minimum values is &lt;u&gt;not advisable&lt;/u&gt;.&lt;br&gt;
+If you need lower minimum values, please use a different Eurocircuits-EAGLE design rule file. For details see the Eurocircuits-EAGLE dru overview table.
+&lt;p&gt;
+Your Eurocircuits Team
+</description>
+<description language="en">
+
+&lt;p&gt;
+&lt;b&gt;Eurocircuits-EAGLE design rules&lt;/b&gt;&lt;br&gt;
+&lt;br&gt;
+Setup for &lt;b&gt;2-layer PatternClass6 BaseCopperO18 eCDefault&lt;/b&gt;
+&lt;p&gt;
+ The option &lt;b&gt;Sizes-Minimum Drill&lt;/b&gt; is set to 0.35mm. This minimum drill endsize can be set lower if needed. Values below 0.25mm will result in a higher DrillClassification. For details see the Eurocircuits Classification overview.
+&lt;p&gt;
+&lt;u&gt;Extra Notes:&lt;/u&gt;&lt;br&gt;
+- The option &lt;b&gt;Distance-Copper/Dimension&lt;/b&gt; is set to 0.25mm, the default for boards with a routed boardoutline. If you require Vcut on your board this parameter should be set to 0.45mm.&lt;br&gt;
+- The option &lt;b&gt;Supply-Generate thermals for vias&lt;/b&gt; is on by default but may be changed if required.&lt;br&gt;
+- The option &lt;b&gt;Mask-Stop&lt;/b&gt; is set to 0mm oversize which is the preffered value.&lt;br&gt;
+- The option &lt;b&gt;Mask-Cream&lt;/b&gt; is set to 0mm oversize by default, but may be changed if required&lt;br&gt;
+- The option &lt;b&gt;Mask-Limit&lt;/b&gt; is set to 0.45mm, resulting in covered or tented via holes for vias of 0.45mm and smaller. The option may be changed if required.&lt;br&gt;
+- The options &lt;b&gt;Shapes&lt;/b&gt; and &lt;b&gt;Misc&lt;/b&gt; are not relevant. Values for &lt;b&gt;Shapes-Smds-Roundness&lt;/b&gt; are not critical and can be set as you require.
+&lt;p&gt;
+&lt;p&gt;
+You can set higher minimum values if you wish, setting lower minimum values is &lt;u&gt;not advisable&lt;/u&gt;.&lt;br&gt;
+If you need lower minimum values, please use a different Eurocircuits-EAGLE design rule file. For details see the Eurocircuits-EAGLE dru overview table.
+&lt;p&gt;
+Your Eurocircuits Team
+</description>
 <param name="layerSetup" value="(1*16)"/>
-<param name="mtCopper" value="0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm"/>
-<param name="mtIsolate" value="1.5mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm"/>
-<param name="mdWireWire" value="6mil"/>
-<param name="mdWirePad" value="6mil"/>
-<param name="mdWireVia" value="6mil"/>
-<param name="mdPadPad" value="6mil"/>
-<param name="mdPadVia" value="6mil"/>
-<param name="mdViaVia" value="6mil"/>
-<param name="mdSmdPad" value="6mil"/>
-<param name="mdSmdVia" value="6mil"/>
-<param name="mdSmdSmd" value="6mil"/>
-<param name="mdViaViaSameLayer" value="6mil"/>
+<param name="mtCopper" value="0.018mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.035mm 0.018mm"/>
+<param name="mtIsolate" value="1.55mm 0.71mm 0.36mm 0.2mm 0.2mm 0.2mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm 0.15mm 0.2mm"/>
+<param name="mdWireWire" value="0.15mm"/>
+<param name="mdWirePad" value="0.15mm"/>
+<param name="mdWireVia" value="0.15mm"/>
+<param name="mdPadPad" value="0.15mm"/>
+<param name="mdPadVia" value="0.15mm"/>
+<param name="mdViaVia" value="0.15mm"/>
+<param name="mdSmdPad" value="0mil"/>
+<param name="mdSmdVia" value="0mil"/>
+<param name="mdSmdSmd" value="0mil"/>
+<param name="mdViaViaSameLayer" value="0.2mm"/>
 <param name="mnLayersViaInSmd" value="2"/>
-<param name="mdCopperDimension" value="40mil"/>
-<param name="mdDrill" value="6mil"/>
+<param name="mdCopperDimension" value="0.25mm"/>
+<param name="mdDrill" value="0.35mm"/>
 <param name="mdSmdStop" value="0mil"/>
-<param name="msWidth" value="6mil"/>
+<param name="msWidth" value="0.15mm"/>
 <param name="msDrill" value="0.35mm"/>
-<param name="msMicroVia" value="9.99mm"/>
+<param name="msMicroVia" value="25mm"/>
 <param name="msBlindViaRatio" value="0.5"/>
 <param name="rvPadTop" value="0.25"/>
 <param name="rvPadInner" value="0.25"/>
 <param name="rvPadBottom" value="0.25"/>
 <param name="rvViaOuter" value="0.25"/>
 <param name="rvViaInner" value="0.25"/>
-<param name="rvMicroViaOuter" value="0.25"/>
-<param name="rvMicroViaInner" value="0.25"/>
-<param name="rlMinPadTop" value="10mil"/>
-<param name="rlMaxPadTop" value="20mil"/>
-<param name="rlMinPadInner" value="10mil"/>
-<param name="rlMaxPadInner" value="20mil"/>
-<param name="rlMinPadBottom" value="10mil"/>
-<param name="rlMaxPadBottom" value="20mil"/>
-<param name="rlMinViaOuter" value="8mil"/>
-<param name="rlMaxViaOuter" value="20mil"/>
-<param name="rlMinViaInner" value="8mil"/>
-<param name="rlMaxViaInner" value="20mil"/>
-<param name="rlMinMicroViaOuter" value="4mil"/>
-<param name="rlMaxMicroViaOuter" value="20mil"/>
-<param name="rlMinMicroViaInner" value="4mil"/>
-<param name="rlMaxMicroViaInner" value="20mil"/>
+<param name="rvMicroViaOuter" value="0"/>
+<param name="rvMicroViaInner" value="0"/>
+<param name="rlMinPadTop" value="0.175mm"/>
+<param name="rlMaxPadTop" value="2.5mm"/>
+<param name="rlMinPadInner" value="0.175mm"/>
+<param name="rlMaxPadInner" value="2.5mm"/>
+<param name="rlMinPadBottom" value="0.175mm"/>
+<param name="rlMaxPadBottom" value="2.5mm"/>
+<param name="rlMinViaOuter" value="0.125mm"/>
+<param name="rlMaxViaOuter" value="2.5mm"/>
+<param name="rlMinViaInner" value="0.125mm"/>
+<param name="rlMaxViaInner" value="2.5mm"/>
+<param name="rlMinMicroViaOuter" value="2.5mm"/>
+<param name="rlMaxMicroViaOuter" value="25mm"/>
+<param name="rlMinMicroViaInner" value="2.5mm"/>
+<param name="rlMaxMicroViaInner" value="25mm"/>
 <param name="psTop" value="-1"/>
 <param name="psBottom" value="-1"/>
 <param name="psFirst" value="-1"/>
 <param name="psElongationLong" value="100"/>
 <param name="psElongationOffset" value="100"/>
-<param name="mvStopFrame" value="1"/>
+<param name="mvStopFrame" value="0"/>
 <param name="mvCreamFrame" value="0"/>
-<param name="mlMinStopFrame" value="4mil"/>
-<param name="mlMaxStopFrame" value="4mil"/>
+<param name="mlMinStopFrame" value="0mil"/>
+<param name="mlMaxStopFrame" value="0mil"/>
 <param name="mlMinCreamFrame" value="0mil"/>
 <param name="mlMaxCreamFrame" value="0mil"/>
-<param name="mlViaStopLimit" value="0mil"/>
+<param name="mlViaStopLimit" value="0.45mm"/>
 <param name="srRoundness" value="0"/>
 <param name="srMinRoundness" value="0mil"/>
 <param name="srMaxRoundness" value="0mil"/>
-<param name="slThermalIsolate" value="10mil"/>
-<param name="slThermalsForVias" value="0"/>
+<param name="slThermalIsolate" value="0.2mm"/>
+<param name="slThermalsForVias" value="1"/>
 <param name="dpMaxLengthDifference" value="10mm"/>
 <param name="dpGapFactor" value="2.5"/>
 <param name="checkAngle" value="0"/>
@@ -947,14 +979,26 @@ design rules under a new name.</description>
 <elements>
 <element name="JP2" library="SparkFun-Boards" package="2X20-SHROUDED" value="RASPBERRY PI 3B" x="5" y="30" smashed="yes" rot="R180">
 <attribute name="NAME" x="7.921" y="59.972" size="0.4064" layer="104" rot="R180"/>
-<attribute name="VALUE" x="9.864" y="19.721" size="0.8128" layer="27" rot="R270"/>
+<attribute name="VALUE" x="10.536" y="41.079" size="0.8128" layer="27" rot="R90"/>
 </element>
-<element name="Q11" library="SparkFun" package="SOT23-3" value="BSS138" x="15.783334375" y="22.554965625" rot="R90"/>
-<element name="R26" library="SparkFun" package="0603-RES" value="10K" x="19.43055" y="22.51429375" rot="R90"/>
-<element name="R27" library="SparkFun" package="0603-RES" value="10K" x="12.228765625" y="22.61429375" rot="R90"/>
-<element name="Q12" library="SparkFun" package="SOT23-3" value="BSS138" x="15.916665625" y="18.319434375" rot="R270"/>
-<element name="R28" library="SparkFun" package="0603-RES" value="10K" x="12.27301875" y="18.38570625" rot="R270"/>
-<element name="R29" library="SparkFun" package="0603-RES" value="10K" x="19.425196875" y="18.31429375" rot="R90"/>
+<element name="Q11" library="SparkFun" package="SOT23-3" value="BSS138" x="15.783334375" y="22.554965625" smashed="yes" rot="R90">
+<attribute name="NAME" x="14.629465625" y="24.294665625" size="0.8128" layer="25"/>
+</element>
+<element name="R4" library="SparkFun" package="0603-RES" value="10K" x="19.43055" y="22.51429375" smashed="yes" rot="R90">
+<attribute name="NAME" x="18.66855" y="21.62529375" size="0.8128" layer="25" rot="R90"/>
+</element>
+<element name="R5" library="SparkFun" package="0603-RES" value="10K" x="12.228765625" y="22.61429375" smashed="yes" rot="R90">
+<attribute name="NAME" x="11.466765625" y="21.72529375" size="0.8128" layer="25" rot="R90"/>
+</element>
+<element name="Q12" library="SparkFun" package="SOT23-3" value="BSS138" x="15.916665625" y="18.319434375" smashed="yes" rot="R270">
+<attribute name="NAME" x="14.755065625" y="20.094665625" size="0.8128" layer="25"/>
+</element>
+<element name="R2" library="SparkFun" package="0603-RES" value="10K" x="12.27301875" y="18.38570625" smashed="yes" rot="R270">
+<attribute name="NAME" x="11.46498125" y="17.52529375" size="0.8128" layer="25" rot="R90"/>
+</element>
+<element name="R3" library="SparkFun" package="0603-RES" value="10K" x="19.425196875" y="18.31429375" smashed="yes" rot="R90">
+<attribute name="NAME" x="18.663196875" y="17.42529375" size="0.8128" layer="25" rot="R90"/>
+</element>
 <element name="MICROCONTROLLER" library="con-molex" library_urn="urn:adsk.eagle:library:165" package="0446200002" value="0446200002" x="20" y="5" smashed="yes">
 <attribute name="MF" value="MOLEX" x="20" y="5" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="0446200002" x="20" y="5" size="1.778" layer="27" display="off"/>
@@ -989,7 +1033,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="18.74" y="39.32" size="0.8128" layer="25" rot="R180"/>
 </element>
 <element name="NFC" library="pinhead" library_urn="urn:adsk.eagle:library:325" package="2X05" package3d_urn="urn:adsk.eagle:package:22470/2" value="" x="35" y="9.25" smashed="yes" rot="R270">
-<attribute name="NAME" x="35.95" y="1.675" size="0.8128" layer="25" ratio="10" rot="R180"/>
+<attribute name="NAME" x="34.15" y="16.025" size="0.8128" layer="25" ratio="10"/>
 <attribute name="VALUE" x="30.555" y="15.6" size="1.27" layer="27" rot="R270"/>
 </element>
 <element name="LEDSTRIP_1" library="con-molex" library_urn="urn:adsk.eagle:library:165" package="7395-03" value="22-05-7038-03" x="25.4" y="54" smashed="yes" rot="R180">
@@ -1006,11 +1050,11 @@ design rules under a new name.</description>
 <attribute name="OC_FARNELL" value="unknown" x="55.8" y="32.6" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_NEWARK" value="unknown" x="55.8" y="32.6" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="R4" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="" x="19" y="50.6" smashed="yes">
+<element name="R8" library="adafruit" library_urn="urn:adsk.eagle:library:420" package="R0805" value="" x="19" y="50.6" smashed="yes">
 <attribute name="NAME" x="19.597" y="52.657" size="0.8128" layer="25" rot="R180"/>
 <attribute name="VALUE" x="17.603" y="48.187" size="1.27" layer="27"/>
 </element>
-<element name="R5" library="adafruit" package="R0805" value="" x="13.1" y="54.25" smashed="yes">
+<element name="R7" library="adafruit" package="R0805" value="" x="13.1" y="54.25" smashed="yes">
 <attribute name="NAME" x="16.662" y="54.734" size="0.8128" layer="25" rot="R180"/>
 <attribute name="VALUE" x="12.338" y="51.964" size="1.27" layer="27"/>
 </element>
@@ -1026,10 +1070,16 @@ design rules under a new name.</description>
 <attribute name="NAME" x="17.63" y="57.97" size="0.8128" layer="25"/>
 <attribute name="VALUE" x="17.63" y="54.46" size="1.27" layer="27"/>
 </element>
-<element name="Q2" library="SparkFun" package="SOT23-3" value="BSS138" x="14.7" y="50.4" rot="R270"/>
-<element name="R9" library="SparkFun" package="0603-RES" value="10K" x="11.5" y="50.4" rot="R270"/>
-<element name="R10" library="SparkFun" package="0603-RES" value="10K" x="14.5" y="47"/>
-<element name="C11" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF" x="30.4" y="52.8" smashed="yes" rot="R90">
+<element name="Q2" library="SparkFun" package="SOT23-3" value="BSS138" x="14.7" y="50.4" smashed="yes" rot="R270">
+<attribute name="NAME" x="13.9745" y="52.178" size="0.8128" layer="25"/>
+</element>
+<element name="R9" library="SparkFun" package="0603-RES" value="10K" x="11.5" y="50.4" smashed="yes" rot="R270">
+<attribute name="NAME" x="12.262" y="51.289" size="0.8128" layer="25" rot="R270"/>
+</element>
+<element name="R10" library="SparkFun" package="0603-RES" value="10K" x="14.5" y="47" smashed="yes">
+<attribute name="NAME" x="13.611" y="47.762" size="0.8128" layer="25"/>
+</element>
+<element name="C8" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" package="0805" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF" x="30.4" y="52.8" smashed="yes" rot="R90">
 <attribute name="NAME" x="30.4" y="54.589" size="0.8128" layer="25" align="bottom-center"/>
 <attribute name="PROD_ID" value="CAP-11625" x="30.4" y="52.8" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
@@ -1093,7 +1143,7 @@ design rules under a new name.</description>
 <contactref element="LEDSTRIP_2" pad="3"/>
 <contactref element="LED1" pad="C"/>
 <contactref element="LED2" pad="C"/>
-<contactref element="C11" pad="2"/>
+<contactref element="C8" pad="2"/>
 <contactref element="USB_POWER" pad="4"/>
 <contactref element="C7" pad="2"/>
 <polygon width="0.3048" layer="1" isolate="0.3048" rank="2">
@@ -1105,8 +1155,6 @@ design rules under a new name.</description>
 <contactref element="REED" pad="2"/>
 <wire x1="3.73" y1="41.43" x2="3.73" y2="46.51" width="0" layer="19" extent="1-1"/>
 <wire x1="6.27" y1="36.35" x2="3.73" y2="41.43" width="0" layer="19" extent="1-1"/>
-<wire x1="18.2" y1="42.3" x2="11" y2="39" width="0" layer="19" extent="1-1"/>
-<wire x1="33.73" y1="14.33" x2="36.27" y2="14.33" width="0" layer="19" extent="1-1"/>
 <wire x1="6.27" y1="16.03" x2="3.73" y2="10.95" width="0" layer="19" extent="1-1"/>
 <wire x1="3.73" y1="21.11" x2="6.27" y2="16.03" width="0" layer="19" extent="1-1"/>
 <wire x1="3.73" y1="28.73" x2="3.73" y2="21.11" width="0" layer="19" extent="1-1"/>
@@ -1115,9 +1163,9 @@ design rules under a new name.</description>
 <signal name="3.3V">
 <contactref element="JP2" pad="17"/>
 <contactref element="JP2" pad="1"/>
-<contactref element="R28" pad="1"/>
+<contactref element="R2" pad="1"/>
 <contactref element="Q12" pad="1"/>
-<contactref element="R27" pad="1"/>
+<contactref element="R5" pad="1"/>
 <contactref element="NFC" pad="3"/>
 <wire x1="12.228765625" y1="21.76429375" x2="12.27301875" y2="21.720040625" width="0.6096" layer="1"/>
 <wire x1="12.27301875" y1="21.720040625" x2="12.27301875" y2="20.196415625" width="0.6096" layer="1"/>
@@ -1210,7 +1258,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="LED_1">
 <contactref element="JP2" pad="38"/>
-<contactref element="R5" pad="1"/>
+<contactref element="R7" pad="1"/>
 <wire x1="12.1" y1="54.25" x2="10.7354" y2="52.8854" width="0.3048" layer="1"/>
 <wire x1="5.0254" y1="52.8854" x2="3.73" y2="51.59" width="0.3048" layer="1"/>
 <wire x1="10.7354" y1="52.8854" x2="5.0254" y2="52.8854" width="0.3048" layer="1"/>
@@ -1227,7 +1275,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="TX_RASPI">
 <contactref element="Q12" pad="2"/>
-<contactref element="R28" pad="2"/>
+<contactref element="R2" pad="2"/>
 <contactref element="JP2" pad="8"/>
 <wire x1="14.916665625" y1="17.369434375" x2="12.439290625" y2="17.369434375" width="0.3048" layer="1"/>
 <wire x1="12.439290625" y1="17.369434375" x2="12.27301875" y2="17.53570625" width="0.3048" layer="1"/>
@@ -1236,8 +1284,8 @@ design rules under a new name.</description>
 <wire x1="9.5227125" y1="14.7854" x2="5.0254" y2="14.7854" width="0.3048" layer="1"/>
 </signal>
 <signal name="+12V">
-<contactref element="R29" pad="1"/>
-<contactref element="R26" pad="1"/>
+<contactref element="R3" pad="1"/>
+<contactref element="R4" pad="1"/>
 <contactref element="Q11" pad="1"/>
 <contactref element="MICROCONTROLLER" pad="2"/>
 <wire x1="16.783334375" y1="21.604965625" x2="16.9" y2="21.604965625" width="0.3048" layer="1"/>
@@ -1250,14 +1298,15 @@ design rules under a new name.</description>
 <wire x1="19.425196875" y1="12.432803125" x2="22.54" y2="9.318" width="0.6096" layer="1"/>
 <wire x1="20.382396875" y1="19.903671875" x2="20.382396875" y2="18.424915625" width="0.6096" layer="1"/>
 <wire x1="19.425196875" y1="20.87976875" x2="19.425196875" y2="20.860871875" width="0.6096" layer="1"/>
-<wire x1="19.425196875" y1="17.467715625" x2="19.425196875" y2="12.432803125" width="0.6096" layer="1"/>
+<wire x1="19.425196875" y1="17.467715625" x2="19.425196875" y2="16.7" width="0.6096" layer="1"/>
+<wire x1="19.425196875" y1="16.7" x2="19.425196875" y2="12.432803125" width="0.6096" layer="1"/>
 <wire x1="19.425196875" y1="20.860871875" x2="20.382396875" y2="19.903671875" width="0.6096" layer="1"/>
 <wire x1="20.382396875" y1="18.424915625" x2="19.425196875" y2="17.467715625" width="0.6096" layer="1"/>
-<wire x1="19.425196875" y1="17.467715625" x2="19.425196875" y2="17.46429375" width="0" layer="19" extent="1-1"/>
+<wire x1="19.425196875" y1="17.46429375" x2="19.425196875" y2="16.7" width="0.3048" layer="1"/>
 </signal>
 <signal name="RX_ATXMEGA">
 <contactref element="Q12" pad="3"/>
-<contactref element="R29" pad="2"/>
+<contactref element="R3" pad="2"/>
 <contactref element="MICROCONTROLLER" pad="4"/>
 <wire x1="17.016665625" y1="18.319434375" x2="17.016665625" y2="17.8" width="0.3048" layer="1"/>
 <wire x1="17.016665625" y1="17.8" x2="17.016665625" y2="17.5" width="0.3048" layer="1"/>
@@ -1306,7 +1355,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="TX_ATXMEGA">
 <contactref element="Q11" pad="2"/>
-<contactref element="R26" pad="2"/>
+<contactref element="R4" pad="2"/>
 <contactref element="MICROCONTROLLER" pad="6"/>
 <wire x1="16.783334375" y1="23.504965625" x2="19.289878125" y2="23.504965625" width="0.3048" layer="1"/>
 <wire x1="19.289878125" y1="23.504965625" x2="19.43055" y2="23.36429375" width="0.3048" layer="1"/>
@@ -1316,7 +1365,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="RX_RASPI">
 <contactref element="Q11" pad="3"/>
-<contactref element="R27" pad="2"/>
+<contactref element="R5" pad="2"/>
 <contactref element="JP2" pad="10"/>
 <wire x1="14.683334375" y1="22.554965625" x2="13.13809375" y2="22.554965625" width="0.3048" layer="1"/>
 <wire x1="13.13809375" y1="22.554965625" x2="12.228765625" y2="23.46429375" width="0.3048" layer="1"/>
@@ -1337,32 +1386,32 @@ design rules under a new name.</description>
 <contactref element="JP2" pad="23"/>
 <contactref element="NFC" pad="4"/>
 <wire x1="6.27" y1="33.81" x2="15.29" y2="33.81" width="0.3048" layer="1"/>
-<wire x1="32.9" y1="16.2" x2="34.1" y2="16.2" width="0.3048" layer="1"/>
-<wire x1="34.1" y1="16.2" x2="35" y2="15.3" width="0.3048" layer="1"/>
-<wire x1="35" y1="13.06" x2="36.27" y2="11.79" width="0.3048" layer="1"/>
-<wire x1="15.29" y1="33.81" x2="32.9" y2="16.2" width="0.3048" layer="1"/>
-<wire x1="35" y1="15.3" x2="35" y2="13.06" width="0.3048" layer="1"/>
+<wire x1="15.29" y1="33.81" x2="32.4" y2="16.7" width="0.3048" layer="1"/>
+<wire x1="32.4" y1="13.7" x2="33" y2="13.1" width="0.3048" layer="1"/>
+<wire x1="33" y1="13.1" x2="34.96" y2="13.1" width="0.3048" layer="1"/>
+<wire x1="34.96" y1="13.1" x2="36.27" y2="11.79" width="0.3048" layer="1"/>
+<wire x1="32.4" y1="16.7" x2="32.4" y2="13.7" width="0.3048" layer="1"/>
 </signal>
 <signal name="SPI_MISO">
 <contactref element="JP2" pad="21"/>
 <contactref element="NFC" pad="5"/>
 <wire x1="6.27" y1="31.27" x2="10.24" y2="27.3" width="0.3048" layer="1"/>
-<wire x1="32" y1="10.98" x2="33.73" y2="9.25" width="0.3048" layer="1"/>
 <wire x1="10.24" y1="27.3" x2="20" y2="27.3" width="0.3048" layer="1"/>
-<wire x1="20" y1="27.3" x2="32" y2="15.3" width="0.3048" layer="1"/>
-<wire x1="32" y1="15.3" x2="32" y2="10.98" width="0.3048" layer="1"/>
+<wire x1="20" y1="27.3" x2="31.2" y2="16.1" width="0.3048" layer="1"/>
+<wire x1="31.2" y1="16.1" x2="31.2" y2="11.78" width="0.3048" layer="1"/>
+<wire x1="31.2" y1="11.78" x2="33.73" y2="9.25" width="0.3048" layer="1"/>
 </signal>
 <signal name="SPI_MOSI">
 <contactref element="JP2" pad="19"/>
 <contactref element="NFC" pad="6"/>
 <wire x1="6.27" y1="28.73" x2="7.97" y2="28.73" width="0.3048" layer="1"/>
-<wire x1="31.3" y1="10" x2="33.2" y2="8.1" width="0.3048" layer="1"/>
 <wire x1="33.2" y1="8.1" x2="35.12" y2="8.1" width="0.3048" layer="1"/>
 <wire x1="35.12" y1="8.1" x2="36.27" y2="9.25" width="0.3048" layer="1"/>
 <wire x1="7.97" y1="28.73" x2="10" y2="26.7" width="0.3048" layer="1"/>
 <wire x1="10" y1="26.7" x2="19.7" y2="26.7" width="0.3048" layer="1"/>
-<wire x1="19.7" y1="26.7" x2="31.3" y2="15.1" width="0.3048" layer="1"/>
-<wire x1="31.3" y1="15.1" x2="31.3" y2="10" width="0.3048" layer="1"/>
+<wire x1="19.7" y1="26.7" x2="30.5" y2="15.9" width="0.3048" layer="1"/>
+<wire x1="30.5" y1="15.9" x2="30.5" y2="10.8" width="0.3048" layer="1"/>
+<wire x1="30.5" y1="10.8" x2="33.2" y2="8.1" width="0.3048" layer="1"/>
 </signal>
 <signal name="SPI_CS">
 <contactref element="JP2" pad="24"/>
@@ -1371,20 +1420,16 @@ design rules under a new name.</description>
 <wire x1="3.73" y1="33.81" x2="4.50986875" y2="33.81" width="0.3048" layer="1"/>
 <wire x1="4.50986875" y1="33.81" x2="5.75446875" y2="32.5654" width="0.3048" layer="1"/>
 <wire x1="6.78553125" y1="32.5654" x2="7.42013125" y2="33.2" width="0.3048" layer="1"/>
-<wire x1="32.6632" y1="13.8881125" x2="33.2881125" y2="13.2632" width="0.3048" layer="1"/>
-<wire x1="33.2881125" y1="13.2632" x2="34.15021875" y2="13.2632" width="0.3048" layer="1"/>
-<wire x1="32.6632" y1="15.5368" x2="32.6632" y2="13.8881125" width="0.3048" layer="1"/>
-<wire x1="34.15021875" y1="13.2632" x2="35" y2="12.41341875" width="0.3048" layer="1"/>
-<wire x1="15" y1="33.2" x2="32.6632" y2="15.5368" width="0.3048" layer="1"/>
 <wire x1="7.42013125" y1="33.2" x2="15" y2="33.2" width="0.3048" layer="1"/>
-<wire x1="35" y1="12.41341875" x2="35" y2="11.3" width="0.3048" layer="1"/>
-<wire x1="35" y1="11.3" x2="35.7" y2="10.6" width="0.3048" layer="1"/>
-<wire x1="35.7" y1="10.6" x2="36.8" y2="10.6" width="0.3048" layer="1"/>
 <wire x1="36.8" y1="10.6" x2="37.7" y2="9.7" width="0.3048" layer="1"/>
 <wire x1="37.7" y1="9.7" x2="37.7" y2="6.3" width="0.3048" layer="1"/>
 <wire x1="37.7" y1="6.3" x2="36.8" y2="5.4" width="0.3048" layer="1"/>
 <wire x1="35.04" y1="5.4" x2="33.73" y2="6.71" width="0.3048" layer="1"/>
 <wire x1="36.8" y1="5.4" x2="35.04" y2="5.4" width="0.3048" layer="1"/>
+<wire x1="15" y1="33.2" x2="31.8" y2="16.4" width="0.3048" layer="1"/>
+<wire x1="31.8" y1="12" x2="33.2" y2="10.6" width="0.3048" layer="1"/>
+<wire x1="31.8" y1="16.4" x2="31.8" y2="12" width="0.3048" layer="1"/>
+<wire x1="33.2" y1="10.6" x2="36.8" y2="10.6" width="0.3048" layer="1"/>
 </signal>
 <signal name="IRQ">
 <contactref element="NFC" pad="8"/>
@@ -1402,7 +1447,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="N$5">
 <contactref element="LED1" pad="A"/>
-<contactref element="R5" pad="2"/>
+<contactref element="R7" pad="2"/>
 <wire x1="14.1" y1="54.25" x2="17.85" y2="54.25" width="0.3048" layer="1"/>
 </signal>
 <signal name="VCC">
@@ -1423,7 +1468,7 @@ design rules under a new name.</description>
 <signal name="WS2811_DATA_5V">
 <contactref element="LEDSTRIP_1" pad="2"/>
 <contactref element="LEDSTRIP_2" pad="2"/>
-<contactref element="R4" pad="2"/>
+<contactref element="R8" pad="2"/>
 <wire x1="20" y1="50.6" x2="21.2" y2="51.8" width="0.6096" layer="1"/>
 <wire x1="21.2" y1="55.6" x2="22.4" y2="56.8" width="0.6096" layer="1"/>
 <wire x1="21.2" y1="51.8" x2="21.2" y2="55.6" width="0.6096" layer="1"/>
@@ -1440,13 +1485,14 @@ design rules under a new name.</description>
 <wire x1="25.4" y1="56.1" x2="24.7" y2="56.8" width="0.6096" layer="1"/>
 </signal>
 <signal name="N$3">
-<contactref element="R4" pad="1"/>
+<contactref element="R8" pad="1"/>
 <contactref element="Q2" pad="3"/>
 <contactref element="R10" pad="2"/>
-<wire x1="15.8" y1="50.4" x2="17.8" y2="50.4" width="0.6096" layer="1"/>
+<wire x1="15.8" y1="50.4" x2="16.1" y2="50.4" width="0.6096" layer="1"/>
+<wire x1="16.1" y1="50.4" x2="17.8" y2="50.4" width="0.6096" layer="1"/>
 <wire x1="17.8" y1="50.4" x2="18" y2="50.6" width="0.6096" layer="1"/>
-<wire x1="15.35" y1="47" x2="15.35" y2="49.95" width="0.6096" layer="1"/>
-<wire x1="15.35" y1="49.95" x2="15.8" y2="50.4" width="0.6096" layer="1"/>
+<wire x1="15.35" y1="47" x2="16.1" y2="47.75" width="0.6096" layer="1"/>
+<wire x1="16.1" y1="47.75" x2="16.1" y2="50.4" width="0.6096" layer="1"/>
 </signal>
 <signal name="5V_USB">
 <contactref element="FUSE1" pad="2"/>
@@ -1455,7 +1501,7 @@ design rules under a new name.</description>
 <contactref element="C3" pad="1"/>
 <contactref element="LEDSTRIP_1" pad="1"/>
 <contactref element="LEDSTRIP_2" pad="1"/>
-<contactref element="C11" pad="1"/>
+<contactref element="C8" pad="1"/>
 <contactref element="USB_POWER" pad="1"/>
 <contactref element="C7" pad="1"/>
 <wire x1="28.5" y1="32.5" x2="28.5" y2="38.3" width="1.016" layer="1"/>
@@ -1486,6 +1532,14 @@ design rules under a new name.</description>
 <wire x1="29.9" y1="40.2" x2="29.9" y2="40.3" width="1.016" layer="1"/>
 </signal>
 </signals>
+<errors>
+<approved hash="21,19,15a717a517a515a7"/>
+<approved hash="21,19,d0c62ec62c3a2cc4"/>
+<approved hash="21,19,d7aed5acd5acd7ae"/>
+<approved hash="21,19,82a67ca67e5a7ea4"/>
+<approved hash="21,19,2cc02c3e2ec2d0c2"/>
+<approved hash="21,19,bea6bc5abca440a6"/>
+</errors>
 </board>
 </drawing>
 <compatibility>
