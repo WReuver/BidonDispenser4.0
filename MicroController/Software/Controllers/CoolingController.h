@@ -8,6 +8,12 @@
 #ifndef __COOLINGCONTROLLER_H__
 #define __COOLINGCONTROLLER_H__
 
+#include "../Sensors/TemperatureSensor.h"
+#include "../Hardware/TimerCounter.h"
+
+using namespace Hardware;
+using namespace Sensors;
+
 namespace Controllers
 {
 	class CoolingController
@@ -16,11 +22,12 @@ namespace Controllers
 		public:
 		protected:
 		private:
+        
 
 		// Methods
 		public:
 		CoolingController();
-		~CoolingController();
+		~CoolingController() {};
 
 		protected:
 		private:

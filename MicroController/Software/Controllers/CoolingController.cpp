@@ -6,13 +6,3 @@
 */
 
 #include "CoolingController.h"
-
- Controllers::CoolingController::CoolingController()
-{
-
-}
-
- Controllers::CoolingController::~CoolingController()
-{
-
-}
