@@ -20,5 +20,18 @@
         <TextBlock
             Text="Hello World!"
             Margin="0, 1313, 0, 0" />
+
+        <Button
+            Content="Connect!"
+            Click="connectHandler"
+            Margin="100, 500, 0, 0"/>
+        <Button
+            Content="Write Read!"
+            Click="writeReadHandler"
+            Margin="200, 500, 0, 0"/>
+        <Button
+            Content="Disconnect!"
+            Click="disconnectHandler"
+            Margin="300, 500, 0, 0"/>
     </Grid>
 </Page>
