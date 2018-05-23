@@ -2,10 +2,10 @@
 
 
 # All possible Directories
-/RaspberryPi/Hardware/
+#/RaspberryPi/Hardware/
 #/RaspberryPi/Software/
-/MicroController/Hardware/
-/MicroController/Software/
+#/MicroController/Hardware/
+#/MicroController/Software/
 
 
 
