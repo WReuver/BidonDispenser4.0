@@ -14,6 +14,9 @@ using Windows.UI.ViewManagement;
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
         private MainModel mainModel = new MainModel();
+
+        private const Double promotionMsPerTick = 100;
+        private const int msUntilPromotionMediaSwitch = 30_000;
         
         private GpioPin led;
         private Boolean serialInitialized = false;
@@ -30,8 +33,9 @@ namespace BidonDispenser {
 
         public MainPage() {
             this.InitializeComponent();
-            
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+
+            //ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+            //ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
 
             // Check on which device we're running
             System.Diagnostics.Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
@@ -39,17 +43,7 @@ namespace BidonDispenser {
                 windowsIot = true;
             }
 
-            DispatcherTimer t2 = new DispatcherTimer();
-            t2.Interval = TimeSpan.FromSeconds(30);
-            t2.Tick += T_Tick2;
-            t2.Start();
-
-            Thread.Sleep(1000);
-
-            DispatcherTimer t = new DispatcherTimer();
-            t.Interval = TimeSpan.FromSeconds(30);
-            t.Tick += T_Tick;
-            t.Start();
+            initializePromotionTimer();
 
 
             if (windowsIot) {
@@ -238,17 +232,34 @@ namespace BidonDispenser {
                 System.Diagnostics.Debug.WriteLine(e.StackTrace);
             }
         }
-
-        static int index = 1;
-        private void T_Tick(object sender, object e) {
-            mainModel.mediaSource = (MainModel.mediaNames) (index % 6);
+        
+        private void initializePromotionTimer() {
+            DispatcherTimer promotionTimer = new DispatcherTimer();
+            promotionTimer.Interval = TimeSpan.FromMilliseconds(promotionMsPerTick);
+            promotionTimer.Tick += promotionTimerTick;
+            promotionTimer.Start();
         }
 
-        private void T_Tick2(object sender, object e) {
-            index++;
-            mainModel.mediaSource2 = (MainModel.mediaNames) (index % 6);
-        }
+        static int currentPromotionSource = 0;
 
+        private void promotionTimerTick(object sender, object e) {
+            if (mainModel.promotionTimerTickCounter >= msUntilPromotionMediaSwitch) {
+                mainModel.promotionTimerTickCounter = 0;
+            } else {
+                mainModel.promotionTimerTickCounter += (int) promotionMsPerTick;
+            }
+
+            // This "preload" promotion source has been added to stop the screen from flickering when loading the next source
+            if (mainModel.promotionTimerTickCounter == (msUntilPromotionMediaSwitch - 2000)) {
+                currentPromotionSource = (currentPromotionSource + 1) % mainModel.promotionMedia.Count;         // Update which promotion source to show
+                mainModel.promotionSourcePreload = (MainModel.promotionMediaName) (currentPromotionSource);     // Load the preload promotion source
+            }
+
+            if (mainModel.promotionTimerTickCounter >= msUntilPromotionMediaSwitch) {
+                mainModel.promotionSource = (MainModel.promotionMediaName) (currentPromotionSource);            // Load the promotion source
+            }
+        }
+        
         private void ledTick(object sender, object e) {
             if (!windowsIot)
                 return;

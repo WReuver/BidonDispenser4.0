@@ -26,7 +26,7 @@
         
         <ProgressBar 
             x:Name="progressBar" 
-            Value="15000" 
+            Value="{x:Bind mainModel.progressBarValue, Mode=OneWay}"
             Maximum="30000" 
             Background="#EEEEEE" 
             Foreground="#DFDFDF"/>
@@ -69,7 +69,7 @@
 
             <Image
                 x:Name="bottleColours"
-                Source="ms-appx:///Assets/Images/ThankYouM8_LitEdition.png"
+                Source="ms-appx:///Assets/Images/BottleColourSelection.png"
                 Margin="0, 120, 0, 0"/>
 
         </StackPanel>
