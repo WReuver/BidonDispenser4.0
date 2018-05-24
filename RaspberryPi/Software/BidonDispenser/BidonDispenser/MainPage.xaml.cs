@@ -8,6 +8,8 @@ using Windows.Storage.Streams;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Windows.System.Profile;
+using Windows.UI.ViewManagement;
 
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
@@ -24,36 +26,55 @@ namespace BidonDispenser {
         private DataWriter dataWriteObject;
         private DataReader dataReaderObject;
 
+        private Boolean windowsIot = false;
 
         public MainPage() {
             this.InitializeComponent();
+            
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+
+            // Check on which device we're running
+            System.Diagnostics.Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Universal") {
+                windowsIot = true;
+            }
+
+            DispatcherTimer t2 = new DispatcherTimer();
+            t2.Interval = TimeSpan.FromSeconds(30);
+            t2.Tick += T_Tick2;
+            t2.Start();
+
+            Thread.Sleep(1000);
 
             DispatcherTimer t = new DispatcherTimer();
-            t.Interval = TimeSpan.FromSeconds(20);
+            t.Interval = TimeSpan.FromSeconds(30);
             t.Tick += T_Tick;
             t.Start();
-            
-            initGpio();
-            //initUsart();
-            mc = new MicroController();
 
 
-            listOfDevices = new Collection<DeviceInformation>();
-            listAvailablePorts();
+            if (windowsIot) {
+                initGpio();
+                //initUsart();
+                mc = new MicroController();
+
+
+                listOfDevices = new Collection<DeviceInformation>();
+                //listAvailablePorts();
 
 
 
-            //nfcModule = new Pn532(0);
-            //nfcModule.setup();
+                //nfcModule = new Pn532(0);
+                //nfcModule.setup();
 
-            // Serial stuff
-            /* while (!serialInitialized);
-            serialTx = new DataWriter(serialDev.OutputStream);
-            serialRx = new DataReader(serialDev.InputStream);
+                // Serial stuff
+                /* while (!serialInitialized);
+                serialTx = new DataWriter(serialDev.OutputStream);
+                serialRx = new DataReader(serialDev.InputStream);
 
-            serialTx.WriteByte(0xAA);
-            byte myData = serialRx.ReadByte();
-            System.Diagnostics.Debug.WriteLine("Byte read = "+myData); */
+                serialTx.WriteByte(0xAA);
+                byte myData = serialRx.ReadByte();
+                System.Diagnostics.Debug.WriteLine("Byte read = "+myData); */
+            }
         }
 
         private async void listAvailablePorts() {
@@ -70,9 +91,11 @@ namespace BidonDispenser {
         }
 
         private async void connectHandler(object sender, RoutedEventArgs e) {
+            if (!windowsIot)
+                return;
 
             byte[] data = { (byte) 'A' };
-            while (!mc.isReady());
+            while (!mc.serialInitialized);
             mc.transmitCommand(data);
 
             //DeviceInformation entry = listOfDevices[0];
@@ -105,6 +128,9 @@ namespace BidonDispenser {
         }
 
         private async void writeReadHandler(object sender, RoutedEventArgs e) {
+            if (!windowsIot)
+                return;
+
             try {
                 
                 if (serialPort == null) {
@@ -135,6 +161,9 @@ namespace BidonDispenser {
         }
 
         private async void disconnectHandler(object sender, RoutedEventArgs e) {
+            if (!windowsIot)
+                return;
+
             try {
                 if (serialPort == null) {
                     System.Diagnostics.Debug.WriteLine("Could not find the device");
@@ -210,13 +239,20 @@ namespace BidonDispenser {
             }
         }
 
-        static int index = 0;
+        static int index = 1;
         private void T_Tick(object sender, object e) {
-            index++;
             mainModel.mediaSource = (MainModel.mediaNames) (index % 6);
         }
 
+        private void T_Tick2(object sender, object e) {
+            index++;
+            mainModel.mediaSource2 = (MainModel.mediaNames) (index % 6);
+        }
+
         private void ledTick(object sender, object e) {
+            if (!windowsIot)
+                return;
+
             if (led.Read() == GpioPinValue.Low) {
                 led.Write(GpioPinValue.High);
             } else {

@@ -520,14 +520,29 @@
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\NuGetPackagesFallback\runtime.win10-x64.microsoft.netcore.universalwindowsplatform\6.0.8\runtimes\win10-x64\lib\uap10.0.15138\netstandard.dll">
       <PackagePath>netstandard.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\myVideo.mp4">
-      <PackagePath>Assets\myVideo.mp4</PackagePath>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\BottleColours.gif">
+      <PackagePath>Assets\Images\BottleColours.gif</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\myVideo2.webm">
-      <PackagePath>Assets\myVideo2.webm</PackagePath>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\BuyOneGiveOne.png">
+      <PackagePath>Assets\Images\BuyOneGiveOne.png</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Properties\Default.rd.xml">
-      <PackagePath>Properties\Default.rd.xml</PackagePath>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\CleanUp.png">
+      <PackagePath>Assets\Images\CleanUp.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\HappyWaterThingy.png">
+      <PackagePath>Assets\Images\HappyWaterThingy.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\ThankYouM8.png">
+      <PackagePath>Assets\Images\ThankYouM8.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\ThankYouM8_LitEdition.png">
+      <PackagePath>Assets\Images\ThankYouM8_LitEdition.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\WaterKiosk.png">
+      <PackagePath>Assets\Images\WaterKiosk.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\WaterTaps.png">
+      <PackagePath>Assets\Images\WaterTaps.png</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
@@ -555,6 +570,9 @@
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Properties\Default.rd.xml">
+      <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\BidonDispenser.xr.xml">
       <PackagePath>BidonDispenser.xr.xml</PackagePath>

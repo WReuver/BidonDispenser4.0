@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BidonDispenser {
@@ -20,21 +21,29 @@ namespace BidonDispenser {
             [mediaNames.waterKiosk]     = "ms-appx:///Assets/Images/WaterKiosk.png",
             [mediaNames.waterTaps]      = "ms-appx:///Assets/Images/WaterTaps.png"
         };
-        
-        private mediaNames _mediaSource = mediaNames.gif;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private mediaNames _mediaSource = mediaNames.gif;
         public mediaNames mediaSource {
             get => _mediaSource;
             set {
                 _mediaSource = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(source)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(promotionImage)));
             }
         }
 
+        private mediaNames _mediaSource2 = mediaNames.gif;
+            public mediaNames mediaSource2 {
+            get => _mediaSource2;
+            set {
+                _mediaSource2 = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(promotionImagePreload)));
+            }
+        }
 
-        public string source => promotionMedias[mediaSource];
+        public String promotionImage => promotionMedias[mediaSource];
+        public String promotionImagePreload => promotionMedias[mediaSource2];
 
     }
 }

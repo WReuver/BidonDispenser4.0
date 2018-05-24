@@ -19,7 +19,7 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
     <LayoutDir>C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\AppX</LayoutDir>
-    <RegisteredManifestChecksum>851B504A12C3404850EB95855329352163039BAECFFBE20C2501FDFE0673A1B6</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>A0BBEF0AA710A5B32D3E8B08C54BD96C885377DE30E2686021809B0B67892CC6</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>07ff2e3a-fc52-4831-9b91-ee83597bc4c5_1.0.0.0_x64__wjytvj0ez98ye</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>07ff2e3a-fc52-4831-9b91-ee83597bc4c5_wjytvj0ez98ye!App</RegisteredUserModeAppID>
     <RegisteredPackageID>07ff2e3a-fc52-4831-9b91-ee83597bc4c5</RegisteredPackageID>
@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T12:30:18.513</Modified>
+      <Modified>2018-05-24T08:58:02.298</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\BidonDispenser.exe">
       <PackagePath>entrypoint\BidonDispenser.exe</PackagePath>
-      <Modified>2018-05-09T12:30:17.013</Modified>
+      <Modified>2018-05-24T08:51:48.179</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\NuGetPackagesFallback\runtime.win10-x64.microsoft.netcore.universalwindowsplatform\6.0.8\runtimes\win10-x64\nativeassets\uap10.0.15138\clrcompression.dll">
       <PackagePath>clrcompression.dll</PackagePath>
@@ -695,55 +695,79 @@
       <PackagePath>netstandard.dll</PackagePath>
       <Modified>2018-02-23T13:22:00.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\myVideo.mp4">
-      <PackagePath>Assets\myVideo.mp4</PackagePath>
-      <Modified>2018-04-09T09:27:44.000</Modified>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\BottleColours.gif">
+      <PackagePath>Assets\Images\BottleColours.gif</PackagePath>
+      <Modified>2018-05-23T07:25:17.396</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\myVideo2.webm">
-      <PackagePath>Assets\myVideo2.webm</PackagePath>
-      <Modified>2018-05-09T12:06:48.000</Modified>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\BuyOneGiveOne.png">
+      <PackagePath>Assets\Images\BuyOneGiveOne.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.406</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Properties\Default.rd.xml">
-      <PackagePath>Properties\Default.rd.xml</PackagePath>
-      <Modified>2018-05-09T08:11:34.626</Modified>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\CleanUp.png">
+      <PackagePath>Assets\Images\CleanUp.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.414</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\HappyWaterThingy.png">
+      <PackagePath>Assets\Images\HappyWaterThingy.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.420</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\ThankYouM8.png">
+      <PackagePath>Assets\Images\ThankYouM8.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.423</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\ThankYouM8_LitEdition.png">
+      <PackagePath>Assets\Images\ThankYouM8_LitEdition.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.426</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\WaterKiosk.png">
+      <PackagePath>Assets\Images\WaterKiosk.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.433</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Images\WaterTaps.png">
+      <PackagePath>Assets\Images\WaterTaps.png</PackagePath>
+      <Modified>2018-05-23T07:25:17.446</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
-      <Modified>2018-05-09T08:11:34.592</Modified>
+      <Modified>2018-05-23T07:25:17.446</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.594</Modified>
+      <Modified>2018-05-23T07:25:17.447</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.595</Modified>
+      <Modified>2018-05-23T07:25:17.448</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.596</Modified>
+      <Modified>2018-05-23T07:25:17.449</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.598</Modified>
+      <Modified>2018-05-23T07:25:17.450</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.599</Modified>
+      <Modified>2018-05-23T07:25:17.451</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T08:11:34.601</Modified>
+      <Modified>2018-05-23T07:25:17.452</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\Properties\Default.rd.xml">
+      <PackagePath>Properties\Default.rd.xml</PackagePath>
+      <Modified>2018-05-23T07:25:17.460</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\BidonDispenser.xr.xml">
       <PackagePath>BidonDispenser.xr.xml</PackagePath>
-      <Modified>2018-05-09T12:30:16.759</Modified>
+      <Modified>2018-05-24T08:51:47.872</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.16299.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -752,11 +776,11 @@
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2018-05-09T12:30:18.089</Modified>
+      <Modified>2018-05-24T08:58:02.009</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Git\BidonDispenser4.0\RaspberryPi\Software\BidonDispenser\BidonDispenser\bin\x64\Debug\Core\BidonDispenser.exe">
       <PackagePath>BidonDispenser.exe</PackagePath>
-      <Modified>2018-05-09T12:30:18.503</Modified>
+      <Modified>2018-05-24T08:58:02.293</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

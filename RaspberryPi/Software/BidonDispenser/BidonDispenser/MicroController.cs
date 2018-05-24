@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,12 +39,12 @@ namespace BidonDispenser {
         };
 
 
-        private Boolean serialInitialized = false;
+        public Boolean serialInitialized { get; private set; } = false;
         private SerialDevice serialPort;
         private DataWriter serialPortTx;
         private DataReader serialPortRx;
-        private ArrayList response = null;
-
+        private List<byte> response = new List<byte>();
+        public ReadOnlyCollection<byte> rresponse => response.AsReadOnly();
 
 
         public MicroController() {
@@ -64,14 +66,6 @@ namespace BidonDispenser {
             // TODO: Return a boolean indicating whether the checksum is correct or not
 
             return false;
-        }
-
-        public ArrayList getResponse() {
-            return response;
-        }
-
-        public Boolean isReady() {
-            return serialInitialized;
         }
 
         private Boolean validateChecksum() {

@@ -8,22 +8,31 @@
     mc:Ignorable="d">
 
     <Grid 
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" 
-        Width="480" 
-        Height="848">
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
 
-        <MediaElement x:ConnectionId='2' 
-            x:Name="mediaPlayer"
-                                              
-            PosterSource="thumbnail.jpg"
-            Height="270"
-            Width="480"
+        <Image x:ConnectionId='2' 
+            x:Name="promotionImage"
+                                                           
+            Height="1313"
             VerticalAlignment="Top"
-            AutoPlay="True"/>
+            Margin="-8, 0, 0, 0" />
 
         <TextBlock
             Text="Hello World!"
-            Margin="0, 270, 0, 0" />
+            Margin="0, 1313, 0, 0" />
+
+        <Button x:ConnectionId='3'
+            Content="Connect!"
+                                  
+            Margin="100, 500, 0, 0"/>
+        <Button x:ConnectionId='4'
+            Content="Write Read!"
+                                    
+            Margin="200, 500, 0, 0"/>
+        <Button x:ConnectionId='5'
+            Content="Disconnect!"
+                                     
+            Margin="300, 500, 0, 0"/>
     </Grid>
 </Page>
 
