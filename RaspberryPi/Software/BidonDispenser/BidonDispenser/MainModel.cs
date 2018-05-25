@@ -11,11 +11,11 @@ namespace BidonDispenser {
     internal class MainModel : INotifyPropertyChanged {
 
         public enum promotionMediaName {
-            gif, whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
+            /*gif, */whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
         }
 
         private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, string>() {
-            [promotionMediaName.gif]            = "ms-appx:///Assets/Images/BottleColours.gif",
+            //[promotionMediaName.gif]            = "ms-appx:///Assets/Images/BottleColours.gif",
             [promotionMediaName.whyJoinThePipe] = "ms-appx:///Assets/Images/HappyWaterThingy.png",
             [promotionMediaName.buyOneGiveOne]  = "ms-appx:///Assets/Images/BuyOneGiveOne.png",
             [promotionMediaName.cityCleanUp]    = "ms-appx:///Assets/Images/CleanUp.png",
@@ -37,7 +37,7 @@ namespace BidonDispenser {
             }
         }
         
-        private promotionMediaName _promotionSource = promotionMediaName.gif;
+        private promotionMediaName _promotionSource = 0;
         public promotionMediaName promotionSource {
             get => _promotionSource;
             set {
@@ -46,7 +46,7 @@ namespace BidonDispenser {
             }
         }
         
-        private promotionMediaName _promotionSourcePreload = promotionMediaName.gif;
+        private promotionMediaName _promotionSourcePreload = 0;
         public promotionMediaName promotionSourcePreload {
             get => _promotionSourcePreload;
             set {

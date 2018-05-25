@@ -30,22 +30,29 @@
             Maximum="30000" 
             Background="#EEEEEE" 
             Foreground="#DFDFDF"/>
+
+        <!-- Serial Test Panel -->
+        <StackPanel
+            Visibility="Visible"
+            Orientation="Vertical"
+            Background="#FEFEFE"
+            Margin="10"
+            Spacing="14">
+
+            <Button HorizontalAlignment="Center" Content="Sense" Click="serialSense"/>
+            <Button HorizontalAlignment="Center" Content="Lock" Click="serialLock"/>
+            <Button HorizontalAlignment="Center" Content="Unlock" Click="serialUnlock"/>
+            <Button HorizontalAlignment="Center" Content="Temperature Check" Click="serialTemperatureCheck"/>
+            <Button HorizontalAlignment="Center" Content="Dispense" Click="serialDispense"/>
+
+            <Image
+                Source="ms-appx:///Assets/Images/BottleColourSelection.png"
+                Margin="0, 120, 0, 0"/>
+
+        </StackPanel>
         
         <StackPanel
             Visibility="Collapsed"
-            Orientation="Vertical"
-            Background="#FEFEFE"
-            Margin="10">
-
-            <TextBlock Text="Hello World!" />
-            <Button Content="Connect!" Click="connectHandler"/>
-            <Button Content="Write Read!" Click="writeReadHandler"/>
-            <Button Content="Disconnect!" Click="disconnectHandler"/>
-            
-        </StackPanel>
-
-        <StackPanel
-            Visibility="Visible"
             Orientation="Vertical"
             Background="#FEFEFE">
 
@@ -68,7 +75,6 @@
                 HorizontalAlignment="Center"/>
 
             <Image
-                x:Name="bottleColours"
                 Source="ms-appx:///Assets/Images/BottleColourSelection.png"
                 Margin="0, 120, 0, 0"/>
 

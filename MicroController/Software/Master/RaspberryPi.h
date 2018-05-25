@@ -17,12 +17,13 @@ namespace Master
 {
 	class RaspberryPi
 	{
+        public:
         // The protocol's preambles
         enum class PreAmble {
             P0 = 0x00,
             P1 = 0xFF
         };
-        
+    
         // The possible commands
         enum class Command {
             Lock                = 0x02,
@@ -32,7 +33,7 @@ namespace Master
             Dispense            = 0x0A,
             ERROR               = 0xFF
         };
-        
+    
         // The possible command responses
         enum class CommandResponse {
             Lock                = 0x03,
@@ -42,6 +43,7 @@ namespace Master
             Dispense            = 0x0B,
             ERROR               = 0xFF
         };
+        
         
 		// Variables
 		private:
@@ -53,16 +55,41 @@ namespace Master
 		public:
         RaspberryPi(Usart::RxTx pins);
         ~RaspberryPi() {};
-        bool waitForNextCommand();
-        uint8_t* getCommand();
+        
+        uint8_t waitForNextCommand();
         void returnResponse(uint8_t* response);
-        bool validateChecksum();
+        uint8_t* getCommand() { return command; };      // Returns the location of the last received command
+        
         
 		private:
-        uint8_t calculateChecksum(uint8_t* bytes);
         void clearCommandData();
+        bool commandExists(uint8_t comm);
         
 	}; //RaspberryPi
 }
+
+/**
+    ////////////////////////////////////////
+    //  Example:
+    /////////////////////
+
+    RaspberryPi* raspi = new RaspberryPi(Usart::RxTx::C2_C3);       // Initialize the Raspberry Pi
+    uint8_t success = 7;                                            // Variable to store the error code in, 0 = success, 7 = unchanged, 1 = command does not exist, 2 = timeout
+    uint8_t myCommand[] = {                                         // The command:
+        (uint8_t) RaspberryPi::CommandResponse::Sense,              // Sense response
+        0x00                                                        // With 0 parameters
+    };
+    
+    // Infinite loop
+    while (1)
+    {
+        success = raspi->waitForNextCommand();
+        raspi->returnResponse(myCommand);
+    }
+    
+    ////////////////////
+    /////////////////////////////////////////
+    
+ */
 
 #endif //__RASPBERRYPI_H__
