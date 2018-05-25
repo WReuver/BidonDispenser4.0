@@ -46,7 +46,7 @@
             <Button HorizontalAlignment="Center" Content="Dispense" Click="serialDispense"/>
 
             <Image
-                Source="ms-appx:///Assets/Images/BottleColourSelection.png"
+                Source="ms-appx:///Assets/Images/Selections/AcceptCancelSelection.png"
                 Margin="0, 120, 0, 0"/>
 
         </StackPanel>
@@ -75,7 +75,7 @@
                 HorizontalAlignment="Center"/>
 
             <Image
-                Source="ms-appx:///Assets/Images/BottleColourSelection.png"
+                Source="ms-appx:///Assets/Images/Selections/BottleColourSelection.png"
                 Margin="0, 120, 0, 0"/>
 
         </StackPanel>

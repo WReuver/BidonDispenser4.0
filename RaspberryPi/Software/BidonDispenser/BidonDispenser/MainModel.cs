@@ -15,18 +15,33 @@ namespace BidonDispenser {
         }
 
         private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, string>() {
-            //[promotionMediaName.gif]            = "ms-appx:///Assets/Images/BottleColours.gif",
-            [promotionMediaName.whyJoinThePipe] = "ms-appx:///Assets/Images/HappyWaterThingy.png",
-            [promotionMediaName.buyOneGiveOne]  = "ms-appx:///Assets/Images/BuyOneGiveOne.png",
-            [promotionMediaName.cityCleanUp]    = "ms-appx:///Assets/Images/CleanUp.png",
-            [promotionMediaName.waterTaps]      = "ms-appx:///Assets/Images/WaterTaps.png",
-            [promotionMediaName.waterKiosk]     = "ms-appx:///Assets/Images/WaterKiosk.png"
+            //[promotionMediaName.gif]            = "ms-appx:///Assets/Images/Promotions/BottleColours.gif",
+            [promotionMediaName.whyJoinThePipe] = "ms-appx:///Assets/Images/Promotions/HappyWaterThingy.png",
+            [promotionMediaName.buyOneGiveOne]  = "ms-appx:///Assets/Images/Promotions/BuyOneGiveOne.png",
+            [promotionMediaName.cityCleanUp]    = "ms-appx:///Assets/Images/Promotions/CleanUp.png",
+            [promotionMediaName.waterTaps]      = "ms-appx:///Assets/Images/Promotions/WaterTaps.png",
+            [promotionMediaName.waterKiosk]     = "ms-appx:///Assets/Images/Promotions/WaterKiosk.png"
         };
         public ReadOnlyDictionary<promotionMediaName, String> promotionMedia => new ReadOnlyDictionary<promotionMediaName, String> (_promotionMedia);
-        
+
+        public enum bottleColourName {
+            blue, yellow, green, orange, red, pink, white, black
+        }
+
+        private Dictionary<bottleColourName, String> _bottleColours = new Dictionary<bottleColourName, string>() {
+            [bottleColourName.blue]     = "ms-appx:///Assets/Images/BottleColours/BlueBottle.png",
+            [bottleColourName.yellow]   = "ms-appx:///Assets/Images/BottleColours/YellowBottle.png",
+            [bottleColourName.green]    = "ms-appx:///Assets/Images/BottleColours/GreenBottle.png",
+            [bottleColourName.orange]   = "ms-appx:///Assets/Images/BottleColours/OrangeBottle.png",
+            [bottleColourName.red]      = "ms-appx:///Assets/Images/BottleColours/RedBottle.png",
+            [bottleColourName.pink]     = "ms-appx:///Assets/Images/BottleColours/PinkBottle.png",
+            [bottleColourName.white]    = "ms-appx:///Assets/Images/BottleColours/WhiteBottle.png",
+            [bottleColourName.black]    = "ms-appx:///Assets/Images/BottleColours/BlackBottle.png"
+        };
+        public ReadOnlyDictionary<bottleColourName, String> bottleColours => new ReadOnlyDictionary<bottleColourName, String>(_bottleColours);
+
 
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         private int _promotionTimerTickCounter = 0;
         public int promotionTimerTickCounter {

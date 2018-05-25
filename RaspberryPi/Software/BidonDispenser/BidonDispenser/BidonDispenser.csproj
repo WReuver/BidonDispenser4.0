@@ -111,15 +111,25 @@
     <None Include="BidonDispenser_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Images\BottleColours.gif" />
-    <Content Include="Assets\Images\BottleColourSelection.png" />
-    <Content Include="Assets\Images\BuyOneGiveOne.png" />
-    <Content Include="Assets\Images\CleanUp.png" />
-    <Content Include="Assets\Images\HappyWaterThingy.png" />
-    <Content Include="Assets\Images\ThankYouM8.png" />
-    <Content Include="Assets\Images\ThankYouM8_LitEdition.png" />
-    <Content Include="Assets\Images\WaterKiosk.png" />
-    <Content Include="Assets\Images\WaterTaps.png" />
+    <Content Include="Assets\Images\BottleColours\BlackBottle.png" />
+    <Content Include="Assets\Images\BottleColours\BlueBottle.png" />
+    <Content Include="Assets\Images\BottleColours\GreenBottle.png" />
+    <Content Include="Assets\Images\BottleColours\OrangeBottle.png" />
+    <Content Include="Assets\Images\BottleColours\PinkBottle.png" />
+    <Content Include="Assets\Images\BottleColours\RedBottle.png" />
+    <Content Include="Assets\Images\BottleColours\WhiteBottle.png" />
+    <Content Include="Assets\Images\BottleColours\YellowBottle.png" />
+    <Content Include="Assets\Images\Promotions\BottleColours.gif" />
+    <Content Include="Assets\Images\Promotions\BuyOneGiveOne.png" />
+    <Content Include="Assets\Images\Promotions\CleanUp.png" />
+    <Content Include="Assets\Images\Promotions\HappyWaterThingy.png" />
+    <Content Include="Assets\Images\Promotions\WaterKiosk.png" />
+    <Content Include="Assets\Images\Promotions\WaterTaps.png" />
+    <Content Include="Assets\Images\Selections\AcceptCancelSelection.png" />
+    <Content Include="Assets\Images\Selections\AcceptCancelSelectionWhite.png" />
+    <Content Include="Assets\Images\Selections\BottleColourSelection.png" />
+    <Content Include="Assets\Images\Thx.png" />
+    <Content Include="Assets\Images\ThxFam.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
