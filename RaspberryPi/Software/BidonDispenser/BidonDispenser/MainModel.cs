@@ -11,7 +11,8 @@ namespace BidonDispenser {
     internal class MainModel : INotifyPropertyChanged {
 
         public enum promotionMediaName {
-            /*gif, */whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
+            //gif, 
+            whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
         }
 
         private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, string>() {

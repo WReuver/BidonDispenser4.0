@@ -47,51 +47,24 @@ namespace BidonDispenser {
             }
         }
 
-        private void serialSense(object sender, RoutedEventArgs e) {
+        private void serialTest(object sender, RoutedEventArgs rea) {
+            System.Diagnostics.Debug.WriteLine("Click: " + ((Button) sender).Name );
+
             if (!windowsIot)
                 return;
 
-            byte[] data = { (byte) MicroController.Command.Sense, 0x00 };
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
-        }
+            String buttonFunction = ((Button) sender).Name;
+            byte[] data;
 
-        private void serialLock(object sender, RoutedEventArgs e) {
-            if (!windowsIot)
-                return;
+            switch (buttonFunction) {
+                case "Sense":               data = new byte[] { (byte) MicroController.Command.Sense, 0x00 };                   break;
+                case "Lock":                data = new byte[] { (byte) MicroController.Command.Lock, 0x00 };                    break;
+                case "Unlock":              data = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };                  break;
+                case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x07 };  break;
+                case "Dispense":            data = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };          break;
+                default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
+            }
 
-            byte[] data = { (byte) MicroController.Command.Lock, 0x00 };
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
-        }
-
-        private void serialUnlock(object sender, RoutedEventArgs e) {
-            if (!windowsIot)
-                return;
-
-            byte[] data = { (byte) MicroController.Command.Unlock, 0x00 };
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
-        }
-
-        private void serialTemperatureCheck(object sender, RoutedEventArgs e) {
-            if (!windowsIot)
-                return;
-
-            byte[] data = { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x07 };
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
-        }
-
-        private void serialDispense(object sender, RoutedEventArgs e) {
-            if (!windowsIot)
-                return;
-
-            byte[] data = { (byte) MicroController.Command.Dispense, 0x01, 0x00 };
             while (!mc.serialInitialized);
             mc.transmitCommand(data);
             mc.waitForResponse();

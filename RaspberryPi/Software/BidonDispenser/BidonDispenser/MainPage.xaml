@@ -11,7 +11,7 @@
          Orientation="Vertical"
          Background="#FEFEFE" >
         
-        <!-- A relative panel for the promotion material -->
+        <!-- A relative panel for the promotion images -->
         <RelativePanel>
             <Image
                 x:Name="promotionImagePreload"
@@ -24,6 +24,7 @@
                 VerticalAlignment="Top" />
         </RelativePanel>
         
+        <!-- A progress bar to indicate when the next promotion image is going to show -->
         <ProgressBar 
             x:Name="progressBar" 
             Value="{x:Bind mainModel.progressBarValue, Mode=OneWay}"
@@ -31,26 +32,27 @@
             Background="#EEEEEE" 
             Foreground="#DFDFDF"/>
 
-        <!-- Serial Test Panel -->
+        <!-- "Command Test" Panel -->
         <StackPanel
-            Visibility="Visible"
+            Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE"
             Margin="10"
             Spacing="14">
 
-            <Button HorizontalAlignment="Center" Content="Sense" Click="serialSense"/>
-            <Button HorizontalAlignment="Center" Content="Lock" Click="serialLock"/>
-            <Button HorizontalAlignment="Center" Content="Unlock" Click="serialUnlock"/>
-            <Button HorizontalAlignment="Center" Content="Temperature Check" Click="serialTemperatureCheck"/>
-            <Button HorizontalAlignment="Center" Content="Dispense" Click="serialDispense"/>
+            <Button Name="Sense"                HorizontalAlignment="Center"    Content="Sense"                 Click="serialTest"/>
+            <Button Name="Lock"                 HorizontalAlignment="Center"    Content="Lock"                  Click="serialTest"/>
+            <Button Name="Unlock"               HorizontalAlignment="Center"    Content="Unlock"                Click="serialTest"/>
+            <Button Name="TemperatureCheck"     HorizontalAlignment="Center"    Content="Temperature Check"     Click="serialTest"/>
+            <Button Name="Dispense"             HorizontalAlignment="Center"    Content="Dispense"              Click="serialTest"/>
 
             <Image
-                Source="ms-appx:///Assets/Images/Selections/AcceptCancelSelection.png"
+                Source="ms-appx:///Assets/Images/Selections/AcceptCancelSelectionWhite.png"
                 Margin="0, 120, 0, 0"/>
 
         </StackPanel>
         
+        <!-- "Pick A Colour" Panel -->
         <StackPanel
             Visibility="Collapsed"
             Orientation="Vertical"
@@ -79,15 +81,60 @@
                 Margin="0, 120, 0, 0"/>
 
         </StackPanel>
+        
+        <!-- "Finishing Up" Panel -->
+        <StackPanel
+            Visibility="Visible"
+            Orientation="Vertical"
+            Background="#FEFEFE" >
 
+            <StackPanel
+                Orientation="Horizontal"
+                Background="#FEFEFE" 
+                Margin="30, 30, 30, 30">
+
+                <Image
+                    Source="ms-appx:///Assets/Images/BottleColours/BlueBottle.png"
+                    Height="250"/>
+
+                <TextBlock
+                    Text="Text text text."
+                    Foreground="#AAAAAA"
+                    FontSize="28"
+                    FontFamily="Segoe UI"
+                    FontWeight="SemiBold"
+                    Padding="60, 50, 0, 0"
+                    HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <Image
+                Source="ms-appx:///Assets/Images/Selections/CancelSelection.png" />
+
+        </StackPanel>
+        
+        <!-- "Thank You" Panel -->
         <StackPanel
             Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE"
-            Margin="10">
-            
-            
-            
+            Margin="0, 10, 0, 0">
+
+            <Image 
+                Source="ms-appx:///Assets/Images/Thx.png"/>
+
+        </StackPanel>
+
+        <!-- "Thank You Fam" Panel -->
+        <StackPanel
+            Visibility="Collapsed"
+            Orientation="Vertical"
+            Background="#FEFEFE"
+            Margin="0, 10, 0, 0">
+
+            <Image 
+                Source="ms-appx:///Assets/Images/ThxFam.png"/>
+
         </StackPanel>
 
 

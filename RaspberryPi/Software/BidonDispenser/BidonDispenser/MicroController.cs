@@ -71,8 +71,6 @@ namespace BidonDispenser {
             readCancellationTokenSource = new CancellationTokenSource();        // Create a cancellation token to stop the reading
             _response.Clear();                                                  // Clear the current response list
             receiveBytes(readCancellationTokenSource.Token);                    // Read the data and store it in a list
-
-            System.Diagnostics.Debug.WriteLine("NOW!");
             return 0;
         }
 
@@ -120,9 +118,11 @@ namespace BidonDispenser {
 
                 Task<uint> storeAsyncTask = serialPortTx.StoreAsync().AsTask();
                 uint bytesWritten = await storeAsyncTask;
-                System.Diagnostics.Debug.WriteLine("Wrote " + bytesWritten + " bytes!");
-                
-                
+
+                // Print what bytes have been written
+                System.Diagnostics.Debug.Write("Wrote " + bytesWritten + " bytes: [");
+                foreach (byte aByte in bytes) System.Diagnostics.Debug.Write(" "+aByte);
+                System.Diagnostics.Debug.WriteLine(" ]");
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
@@ -144,9 +144,13 @@ namespace BidonDispenser {
                     Task<UInt32> loadAsyncTask = serialPortRx.LoadAsync( 8 ).AsTask(childCancellationTokenSource.Token);            // Create a task object to wait for data on the serialPort.InputStream
 
                     UInt32 bytesRead = await loadAsyncTask;                                                                         // Launch the task and wait
-                    System.Diagnostics.Debug.WriteLine("Reading " + bytesRead + " bytes!");                                         // Print the amount of bytes read
 
                     while (serialPortRx.UnconsumedBufferLength > 0) _response.Add(serialPortRx.ReadByte());                         // Store the read bytes
+
+                    // Print what bytes have been read
+                    System.Diagnostics.Debug.Write("Read " + bytesRead + " bytes: [");
+                    foreach (byte aByte in _response) System.Diagnostics.Debug.Write(" " + aByte);
+                    System.Diagnostics.Debug.WriteLine(" ]");
                 }
 
             } catch (Exception ex) {
