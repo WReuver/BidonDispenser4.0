@@ -15,7 +15,11 @@ namespace BidonDispenser {
             whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
         }
 
-        private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, string>() {
+        public enum bottleColourName {
+            blue, yellow, green, orange, red, pink, white, black
+        }
+
+        private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, String>() {
             //[promotionMediaName.gif]            = "ms-appx:///Assets/Images/Promotions/BottleColours.gif",
             [promotionMediaName.whyJoinThePipe] = "ms-appx:///Assets/Images/Promotions/HappyWaterThingy.png",
             [promotionMediaName.buyOneGiveOne]  = "ms-appx:///Assets/Images/Promotions/BuyOneGiveOne.png",
@@ -24,12 +28,20 @@ namespace BidonDispenser {
             [promotionMediaName.waterKiosk]     = "ms-appx:///Assets/Images/Promotions/WaterKiosk.png"
         };
         public ReadOnlyDictionary<promotionMediaName, String> promotionMedia => new ReadOnlyDictionary<promotionMediaName, String> (_promotionMedia);
+        
+        private Dictionary<bottleColourName, String> _bottleColourText = new Dictionary<bottleColourName, String>() {
+            [bottleColourName.blue]     = "You have selected the blue bottle.",
+            [bottleColourName.yellow]   = "You have selected the yellow bottle.",
+            [bottleColourName.green]    = "You have selected the green bottle.",
+            [bottleColourName.orange]   = "You have selected the orange bottle.",
+            [bottleColourName.red]      = "You have selected the red bottle.",
+            [bottleColourName.pink]     = "You have selected the pink bottle.",
+            [bottleColourName.white]    = "You have selected the white bottle.",
+            [bottleColourName.black]    = "You have selected the black bottle."
+        };
+        public ReadOnlyDictionary<bottleColourName, String> bottleColourText => new ReadOnlyDictionary<bottleColourName, String>(_bottleColourText);
 
-        public enum bottleColourName {
-            blue, yellow, green, orange, red, pink, white, black
-        }
-
-        private Dictionary<bottleColourName, String> _bottleColours = new Dictionary<bottleColourName, string>() {
+        private Dictionary<bottleColourName, String> _bottleColourImage = new Dictionary<bottleColourName, String>() {
             [bottleColourName.blue]     = "ms-appx:///Assets/Images/BottleColours/BlueBottle.png",
             [bottleColourName.yellow]   = "ms-appx:///Assets/Images/BottleColours/YellowBottle.png",
             [bottleColourName.green]    = "ms-appx:///Assets/Images/BottleColours/GreenBottle.png",
@@ -39,7 +51,7 @@ namespace BidonDispenser {
             [bottleColourName.white]    = "ms-appx:///Assets/Images/BottleColours/WhiteBottle.png",
             [bottleColourName.black]    = "ms-appx:///Assets/Images/BottleColours/BlackBottle.png"
         };
-        public ReadOnlyDictionary<bottleColourName, String> bottleColours => new ReadOnlyDictionary<bottleColourName, String>(_bottleColours);
+        public ReadOnlyDictionary<bottleColourName, String> bottleColourImage => new ReadOnlyDictionary<bottleColourName, String>(_bottleColourImage);
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -71,9 +83,22 @@ namespace BidonDispenser {
             }
         }
 
-        public int progressBarValue => promotionTimerTickCounter;
-        public String promotionImage => promotionMedia[promotionSource];
-        public String promotionImagePreload => promotionMedia[promotionSourcePreload];
+        private bottleColourName _selectedBottleColour = 0;
+        public bottleColourName selectedBottleColour {
+            get => _selectedBottleColour;
+            set {
+                _selectedBottleColour = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(selectedColourImage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(selectedColourText)));
+            }
+        }
+        
+        // Bindings
+        public int progressBarValue         => promotionTimerTickCounter;                   // Progressbar
+        public String promotionImage        => promotionMedia[promotionSource];             // Promotion image
+        public String promotionImagePreload => promotionMedia[promotionSourcePreload];      // Promotion image - preload
+        public String selectedColourText    => bottleColourText[selectedBottleColour];      // Selected bottle colour text
+        public String selectedColourImage   => bottleColourImage[selectedBottleColour];     // Selected bottle colour image
 
     }
 }

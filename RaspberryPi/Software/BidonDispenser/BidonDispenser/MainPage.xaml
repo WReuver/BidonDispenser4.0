@@ -14,12 +14,10 @@
         <!-- A relative panel for the promotion images -->
         <RelativePanel>
             <Image
-                x:Name="promotionImagePreload"
                 Source="{x:Bind mainModel.promotionImagePreload, Mode=OneWay}"
                 VerticalAlignment="Top" />
 
             <Image
-                x:Name="promotionImage"
                 Source="{x:Bind mainModel.promotionImage, Mode=OneWay}"
                 VerticalAlignment="Top" />
         </RelativePanel>
@@ -34,26 +32,24 @@
 
         <!-- "Command Test" Panel -->
         <StackPanel
-            Visibility="Collapsed"
+            x:Name="CommandTestPanel"
+            Visibility="Visible"
             Orientation="Vertical"
             Background="#FEFEFE"
             Margin="10"
             Spacing="14">
 
-            <Button Name="Sense"                HorizontalAlignment="Center"    Content="Sense"                 Click="serialTest"/>
-            <Button Name="Lock"                 HorizontalAlignment="Center"    Content="Lock"                  Click="serialTest"/>
-            <Button Name="Unlock"               HorizontalAlignment="Center"    Content="Unlock"                Click="serialTest"/>
-            <Button Name="TemperatureCheck"     HorizontalAlignment="Center"    Content="Temperature Check"     Click="serialTest"/>
-            <Button Name="Dispense"             HorizontalAlignment="Center"    Content="Dispense"              Click="serialTest"/>
-
-            <Image
-                Source="ms-appx:///Assets/Images/Selections/AcceptCancelSelectionWhite.png"
-                Margin="0, 120, 0, 0"/>
+            <Button Name="Sense"            FontSize="50"   HorizontalAlignment="Center"    Content="Sense"                 Click="serialTest"      Width="1000"    Height="100"    Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Lock"             FontSize="50"   HorizontalAlignment="Center"    Content="Lock"                  Click="serialTest"      Width="1000"    Height="100"    Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Unlock"           FontSize="50"   HorizontalAlignment="Center"    Content="Unlock"                Click="serialTest"      Width="1000"    Height="100"    Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="TemperatureCheck" FontSize="50"   HorizontalAlignment="Center"    Content="Temperature Check"     Click="serialTest"      Width="1000"    Height="100"    Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Dispense"         FontSize="50"   HorizontalAlignment="Center"    Content="Dispense"              Click="serialTest"      Width="1000"    Height="100"    Foreground="#FEFEFE"    Background="#53C5CF"/>
 
         </StackPanel>
         
         <!-- "Pick A Colour" Panel -->
         <StackPanel
+            x:Name="PickColourPanel"
             Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE">
@@ -78,33 +74,47 @@
 
             <Image
                 Source="ms-appx:///Assets/Images/Selections/BottleColourSelection.png"
-                Margin="0, 120, 0, 0"/>
+                Margin="0, 110, 0, 0"/>
 
         </StackPanel>
         
         <!-- "Finishing Up" Panel -->
         <StackPanel
-            Visibility="Visible"
+            Name="FinishingUpPanel"
+            Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE" >
 
             <StackPanel
                 Orientation="Horizontal"
                 Background="#FEFEFE" 
-                Margin="30, 30, 30, 30">
+                Margin="50, 80, 30, 30">
+                
+                <StackPanel
+                    Orientation="Vertical"
+                    Background="#FEFEFE"
+                    Spacing="16">
+                    
+                    <TextBlock
+                        Text="{x:Bind mainModel.selectedColourText, Mode=OneWay}"
+                        Foreground="#AAAAAA"
+                        FontSize="32"
+                        FontFamily="Segoe UI"
+                        FontWeight="SemiBold"/>
+                    
+                    <TextBlock
+                        Text="         Present your credit wallet to finish the payment."
+                        Foreground="#AAAAAA"
+                        FontSize="32"
+                        FontFamily="Segoe UI"
+                        FontWeight="SemiBold"/>
+
+                </StackPanel>
 
                 <Image
-                    Source="ms-appx:///Assets/Images/BottleColours/BlueBottle.png"
-                    Height="250"/>
-
-                <TextBlock
-                    Text="Text text text."
-                    Foreground="#AAAAAA"
-                    FontSize="28"
-                    FontFamily="Segoe UI"
-                    FontWeight="SemiBold"
-                    Padding="60, 50, 0, 0"
-                    HorizontalAlignment="Center"/>
+                    Source="{x:Bind mainModel.selectedColourImage, Mode=OneWay}"
+                    Height="250"
+                    Margin="100, 0, 0, 0"/>
 
             </StackPanel>
 
@@ -115,25 +125,33 @@
         
         <!-- "Thank You" Panel -->
         <StackPanel
+            Name="ThankYouPanel"
             Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE"
-            Margin="0, 10, 0, 0">
+            Margin="15, 15, 15, 15">
 
             <Image 
-                Source="ms-appx:///Assets/Images/Thx.png"/>
+                Source="ms-appx:///Assets/Images/Thx.png"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="750"/>
 
         </StackPanel>
 
         <!-- "Thank You Fam" Panel -->
         <StackPanel
+            Name="ThankYouFamPanel"
             Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE"
-            Margin="0, 10, 0, 0">
+            Margin="15, 15, 15, 15">
 
             <Image 
-                Source="ms-appx:///Assets/Images/ThxFam.png"/>
+                Source="ms-appx:///Assets/Images/ThxFam.png"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="750"/>
 
         </StackPanel>
 

@@ -82,7 +82,7 @@ namespace BidonDispenser {
 
                 // If retrieving the Serial Port has failed => print an error message and return
                 if (serialPort == null) {
-                    System.Diagnostics.Debug.WriteLine("Could not find the Serial Port");
+                    System.Diagnostics.Debug.WriteLine("Could not find the serial port");
                     return;
                 }
 
@@ -98,7 +98,7 @@ namespace BidonDispenser {
                 serialPortTx = new DataWriter(serialPort.OutputStream);
                 serialPortRx = new DataReader(serialPort.InputStream);
 
-                System.Diagnostics.Debug.WriteLine("Serial Port initialized");
+                System.Diagnostics.Debug.WriteLine("The serial port has been initialized");
                 serialInitialized = true;
 
             } catch (Exception ex) {
@@ -110,7 +110,7 @@ namespace BidonDispenser {
             try {
 
                 if (!serialInitialized) {
-                    System.Diagnostics.Debug.WriteLine("Serial Port is not initialized!");
+                    System.Diagnostics.Debug.WriteLine("The serial port is not initialized!");
                     return;
                 }
 
@@ -133,7 +133,7 @@ namespace BidonDispenser {
             try {
 
                 if (!serialInitialized) {
-                    System.Diagnostics.Debug.WriteLine("Serial Port is not initialized!");
+                    System.Diagnostics.Debug.WriteLine("The serial port is not initialized!");
                     return;
                 }
                 

@@ -27,6 +27,7 @@
     </Application>
   </Applications>
   <Capabilities>
+    <iot:Capability Name="lowLevelDevices" />
     <DeviceCapability Name="serialcommunication">
       <Device Id="any">
         <Function Type="name:serialPort" />
