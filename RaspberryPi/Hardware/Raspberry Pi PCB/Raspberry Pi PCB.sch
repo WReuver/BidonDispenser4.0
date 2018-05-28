@@ -13367,9 +13367,9 @@ type 0309, grid 2.5 mm</description>
 <part name="LEDSTRIP_2" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-?-03" device="05-7038"/>
 <part name="GND21" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND22" library="SparkFun" deviceset="GND" device=""/>
-<part name="R8" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0805"/>
-<part name="R7" library="adafruit" deviceset="R-US_" device="R0805"/>
-<part name="R6" library="adafruit" deviceset="R-US_" device="R0805"/>
+<part name="R8" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0805" value="1K"/>
+<part name="R7" library="adafruit" deviceset="R-US_" device="R0805" value="330"/>
+<part name="R6" library="adafruit" deviceset="R-US_" device="R0805" value="330"/>
 <part name="GND23" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND24" library="SparkFun" deviceset="GND" device=""/>
 <part name="LED1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="LED" device="CHIPLED_0805"/>
@@ -13387,7 +13387,7 @@ type 0309, grid 2.5 mm</description>
 <part name="GND4" library="SparkFun" deviceset="GND" device=""/>
 <part name="C7" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="R1" library="adafruit" deviceset="R-US_" device="R0805"/>
+<part name="R1" library="adafruit" deviceset="R-US_" device="R0805" value="10K"/>
 <part name="REED" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-?-02" device="05-7028"/>
 <part name="GND15" library="SparkFun" deviceset="GND" device=""/>
 <part name="JUMPER" library="jumper" library_urn="urn:adsk.eagle:library:252" deviceset="JP2E" device="" package3d_urn="urn:adsk.eagle:package:15452/1"/>
@@ -13413,28 +13413,28 @@ type 0309, grid 2.5 mm</description>
 <part name="GND32" library="SparkFun" deviceset="GND" device=""/>
 <part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R11" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R12" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R12" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R13" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R14" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R14" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY10" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R15" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R16" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R16" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY11" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R17" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R18" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R18" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY12" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R19" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R20" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R20" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY15" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R21" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R22" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R22" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY16" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R23" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R24" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R24" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SUPPLY17" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="R25" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
-<part name="R26" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="10K"/>
+<part name="R26" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="SELECT" library="jumper" library_urn="urn:adsk.eagle:library:252" deviceset="SJ2W" device="" package3d_urn="urn:adsk.eagle:package:15474/1"/>
 <part name="GND33" library="SparkFun" deviceset="GND" device=""/>
 <part name="SUPPLY18" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
