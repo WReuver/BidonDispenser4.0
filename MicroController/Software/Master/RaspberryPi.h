@@ -47,7 +47,8 @@ namespace Master
         
 		// Variables
 		private:
-        uint8_t command[32] = {0};
+        static const uint8_t commandMaxSize = 3;
+        uint8_t command[commandMaxSize] = {0};
         Usart::RxTx usartPins;
         
         
@@ -55,14 +56,40 @@ namespace Master
 		public:
         RaspberryPi(Usart::RxTx pins);
         ~RaspberryPi() {};
-        
+          
+        /**
+         * Waits for a new command to arrive and puts it into the command buffer
+         * 
+         * \return uint8_t
+         *      0 => Succes!
+         *      1 => Command does not exist!
+         *      2 => Timeout error
+         */
         uint8_t waitForNextCommand();
+        
+        /**
+         * Returns the response to the Raspberry Pi using the USART
+         * 
+         * \param uint8_t* response
+         *      Array containing the command, parameter length and the parameters.
+         */
         void returnResponse(uint8_t* response);
-        uint8_t* getCommand() { return command; };      // Returns the location of the last received command
+        
+        /**
+         * Returns the location of the last received command
+         */
+        uint8_t* getCommand() { return command; };
         
         
 		private:
+        /**
+         * Resets the array containing the buffered command
+         */
         void clearCommandData();
+        
+        /**
+         * Returns true or false dependent on whether the command exists or not
+         */
         bool commandExists(uint8_t comm);
         
 	}; //RaspberryPi
@@ -70,7 +97,7 @@ namespace Master
 
 /**
     ////////////////////////////////////////
-    //  Example:
+    //  Example: 
     /////////////////////
 
     RaspberryPi* raspi = new RaspberryPi(Usart::RxTx::C2_C3);       // Initialize the Raspberry Pi

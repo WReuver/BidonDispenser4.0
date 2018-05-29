@@ -11,8 +11,3 @@
 {
 
 }
-
- Controllers::MotorController::~MotorController()
-{
-
-}

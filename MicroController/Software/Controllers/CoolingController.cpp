@@ -6,3 +6,8 @@
 */
 
 #include "CoolingController.h"
+
+ Controllers::CoolingController::CoolingController()
+{
+    
+}

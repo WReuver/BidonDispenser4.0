@@ -11,56 +11,71 @@
 #include "Hardware/SystemClock.h"
 #include "Hardware/Gpio.h"
 #include "Hardware/GenericTC.h"
-#include "Communication/USART.h"
 #include "Master/RaspberryPi.h"
+#include "Controllers/CoolingController.h"
+#include "Controllers/MotorController.h"
 
 using namespace Hardware;
 using namespace Communication;
 using namespace Master;
+using namespace Controllers;
 
-static void initialize(void)
+RaspberryPi* raspberryPi;
+CoolingController* coolingController;
+MotorController* motorController;
+
+// Initialize all the hardware
+void initialize(void)
 {
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
     TimerCounter::InitializeGenericTC();
-    Gpio::SetPinDirection(Gpio::Pin::A0, Gpio::Dir::Output);
+    
+    raspberryPi = new RaspberryPi(Usart::RxTx::C2_C3);
+    coolingController = new CoolingController();
+    motorController = new MotorController();
+}
+
+void routine(void) 
+{
+    while (1) 
+    {
+        uint8_t operationStatus = raspberryPi->waitForNextCommand();        // 0 = success, 1 = command does not exist, 2 = timeout
+        uint8_t response[6] = { 0 };
+        
+        switch (operationStatus) 
+        {
+            case 0:
+                // Everything went fine
+            break;
+            
+            case 1:
+                // Command does not exist
+            break;
+            
+            case 2:
+                // Timeout
+            break;
+        }
+        
+        
+        
+    }
 }
 
 int main()
 {
     initialize();
     
-    
-    //// Initialize the Usart
-    //Usart::Initialize(Usart::RxTx::C2_C3);
-    //// Set the baud rate to 9600
-    //Usart::SetBaudrate(Usart::RxTx::C2_C3, Usart::Baudrate::b9600);
-    //// Enable Rx
-    //Usart::EnableReceiver(Usart::RxTx::C2_C3);
-    //// Enable Tx
-    //Usart::EnableTransmitter(Usart::RxTx::C2_C3);
-    //
-    //volatile uint8_t response = 0;
-    
-    RaspberryPi* raspi = new RaspberryPi(Usart::RxTx::C2_C3);       // Initialize the Raspberry Pi
-    uint8_t success = 7;                                            // Variable to store the error code in, 0 = success, 7 = unchanged, 1 = command does not exist, 2 = timeout
-    uint8_t myCommand[] = {                                         // The command:
-        (uint8_t) RaspberryPi::CommandResponse::Sense,              // Sense response
-        0x00                                                        // With 0 parameters
+    uint8_t success = 7;                                    // Variable to store the error code in, 0 = success, 7 = unchanged, 1 = command does not exist, 2 = timeout
+    uint8_t myCommand[] = {                                 // The command:
+        (uint8_t) RaspberryPi::CommandResponse::Sense,      // Sense response
+        0x01                                                // With 0 parameters
     };
     
-    // Infinite loop
     while (1)
     {
-        success = raspi->waitForNextCommand();
-        raspi->returnResponse(myCommand);
-        
-        //// Wait for new data to be available
-        //while (!Usart::IsNewDataAvailable(Usart::RxTx::C2_C3));
-        //// Read the available data
-        //response = Usart::ReadData(Usart::RxTx::C2_C3);
-        //// Transmit some data
-        //Usart::TransmitData(Usart::RxTx::C2_C3, response);
-        //// Wait a bit
-        ////_delay_ms(500);
+        success = raspberryPi->waitForNextCommand();
+        raspberryPi->returnResponse(myCommand);
     }
 }
+

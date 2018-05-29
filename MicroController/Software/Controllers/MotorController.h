@@ -20,7 +20,7 @@ namespace Controllers
 		// Methods
 		public:
 		MotorController();
-		~MotorController();
+		~MotorController() {};
 
 		protected:
 		private:

@@ -31,26 +31,39 @@ uint8_t Master::RaspberryPi::waitForNextCommand()
 {
     clearCommandData();
     
-    Usart::WaitForData(usartPins);                                  // Wait for new data
-    command[0] = Usart::ReadData(usartPins);                        // Read the PreAmble0
+    bool foundPreAmble = false;
+    
+    while ( !foundPreAmble ) 
+    {
+        Usart::WaitForData(usartPins);                                          // Wait for preamble part 1
+        if (Usart::ReadData(usartPins) == (uint8_t) PreAmble::P0) 
+        {
+            if ( Usart::WaitForDataWithTimeout(usartPins) == 0 )                // Wait for preamble part 2 with a timeout
+            {
+                if (Usart::ReadData(usartPins) == (uint8_t) PreAmble::P1) 
+                {
+                    foundPreAmble = true;                                       // Preamble found!
+                }
+            }
+            // else => retry
+        }
+    }
     
     if (Usart::WaitForDataWithTimeout(usartPins)) return 2;         // Wait for new data for about 2 seconds
-    command[1] = Usart::ReadData(usartPins);                        // Read the PreAmble1
+    command[0] = Usart::ReadData(usartPins);                        // Read the Command
     
     if (Usart::WaitForDataWithTimeout(usartPins)) return 2;         // Wait for new data for about 2 seconds
-    command[2] = Usart::ReadData(usartPins);                        // Read the Command
+    command[1] = Usart::ReadData(usartPins);                        // Read the Parameter Length
     
-    if (Usart::WaitForDataWithTimeout(usartPins)) return 2;         // Wait for new data for about 2 seconds
-    command[3] = Usart::ReadData(usartPins);                        // Read the Parameter Length
-    
-    for (int i = 0; i < command[3]; i++) {
+    for (int i = 0; i < command[1]; i++) 
+    {
         if (Usart::WaitForDataWithTimeout(usartPins)) return 2;     // Wait for new data for about 2 seconds
-        command[4+i] = Usart::ReadData(usartPins);                  // Read a parameter
+        command[2+i] = Usart::ReadData(usartPins);                  // Read a parameter
     }        
     
-    if (!commandExists(command[2])) return 1;   // Failure
+    if (!commandExists(command[0])) return 1;                       // Failure
     
-    return 0;                                   // Success
+    return 0;                                                       // Success
 }
 
 /**
@@ -69,7 +82,8 @@ void Master::RaspberryPi::returnResponse(uint8_t* response)
     for (int i = 0; i < (response[1]+2); i++)
         fullResponse[2+i] = response[i];                            // Add the command, parameter length and parameters
     
-    for (int i = 0; i < (4+response[1]); i++) {
+    for (int i = 0; i < (4+response[1]); i++) 
+    {
         Usart::TransmitData(usartPins, fullResponse[i]);            // Transmit the full response over the USART
         _delay_ms(1);
     }        
@@ -80,7 +94,7 @@ void Master::RaspberryPi::returnResponse(uint8_t* response)
  */
 void Master::RaspberryPi::clearCommandData()
 {
-    for (int i = 0; i < 32; i++)
+    for (int i = 0; i < commandMaxSize; i++)
     {
         command[i] = 0;
     }
@@ -91,7 +105,8 @@ void Master::RaspberryPi::clearCommandData()
  */
 bool Master::RaspberryPi::commandExists(uint8_t comm)
 {
-    switch (comm) {
+    switch (comm) 
+    {
         case (uint8_t) Command::Lock:               return true;
         case (uint8_t) Command::Unlock:             return true;
         case (uint8_t) Command::Sense:              return true;

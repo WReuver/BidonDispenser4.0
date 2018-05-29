@@ -68,9 +68,9 @@ namespace BidonDispenser {
         }
 
         public byte waitForResponse() {
-            readCancellationTokenSource = new CancellationTokenSource();        // Create a cancellation token to stop the reading
-            _response.Clear();                                                  // Clear the current response list
-            receiveBytes(readCancellationTokenSource.Token);                    // Read the data and store it in a list
+            CancelReadTask();                                               // Stop the current read task
+            readCancellationTokenSource = new CancellationTokenSource();    // Create a cancellation token to stop the reading
+            receiveBytes(readCancellationTokenSource.Token);                // Read the data and store it in a list
             return 0;
         }
 
@@ -138,17 +138,39 @@ namespace BidonDispenser {
                 }
                 
                 cancellationToken.ThrowIfCancellationRequested();                                                                   // If task cancellation was requested, comply
-                serialPortRx.InputStreamOptions = InputStreamOptions.Partial;                                                       
+                serialPortRx.InputStreamOptions = InputStreamOptions.Partial;
                 
                 using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)) {
-                    Task<UInt32> loadAsyncTask = serialPortRx.LoadAsync( 8 ).AsTask(childCancellationTokenSource.Token);            // Create a task object to wait for data on the serialPort.InputStream
 
-                    UInt32 bytesRead = await loadAsyncTask;                                                                         // Launch the task and wait
+                    Boolean foundPreAmble = false;
 
-                    while (serialPortRx.UnconsumedBufferLength > 0) _response.Add(serialPortRx.ReadByte());                         // Store the read bytes
+                    while ( !foundPreAmble) {                                                                                       // Wait for the preamble
+
+                        await serialPortRx.LoadAsync( 1 ).AsTask(childCancellationTokenSource.Token);                               // Wait for one byte to come in
+                        if ( (serialPortRx.UnconsumedBufferLength > 0) && (serialPortRx.ReadByte() == (int) PreAmble.P0) ) {        // Check whether it's the first preamble part or not
+
+                            await serialPortRx.LoadAsync(1).AsTask(childCancellationTokenSource.Token);                             // Wait for one more byte to come in
+                            if ((serialPortRx.UnconsumedBufferLength > 0) && (serialPortRx.ReadByte() == (int) PreAmble.P1)) {      // Check whether it's the second preamble part or not
+                                foundPreAmble = true;
+                            }
+
+                        }
+                    }
+                    
+                    _response.Clear();                                                                                              // Clear the current response list
+
+                    UInt32 bytesRead = await serialPortRx.LoadAsync( 2 ).AsTask(childCancellationTokenSource.Token);                // Wait for two bytes to come in
+                    while (serialPortRx.UnconsumedBufferLength > 0) _response.Add(serialPortRx.ReadByte());                         // Store the read bytes in the response list
+
+                    UInt32 bytesReadPars = 0;
+
+                    if (response.Count() > 1) {
+                        bytesReadPars = await serialPortRx.LoadAsync( response[1] ).AsTask(childCancellationTokenSource.Token);     // Wait for the parameter bytes to come in
+                        while (serialPortRx.UnconsumedBufferLength > 0) _response.Add(serialPortRx.ReadByte());                     // Store those bytes as well
+                    }
 
                     // Print what bytes have been read
-                    System.Diagnostics.Debug.Write("Read " + bytesRead + " bytes: [");
+                    System.Diagnostics.Debug.Write("Read " + (bytesRead+bytesReadPars) + " bytes: [");
                     foreach (byte aByte in _response) System.Diagnostics.Debug.Write(" " + aByte);
                     System.Diagnostics.Debug.WriteLine(" ]");
                 }
