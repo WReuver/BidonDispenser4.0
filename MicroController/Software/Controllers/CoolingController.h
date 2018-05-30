@@ -13,6 +13,7 @@
 
 using namespace Hardware;
 using namespace Sensors;
+using namespace TimerCounter;
 
 namespace Controllers
 {

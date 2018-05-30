@@ -7,7 +7,9 @@
 
 #include "MotorController.h"
 
- Controllers::MotorController::MotorController(Sensors::RotationSensor* rotSensor)
+ Controllers::MotorController::MotorController(Gpio::Pin* rotationSensorPin, TC motorTimerCounter, Gpio::Pin* multiplexPin):
+    motorTimerCounter(motorTimerCounter),
+    multiplexPin(multiplexPin)
 {
-
+    rotationSensor = new RotationSensor(rotationSensorPin);
 }

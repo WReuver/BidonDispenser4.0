@@ -196,6 +196,9 @@
     <Compile Include="Controllers\CoolingController.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Controllers\ledController.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Controllers\MotorController.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -260,9 +263,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sensors\RotationSensor.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sensors\Sensor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sensors\TemperatureSensor.cpp">

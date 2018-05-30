@@ -1,26 +1,24 @@
 ==============================================================================================================================================
 	Dictionary
 ==============================================================================================================================================
-MASTER			= Raspberry Pi
-SLAVE			= Micro Controller
-LENGTH			= Length of the payload
-FALSE			= 0x00
-TRUE			= 0x01
-COLUMNNUMBER 	= 0 ~ 7
+MASTER						= Raspberry Pi
+SLAVE						= Micro Controller
+LENGTH						= Length of the payload
+COLUMNNUMBER 				= 0 ~ 7
+EMPTY STATUS OF ALL COLUMNS	= 0b76543210, each bit indicates if a column is empty or not (0b00100111 => column 0, 1, 2 and 5 are empty)
 ==============================================================================================================================================
 
 
 ==============================================================================================================================================
 	Protocol Format
 ==============================================================================================================================================
-[PREAMBLE0] [PREAMBLE1] [COMMAND] [PARAMETER-LENGTH] [PARAMATERS] [CHECKSUM]
+[PREAMBLE0] [PREAMBLE1] [COMMAND] [PARAMETER-LENGTH] [PARAMATERS]
 
 PREAMBLE0			= 0x00
 PREAMBLE1			= 0xFF
 COMMAND				= See "Command Overview"
-PARAMETER-LENGTH 	= Amount of parameters ([CHECKSUM] not included!)
+PARAMETER-LENGTH 	= Amount of parameters
 PARAMATERS			= See "Command Overview"
-CHECKSUM			= 0xFF - ( [PARAMETER-LENGTH] + [PARAMATERS] )
 ==============================================================================================================================================
 
 
@@ -32,7 +30,7 @@ DESCRIPTION:		Locks all functionalities until unlocked
 MASTER COMMAND:		[0x02]
 MASTER PARAMETERS:	-
 SLAVE COMMAND:		[0x03]
-SLAVE PARAMETERS:	[TRUE] or [FALSE]
+SLAVE PARAMETERS:	-
 
 
 COMMANDNAME: 		Unlock
@@ -40,7 +38,7 @@ DESCRIPTION:		Unlocks all functionalities if locked
 MASTER COMMAND:		[0x04]
 MASTER PARAMETERS:	-
 SLAVE COMMAND:		[0x05]
-SLAVE PARAMETERS:	[TRUE] or [FALSE]
+SLAVE PARAMETERS:	-
 
 
 COMMANDNAME: 		Sense
@@ -48,23 +46,55 @@ DESCRIPTION:		A check used to sense whether the microcontroller is connected or 
 MASTER COMMAND:		[0x06]
 MASTER PARAMETERS:	-
 SLAVE COMMAND:		[0x07]
-SLAVE PARAMETERS:	[0xAA] [0xBB] [0xCC] [0xDD]
+SLAVE PARAMETERS:	[0xAB] [0xBC] [0xCD] [0xDA]
 
 
 COMMANDNAME: 		Temperature Check
 DESCRIPTION:		Command the slave to read the temperatures and accordingly adjust the fan speed,
-						the master can also suppy the slave with a target temperature
+							the master can also suppy the slave with a target temperature
 MASTER COMMAND:		[0x08]
 MASTER PARAMATERS:	[TARGET-TEMPERATURE (optional)]
 SLAVE COMMAND:		[0x09]
-SLAVE PARAMETERS:	[TRUE] or [FALSE]
+SLAVE PARAMETERS:	-
 
 
 COMMANDNAME: 		Dispense
-DESCRIPTION:		Dispenses a bidon from the selected column and returns some data relating to the selected column
+DESCRIPTION:		Command the slave to dispense a bidon from the given column and to return the distance of the given column
 MASTER COMMAND:		[0x0A]
 MASTER PARAMETERS:	[COLUMN-NUMBER]
 SLAVE COMMAND:		[0x0B]
-SLAVE PARAMETERS:	[TRUE] [DISTANCE@COLUMNNUMBER]
-					[FALSE]
+SLAVE PARAMETERS:	if the column is empty:		[0x01]
+					if the column is not empty:	[0x00]
+
+
+COMMANDNAME: 		Distance
+DESCRIPTION:		Command the slave to return all column distances
+MASTER COMMAND:		[0x0C]
+MASTER PARAMETERS:	-
+SLAVE COMMAND:		[0x0D]
+SLAVE PARAMETERS:	[EMPTY STATUS OF ALL COLUMNS]
+==============================================================================================================================================
+
+
+==============================================================================================================================================
+	Slave Exceptions 
+==============================================================================================================================================
+ERRORNAME:			TimeOutError
+SLAVE COMMAND:		[0xE0]
+SLAVE PARAMETERS:	-
+
+
+ERRORNAME:			UnknownCommandError
+SLAVE COMMAND:		[0xE1]
+SLAVE PARAMETERS:	-
+
+
+ERRORNAME:			NotEnoughParameters
+SLAVE COMMAND:		[0xE2]
+SLAVE PARAMETERS:	-
+
+
+ERRORNAME:			Locked
+SLAVE COMMAND:		[0xE3]
+SLAVE PARAMETERS:	-
 ==============================================================================================================================================

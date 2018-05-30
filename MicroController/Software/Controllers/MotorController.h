@@ -9,6 +9,11 @@
 #define __MOTORCONTROLLER_H__
 
 #include "../Sensors/RotationSensor.h"
+#include "../Hardware/TimerCounter.h"
+
+using namespace Hardware;
+using namespace Sensors;
+using namespace TimerCounter;
 
 namespace Controllers 
 {
@@ -18,11 +23,13 @@ namespace Controllers
 		public:
 		protected:
 		private:
-        Sensors::RotationSensor* rotationSensor;
+        RotationSensor* rotationSensor;
+        TC motorTimerCounter;
+        Gpio::Pin* multiplexPin;
         
 		// Methods
 		public:
-		MotorController(Sensors::RotationSensor* rotSensor);
+		MotorController(Gpio::Pin* rotationSensorPin, TC motorTimerCounter, Gpio::Pin* motorMultiplexPin);
 		~MotorController() {};
         
 		protected:

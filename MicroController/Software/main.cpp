@@ -14,6 +14,7 @@
 #include "Master/RaspberryPi.h"
 #include "Controllers/CoolingController.h"
 #include "Controllers/MotorController.h"
+#include "Sensors/DistanceSensor.h"
 
 
 // Name-spaces
@@ -22,28 +23,42 @@ using namespace Communication;
 using namespace Master;
 using namespace Controllers;
 using namespace Gpio;
+using namespace Sensors;
+using namespace TimerCounter;
+
+
+// LEDs
+#define GREENLED    Pin::F3
+#define YELLOWLED   Pin::F4
+#define REDLED      Pin::F6
+#include "Controllers/ledController.h"
 
 
 // Raspberry Pi
 RaspberryPi* raspberryPi;
-Usart::RxTx raspberrySerialPort = Usart::RxTx::C2_C3;
+Usart::RxTx raspberrySerialPort = Usart::RxTx::D2_D3;
 
 
 // Cooling Controller Variables
-MotorController* motorController;
+CoolingController* coolingController;
 Pin temperatureSensorPins[3] = { Pin::D6, Pin::D5, Pin::D4 };
 Pin fanGroupPins[2] = { Pin::C0, Pin::C1 };
-TimerCounter::TC coolingTimerCounter = TimerCounter::TC::TC0C;
+TC coolingTimerCounter = TimerCounter::TC::TC0C;
 
 
 // Motor Controller Variables
-CoolingController* coolingController;
+MotorController* motorController;
 Pin rotationSensorPins[8] = { Pin::A0, Pin::A1, Pin::B2, Pin::B3, Pin::B4, Pin::B5, Pin::B6, Pin::B7 };
-Sensors::RotationSensor* rotationSensor = new Sensors::RotationSensor(rotationSensorPins);
-TimerCounter::TC motorTimerCounter = TimerCounter::TC::TC0D;
+TC motorTimerCounter = TimerCounter::TC::TC0D;
+Pin motorMultiplexPins[3] = { Pin::F2, Pin::F1, Pin::F0 };
 
 
-
+// Distance Sensor
+DistanceSensor* distanceSensor;
+Pin triggerPins[2] = { Pin::C3, Pin::C2 };
+Pin echoPin = Pin::D0;
+Pin distanceMultiplexPins[4] = { Pin::C7, Pin::C6, Pin::C5, Pin::C4 };
+float emptyDistance = 100.0;
 
 
 // Miscellaneous Variables
@@ -128,7 +143,7 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
         response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Dispense);
         response[1] = 0x01;
         
-        // TODO: Add whether the dispensing went fine or not
+        // TODO: Add whether the column just ran out of bottles or not
         response[2] = 0x00;
         
     }
@@ -162,6 +177,7 @@ void executecommand(uint8_t* response, uint8_t* receivedCommand)
         case RaspberryPi::Command::TemperatureCheck:    executeTemperatureCheckCommand(response, receivedCommand);      break;
         case RaspberryPi::Command::Dispense:            executeDispenseCommand(response, receivedCommand);              break;
         case RaspberryPi::Command::Distance:            executeDistanceCommand(response);                               break;
+        default:                                        /* Impossible */                                                break;
     }
 }
 
@@ -198,12 +214,23 @@ void routine(void)
 
 void initialize(void)
 {
+    // Initialize the system clock and the generic timer-counter
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
     TimerCounter::InitializeGenericTC();
     
+    
+    // Initialize the status LEDs
+    SetPinDirection(GREENLED, Dir::Output);
+    SetPinDirection(YELLOWLED, Dir::Output);
+    SetPinDirection(REDLED, Dir::Output);
+    ledController::runningStart();
+    
+    
+    // Initialize all the other hardware
     raspberryPi = new RaspberryPi(raspberrySerialPort);
     coolingController = new CoolingController(temperatureSensorPins, fanGroupPins);
-    //motorController = new MotorController();
+    motorController = new MotorController(rotationSensorPins, motorTimerCounter, motorMultiplexPins);
+    distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins, emptyDistance);
 }
 
 int main()
