@@ -11,26 +11,33 @@
 #include "Sensor.h"
 #include "../Hardware/GenericTC.h"
 
+using namespace Hardware;
+
 namespace Sensors 
 {
-	class DistanceSensor : public Sensor
+	class DistanceSensor
 	{
 		// Variables
 		public:
 		protected:
 		private:
-		float buffer = 0;                                               // Buffer for the data
+		float buffer[16] = { 0.0 };                                     // Buffer for the data
+        Gpio::Pin* triggerPin;                                          // Two trigger pins
+        Gpio::Pin  echoPin;                                             // One echo pin
+		Gpio::Pin* multiplexPin;                                        // Four multiplexer pins
 		
 		// Methods
 		public:
-        DistanceSensor(Hardware::Gpio::Pin* pins);                      // Default constructor
+        DistanceSensor(Gpio::Pin* pins);                                // Default constructor
 		~DistanceSensor() {};                                           // Default destructor
-		virtual void* GetData();                                        // Get the data from the sensor
-
+		float* getData();                                               // Get the data from the sensor
+        uint16_t getSimpleData();                                       // Get the data in a simpler form
+        
 		protected:
 		private:
-        void sendTtl(Hardware::Gpio::Pin pin);                          // Send a TTL pulse on the given pin
-        uint16_t getPulseWidth(Hardware::Gpio::Pin pin);                // Get the width of a pulse on the given pin
+        void setMuxChannel(uint8_t channel);                            // Set the specified multiplex channel
+        void sendTtl(Gpio::Pin pin);                                    // Send a TTL pulse on the given pin
+        uint16_t getPulseWidth(Gpio::Pin pin);                          // Get the width of a pulse on the given pin
         float ticksToCentimeters(uint16_t prescval, uint16_t ticks);    // Convert the amount of ticks to centimeters
 		
 	}; //DistanceSensor
@@ -47,6 +54,6 @@ namespace Sensors
     Sensors::DistanceSensor* ds = new Sensors::DistanceSensor(pins);
     volatile float dist = 0;
     
-    float* pointer = (float*) ds->GetData();
+    float* pointer = ds->GetData();
     dist = *pointer;
 */

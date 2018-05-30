@@ -7,35 +7,48 @@
 
 #include "DistanceSensor.h"
 
-using namespace Hardware;
-
-// pins[0] = Trigger
-// pins[1] = Echo
-
 // Precision calculation (cm/tick) = (1 / ((F_CPU / Presc) / 1000000)) / 58
 // Presc =  256:   0.13793103448 cm/tick
 // Presc = 1024:   0.55172413793 cm/tick
 
-Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* pins) : Sensor(pins)
+Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPin Gpio::Pin echoPin, Gpio::Pin* multiplexPin) : 
+    triggerPin(triggerPin),
+    echoPin(echoPin),
+    multiplexPin(multiplexPin)
 {
-    Gpio::SetPinDirection(pins[0], Gpio::Dir::Output);
-    Gpio::SetPinDirection(pins[1], Gpio::Dir::Input);
+    for (int i = 0; i < 2; i++) 
+        Gpio::SetPinDirection(triggerPin[i], Gpio::Dir::Output);
+    
+    Gpio::SetPinDirection(echoPin, Gpio::Dir::Input);
+     
+    for (int i = 0; i < 4; i++) 
+        Gpio::SetPinDirection(multiplexPin[i], Gpio::Dir::Output);
 }
 
-void* Sensors::DistanceSensor::GetData()
+float* Sensors::DistanceSensor::getData()
 {
     sendTtl(pins[0]);
     uint16_t echo = getPulseWidth(pins[1]);
     buffer = ticksToCentimeters(1024, echo);
     
-    return &buffer;
+    return buffer;
 }
 
-void Sensors::DistanceSensor::sendTtl(Hardware::Gpio::Pin pin)
+uint16_t Sensors::DistanceSensor::getSimpleData()
 {
-    Hardware::Gpio::SetPinValue(pin, Hardware::Gpio::Value::High);
+    
+}
+
+void Sensors::DistanceSensor::setMuxChannel(uint8_t channel)
+{
+    
+}
+
+void Sensors::DistanceSensor::sendTtl(Gpio::Pin pin)
+{
+    Hardware::Gpio::SetPinValue(pin, Gpio::Value::High);
     _delay_us(15);
-    Hardware::Gpio::SetPinValue(pin, Hardware::Gpio::Value::Low);
+    Hardware::Gpio::SetPinValue(pin, Gpio::Value::Low);
 }
 
 uint16_t Sensors::DistanceSensor::getPulseWidth(Gpio::Pin pin)

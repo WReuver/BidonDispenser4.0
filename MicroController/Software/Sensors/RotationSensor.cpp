@@ -7,18 +7,18 @@
 
 #include "RotationSensor.h"
 
- Sensors::RotationSensor::RotationSensor(Gpio::Pin* pins) : Sensor(pins)
+ Sensors::RotationSensor::RotationSensor(Gpio::Pin* pins) : pins(pins)
 {
     for (int i = 0; i < 8; i++) 
         Gpio::SetPinDirection(pins[i], Gpio::Dir::Input);
 }
 
-void* Sensors::RotationSensor::GetData()
+uint8_t Sensors::RotationSensor::getData()
 {
-    buffer = 0b00000000;
+    uint8_t measurement = 0b00000000;
     
     for (int i = 0; i < 8; i++) 
-        buffer |= ( (Gpio::GetPinValue(pins[i]) == Gpio::Value::High) ? 1 << i : 0 );
+        measurement |= ( (Gpio::GetPinValue(pins[i]) == Gpio::Value::High) ? 1 << i : 0 );
     
-    return &buffer;
+    return measurement;
 }

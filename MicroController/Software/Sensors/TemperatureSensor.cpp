@@ -7,17 +7,17 @@
 
 #include "TemperatureSensor.h"
 
-Sensors::TemperatureSensor::TemperatureSensor(Hardware::Gpio::Pin* pins) : Sensor(pins) {}
+Sensors::TemperatureSensor::TemperatureSensor(Hardware::Gpio::Pin* pins) : pins(pins) {}
 
-void* Sensors::TemperatureSensor::GetData()
+float Sensors::TemperatureSensor::getData()
 {
-    if ( initializationSequence() ) return nullptr;
+    if ( initializationSequence() ) return 50.0;
+    
     convertData();
     
-    if ( initializationSequence() ) return nullptr;
-    buffer = rawToCelsius(readRawTemperature());
+    if ( initializationSequence() ) return 50.0;
     
-	return &buffer;
+	return rawToCelsius(readRawTemperature());
 }
 
 uint8_t Sensors::TemperatureSensor::initializationSequence()

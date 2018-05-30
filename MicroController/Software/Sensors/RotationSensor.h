@@ -8,25 +8,27 @@
 #ifndef __ROTATIONSENSOR_H__
 #define __ROTATIONSENSOR_H__
 
-#include "Sensor.h"
+#include "../includes.h"
+#include "../Hardware/Gpio.h"
 
 using namespace Hardware;
 
 namespace Sensors
 {
-	class RotationSensor : public Sensor
+	class RotationSensor
 	{
 		// Variables
 		public:
 		protected:
 		private:
-		uint8_t buffer = 0;                                 // Buffer for the data
+		Hardware::Gpio::Pin* pins;                      // The pins the sensor is connected to
+        
         
 		// Methods
 		public:
-        RotationSensor(Hardware::Gpio::Pin* pins);          // Default constructor
-		~RotationSensor() {};                               // Default destructor
-		virtual void* GetData();                            // Get the data from the sensor
+        RotationSensor(Hardware::Gpio::Pin* pins);      // Default constructor
+		~RotationSensor() {};                           // Default destructor
+		uint8_t getData();                              // Get the data from the sensor
 		
 		protected:
 		private:

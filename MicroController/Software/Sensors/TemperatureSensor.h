@@ -8,12 +8,15 @@
 #ifndef __TEMPERATURESENSOR_H__
 #define __TEMPERATURESENSOR_H__
 
-#include "Sensor.h"
+#include "../includes.h"
+#include "../Hardware/Gpio.h"
 #include "../Communication/OneWire.h"
+
+using namespace Hardware;
 
 namespace Sensors
 {
-	class TemperatureSensor : public Sensor 
+	class TemperatureSensor
 	{
         // Enumerations
         public:
@@ -53,14 +56,14 @@ namespace Sensors
 		public:
 		protected:
 		private:
+		Gpio::Pin* pins;                                    // The pins the sensor is connected to
         Resolution resolution = Resolution::TwelveBit;      // The resolution of the temperature sensor
-		bool buffer = 0;                                    // Buffer for the data
 
 		// Methods
 		public:
 		TemperatureSensor(Hardware::Gpio::Pin* pins);       // Default constructor
 		~TemperatureSensor() {};                            // Default destructor
-		void* GetData();                                    // Get the data from the sensor
+		float getData();                                    // Get the data from the sensor
 		
 		protected:
 		private:
