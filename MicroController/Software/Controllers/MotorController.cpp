@@ -7,7 +7,7 @@
 
 #include "MotorController.h"
 
- Controllers::MotorController::MotorController()
+ Controllers::MotorController::MotorController(Sensors::RotationSensor* rotSensor)
 {
 
 }

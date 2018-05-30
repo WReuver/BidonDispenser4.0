@@ -10,6 +10,8 @@
 
 #include "Sensor.h"
 
+using namespace Hardware;
+
 namespace Sensors
 {
 	class RotationSensor : public Sensor
@@ -18,12 +20,12 @@ namespace Sensors
 		public:
 		protected:
 		private:
-		bool buffer = 0;                                    // Buffer for the data
+		uint8_t buffer = 0;                                 // Buffer for the data
         
 		// Methods
 		public:
         RotationSensor(Hardware::Gpio::Pin* pins);          // Default constructor
-		~RotationSensor();                                  // Default destructor
+		~RotationSensor() {};                               // Default destructor
 		virtual void* GetData();                            // Get the data from the sensor
 		
 		protected:

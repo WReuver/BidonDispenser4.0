@@ -22,8 +22,6 @@ Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* pins) : Sensor(pins)
     Gpio::SetPinDirection(pins[1], Gpio::Dir::Input);
 }
 
-Sensors::DistanceSensor::~DistanceSensor() {}
-
 void* Sensors::DistanceSensor::GetData()
 {
     sendTtl(pins[0]);

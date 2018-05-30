@@ -58,10 +58,9 @@ namespace Sensors
 
 		// Methods
 		public:
-        TemperatureSensor(Hardware::Gpio::Pin* pins);       // Default constructor
-		~TemperatureSensor();                               // Default destructor
+		TemperatureSensor(Hardware::Gpio::Pin* pins);       // Default constructor
+		~TemperatureSensor() {};                            // Default destructor
 		void* GetData();                                    // Get the data from the sensor
-        //bool SetResolution(Resolution resolution);          // Set the resolution of the temperature sensor
 		
 		protected:
 		private:

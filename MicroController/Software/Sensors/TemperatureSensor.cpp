@@ -9,8 +9,6 @@
 
 Sensors::TemperatureSensor::TemperatureSensor(Hardware::Gpio::Pin* pins) : Sensor(pins) {}
 
-Sensors::TemperatureSensor::~TemperatureSensor() {}
-
 void* Sensors::TemperatureSensor::GetData()
 {
     if ( initializationSequence() ) return nullptr;
@@ -21,11 +19,6 @@ void* Sensors::TemperatureSensor::GetData()
     
 	return &buffer;
 }
-
-//bool Sensors::TemperatureSensor::SetResolution(Resolution resolution)
-//{
-//    return false;       // Probably won't be added
-//}
 
 uint8_t Sensors::TemperatureSensor::initializationSequence()
 {

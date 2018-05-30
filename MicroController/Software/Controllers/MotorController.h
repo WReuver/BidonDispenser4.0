@@ -8,6 +8,8 @@
 #ifndef __MOTORCONTROLLER_H__
 #define __MOTORCONTROLLER_H__
 
+#include "../Sensors/RotationSensor.h"
+
 namespace Controllers 
 {
 	class MotorController
@@ -16,12 +18,13 @@ namespace Controllers
 		public:
 		protected:
 		private:
-
+        Sensors::RotationSensor* rotationSensor;
+        
 		// Methods
 		public:
-		MotorController();
+		MotorController(Sensors::RotationSensor* rotSensor);
 		~MotorController() {};
-
+        
 		protected:
 		private:
 

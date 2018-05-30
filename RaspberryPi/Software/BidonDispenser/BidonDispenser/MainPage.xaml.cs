@@ -62,6 +62,7 @@ namespace BidonDispenser {
                 case "Unlock":              data = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };                  break;
                 case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x07 };  break;
                 case "Dispense":            data = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };          break;
+                case "Distance":            data = new byte[] { (byte) MicroController.Command.Distance, 0x00 };                break;
                 default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
             }
 

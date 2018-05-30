@@ -24,7 +24,7 @@ namespace Sensors
 		// Methods
 		public:
         DistanceSensor(Hardware::Gpio::Pin* pins);                      // Default constructor
-		~DistanceSensor();                                              // Default destructor
+		~DistanceSensor() {};                                           // Default destructor
 		virtual void* GetData();                                        // Get the data from the sensor
 
 		protected:

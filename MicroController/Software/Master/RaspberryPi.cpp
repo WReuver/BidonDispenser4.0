@@ -89,6 +89,20 @@ void Master::RaspberryPi::returnResponse(uint8_t* response)
     }        
 }
 
+Master::RaspberryPi::CommandResponse Master::RaspberryPi::getEquivalentCommandResponse(Command cmd)
+{
+    switch (cmd)
+    {
+        case Command::Lock:               return CommandResponse::Lock;
+        case Command::Unlock:             return CommandResponse::Unlock;
+        case Command::Sense:              return CommandResponse::Sense;
+        case Command::TemperatureCheck:   return CommandResponse::TemperatureCheck;
+        case Command::Dispense:           return CommandResponse::Dispense;
+        case Command::Distance:           return CommandResponse::Distance;        
+        default:                          return CommandResponse::ERROR;
+    }
+}
+
 /**
  * Resets the array containing the buffered command
  */
@@ -103,15 +117,16 @@ void Master::RaspberryPi::clearCommandData()
 /**
  * Returns true or false dependent on whether the command exists or not
  */
-bool Master::RaspberryPi::commandExists(uint8_t comm)
+bool Master::RaspberryPi::commandExists(uint8_t cmd)
 {
-    switch (comm) 
+    switch (cmd) 
     {
         case (uint8_t) Command::Lock:               return true;
         case (uint8_t) Command::Unlock:             return true;
         case (uint8_t) Command::Sense:              return true;
         case (uint8_t) Command::TemperatureCheck:   return true;
         case (uint8_t) Command::Dispense:           return true;
+        case (uint8_t) Command::Distance:           return true;
         default:                                    return false;
     }
 }

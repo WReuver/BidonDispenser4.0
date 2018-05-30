@@ -22,12 +22,13 @@ namespace Controllers
 		public:
 		protected:
 		private:
-        
+        TemperatureSensor* temperatureSensor[3];
+        Gpio::Pin fanGroup[2];
 
 		// Methods
 		public:
-		CoolingController();
-		~CoolingController() {};
+		CoolingController(Gpio::Pin* temperatureSensors, Gpio::Pin* fanGroupPins);
+        ~CoolingController() {};
 
 		protected:
 		private:

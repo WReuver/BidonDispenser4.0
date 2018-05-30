@@ -31,9 +31,10 @@ namespace Master
             Sense               = 0x06,
             TemperatureCheck    = 0x08,
             Dispense            = 0x0A,
+            Distance            = 0x0C,
             ERROR               = 0xFF
         };
-    
+        
         // The possible command responses
         enum class CommandResponse {
             Lock                = 0x03,
@@ -41,7 +42,16 @@ namespace Master
             Sense               = 0x07,
             TemperatureCheck    = 0x09,
             Dispense            = 0x0B,
+            Distance            = 0x0D,
             ERROR               = 0xFF
+        };
+        
+        // Communication exceptions
+        enum class ComException {
+            TimeOut             = 0xE0, 
+            Unknown             = 0xE1, 
+            Parameter           = 0xE2,
+            Locked              = 0xE3
         };
         
         
@@ -76,6 +86,11 @@ namespace Master
         void returnResponse(uint8_t* response);
         
         /**
+         * Returns the command response code which is equivalent to the given command
+         */
+        CommandResponse getEquivalentCommandResponse(Command cmd);
+        
+        /**
          * Returns the location of the last received command
          */
         uint8_t* getCommand() { return command; };
@@ -90,7 +105,7 @@ namespace Master
         /**
          * Returns true or false dependent on whether the command exists or not
          */
-        bool commandExists(uint8_t comm);
+        bool commandExists(uint8_t cmd);
         
 	}; //RaspberryPi
 }
