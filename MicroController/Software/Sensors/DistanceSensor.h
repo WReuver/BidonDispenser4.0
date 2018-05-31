@@ -24,7 +24,7 @@ namespace Sensors
 		private:
 		float buffer[16] = { 0.0 };                                                                                 // Buffer for the data
         Gpio::Pin* triggerPin;                                                                                      // Two trigger pins
-        Gpio::Pin  echoPin;                                                                                         // One echo pin
+        Gpio::Pin echoPin;                                                                                          // One echo pin
 		Gpio::Pin* multiplexPin;                                                                                    // Four multiplexer pins
         float emptyDistance;                                                                                        // If the distance is larger than "emptyDistance" the column will be seen as empty
         

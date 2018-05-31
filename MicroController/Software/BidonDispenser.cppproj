@@ -196,9 +196,6 @@
     <Compile Include="Controllers\CoolingController.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Controllers\ledController.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Controllers\MotorController.cpp">
       <SubType>compile</SubType>
     </Compile>

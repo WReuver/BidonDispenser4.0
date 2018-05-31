@@ -13,9 +13,9 @@
 
 /* Columns Layout (Top view, from the front):
  * 
- * ColumnNo:                 0  1  2  3  4  5   6   7
- * ColumnSectionNo (even):  [0][2][4][6][8][10][12][14]  <-- Trigger 0
- * ColumnSectionNo (odd):   [1][3][5][7][9][11][13][15]  <-- Trigger 1
+ * ColumnNo:             00  01  02  03  04  05  06  07
+ * ColumnSectionNo:     [08][09][10][11][12][13][14][15]    <-- Trigger 1
+ * ColumnSectionNo:     [00][01][02][03][04][05][06][07]    <-- Trigger 0
  */
 
 Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPin, Gpio::Pin echoPin, Gpio::Pin* multiplexPin, float emptyDistance) : 
@@ -51,10 +51,10 @@ uint8_t Sensors::DistanceSensor::getSimpleData()
     getData();
     
     // Check every column
-    for (int i = 0; i < 16; i += 2) 
+    for (int i = 0; i < 8; i++) 
     {
-        if ( (buffer[i] > emptyDistance) || (buffer[i+1] > emptyDistance) )     // Every column consists out of two column sections, an even and an odd section. We need to check them both!
-            simpleData |= ( 1 << (i/2) );                                       // Bit-shift the column status to the correct bit
+        if ( (buffer[i] > emptyDistance) || (buffer[i+8] > emptyDistance) )     // Every column consists out of two column sections, an even and an odd section. We need to check them both!
+            simpleData |= ( 1 << i );                                           // Bit-shift the column status to the correct bit
     }
     
     return simpleData;
@@ -89,11 +89,13 @@ float Sensors::DistanceSensor::ticksToCentimeters(uint16_t prescval, uint16_t ti
     return us / 58.0;                                                   // Calculate the distance in centimeters
 }
 
-float Sensors::DistanceSensor::getDistance(uint8_t ColumnSectionNo)
+float Sensors::DistanceSensor::getDistance(uint8_t columnSectionNo)
 {
-    setMuxChannel(ColumnSectionNo);                 // Set the correct mux channel
-    sendTtl(triggerPin[ColumnSectionNo % 2]);       // Send the TTL
+    setMuxChannel(columnSectionNo);                     // Set the correct mux channel
     
-    uint16_t echo = getPulseWidth(echoPin);         // Get the width of the pulse
-    return ticksToCentimeters(1024, echo);          // Return the measured distance in centimeters
+    if (columnSectionNo > 7) sendTtl(triggerPin[1]);    // Send the TTL to trigger 1
+    else sendTtl(triggerPin[0]);                        // Send the TTL to trigger 0
+    
+    uint16_t echo = getPulseWidth(echoPin);             // Get the width of the pulse
+    return ticksToCentimeters(1024, echo);              // Return the measured distance in centimeters
 }

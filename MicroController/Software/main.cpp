@@ -28,10 +28,12 @@ using namespace TimerCounter;
 
 
 // LEDs
-#define GREENLED    Pin::F3
-#define YELLOWLED   Pin::F4
-#define REDLED      Pin::F6
-#include "Controllers/ledController.h"
+Pin greenLed = Pin::F3;
+Pin yellowLed = Pin::F4;
+Pin redLed = Pin::F6;
+void runningLed( uint8_t ledVal ) { SetPinValue(greenLed, (Value) ledVal); }
+void busyLed( uint8_t ledVal ) { SetPinValue(yellowLed, (Value) ledVal); }
+void errorLed( uint8_t ledVal ) { SetPinValue(redLed, (Value) ledVal); }
 
 
 // Raspberry Pi
@@ -71,6 +73,7 @@ void executeLockCommand(uint8_t* response)
 {
     if (locked)
     {
+        errorLed(1);
         response[0] = (uint8_t) RaspberryPi::ComException::Locked;
         response[1] = 0x00;
     }
@@ -93,6 +96,7 @@ void executeSenseCommand(uint8_t* response)
 {
     if (locked)
     {
+        errorLed(1);
         response[0] = (uint8_t) RaspberryPi::ComException::Locked;
         response[1] = 0x00;
     }
@@ -112,6 +116,7 @@ void executeTemperatureCheckCommand(uint8_t* response, uint8_t* receivedCommand)
 {
     if (locked)
     {
+        errorLed(1);
         response[0] = (uint8_t) RaspberryPi::ComException::Locked;
         response[1] = 0x00;
     }
@@ -135,17 +140,31 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
 {
     if (locked)
     {
+        errorLed(1);
         response[0] = (uint8_t) RaspberryPi::ComException::Locked;
         response[1] = 0x00;
     }
     else
     {
-        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Dispense);
-        response[1] = 0x01;
-        
-        // TODO: Add whether the column just ran out of bottles or not
-        response[2] = 0x00;
-        
+        if (receivedCommand[2] > 7) 
+        {
+            errorLed(1);
+            response[0] = (uint8_t) RaspberryPi::ComException::Parameter;   // Add the "Not enough parameters" Exception as command response
+            response[1] = 0x00;                                             // Zero parameters
+        }
+        else
+        {
+            response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Dispense);
+            response[1] = 0x01;
+            
+            motorController->rotateMotor(receivedCommand[2]);
+            
+            // TODO: Add whether the column just ran out of bottles or not
+            if ( distanceSensor->getSimpleData() & (1 << receivedCommand[2]) ) 
+                response[2] = 0x01;
+            else
+                response[2] = 0x00;
+        }
     }
 }
 
@@ -189,6 +208,8 @@ void routine(void)
         uint8_t* receivedCommand = raspberryPi->getCommand();               // Get the location to the received command
         uint8_t response[6] = { 0 };
         
+        busyLed(1);
+        
         switch (operationStatus)
         {
             case 0:     // Everything went fine
@@ -197,18 +218,23 @@ void routine(void)
             
             
             case 1:     // Command does not exist
+            errorLed(1);
             response[0] = (uint8_t) RaspberryPi::ComException::Unknown;     // Add the "Command Unknown" Exception as command response
             response[1] = 0x00;                                             // Zero parameters
             break;
             
             
             case 2:     // Timeout
+            errorLed(1);
             response[0] = (uint8_t) RaspberryPi::ComException::TimeOut;     // Add the "Serial timeout" Exception as command response
             response[1] = 0x00;                                             // Zero parameters
             break;
         }
         
         raspberryPi->returnResponse(response);                              // Return the response
+        
+        busyLed(0);
+        errorLed(0);
     }
 }
 
@@ -218,12 +244,12 @@ void initialize(void)
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
     TimerCounter::InitializeGenericTC();
     
+    _delay_ms(1000);
     
     // Initialize the status LEDs
-    SetPinDirection(GREENLED, Dir::Output);
-    SetPinDirection(YELLOWLED, Dir::Output);
-    SetPinDirection(REDLED, Dir::Output);
-    ledController::runningStart();
+    SetPinDirection(greenLed, Dir::Output);
+    SetPinDirection(yellowLed, Dir::Output);
+    SetPinDirection(redLed, Dir::Output);
     
     
     // Initialize all the other hardware
@@ -236,5 +262,19 @@ void initialize(void)
 int main()
 {
     initialize();
-    routine();
+    runningLed(1);
+    //routine();
+    //runningLed(0);
+    
+    while (1) 
+    {
+        for (int i = 0; i < 8; i++) 
+        {
+            busyLed(1);
+            motorController->rotateMotor(i);
+            busyLed(0);
+            _delay_ms(2000);
+        }
+        
+    }
 }
