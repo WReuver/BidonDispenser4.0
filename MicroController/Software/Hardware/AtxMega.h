@@ -24,7 +24,6 @@ namespace Hardware
 		
 		void SetChangeProtectionMode(ChangeProtectionMode mode);        // Set the change protection mode to the given mode
 		
-		
 	}
 }
 

@@ -76,10 +76,8 @@ namespace Hardware
 		void DisableClockSourceRtc(SourceRtc sourceRtc);            // Disable the preferred RTC source
 		void EnableClockSource(Source source);                      // Enable the preferred CPU source
 		bool IsClockSourceReady(Source source);                     // Check whether the CPU source is ready or not
-        
-        // This function does not work as it was supposed to
-        void RedefineF_Cpu();                                       // Redefine F_CPU so all the delay functions will keep functioning
 		
+        
 		/* 
 		* Functionalities not included:
 		* - - - - - - - - - - - - - - - - - - - - - -

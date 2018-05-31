@@ -24,19 +24,20 @@ namespace Controllers
 		protected:
 		private:
         RotationSensor* rotationSensor;
-        TC motorTimerCounter;
         Gpio::Pin* multiplexPin;
+        TC timerCounter;
+        Gpio::Pin tcPin;
         uint8_t motorNumberToMuxChannel[8] = { 5, 7, 6, 4, 2, 1, 0, 3 };  
               
 		// Methods
 		public:
-		MotorController(Gpio::Pin* rotationSensorPin, TC motorTimerCounter, Gpio::Pin* motorMultiplexPin);
+		MotorController(Gpio::Pin* rotationSensorPin, Gpio::Pin* motorMultiplexPin, TC motorTimerCounter, Gpio::Pin motorTcPin);
 		~MotorController() {};
-        void rotateMotor(uint8_t motor);
+        void rotateMotor(uint8_t motor);                                                                                            // Rotate the specified motor
         
 		protected:
 		private:
-		void setMuxChannel(uint8_t channel);                                                                        // Set the specified multiplex channel
+		void setMuxChannel(uint8_t channel);                                                                                        // Set the specified multiplex channel
 
 	}; //MotorController
 }

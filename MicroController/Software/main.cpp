@@ -33,7 +33,7 @@ Pin yellowLed = Pin::F4;
 Pin redLed = Pin::F6;
 void runningLed( uint8_t ledVal ) { SetPinValue(greenLed, (Value) ledVal); }        // This function controls the "running" LED, it will be on when the device is turned on
 void busyLed( uint8_t ledVal ) { SetPinValue(yellowLed, (Value) ledVal); }          // This function controls the "busy" LED, it will be on when the device is processing a command
-void errorLed( uint8_t ledVal ) { SetPinValue(redLed, (Value) ledVal); }            // This function controls the "error" LED, it will be on when an error has occured
+void errorLed( uint8_t ledVal ) { SetPinValue(redLed, (Value) ledVal); }            // This function controls the "error" LED, it will be on when an error has occurred
 
 
 // Raspberry Pi
@@ -45,14 +45,15 @@ Usart::RxTx raspberrySerialPort = Usart::RxTx::D2_D3;
 CoolingController* coolingController;
 Pin temperatureSensorPins[3] = { Pin::D6, Pin::D5, Pin::D4 };
 Pin fanGroupPins[2] = { Pin::C0, Pin::C1 };
-TC coolingTimerCounter = TimerCounter::TC::TC0C;
+TC coolingTimerCounter = TC::TC0C;
 
 
 // Motor Controller Variables
 MotorController* motorController;
 Pin rotationSensorPins[8] = { Pin::A0, Pin::A1, Pin::B2, Pin::B3, Pin::B4, Pin::B5, Pin::B6, Pin::B7 };
-TC motorTimerCounter = TimerCounter::TC::TC0D;
 Pin motorMultiplexPins[3] = { Pin::F2, Pin::F1, Pin::F0 };
+TC motorTimerCounter = TC::TC0D;
+Pin motorTcPin = Pin::D1;
 
 
 // Distance Sensor
@@ -117,22 +118,16 @@ void executeTemperatureCheckCommand(uint8_t* response, uint8_t* receivedCommand)
     if (locked)
     {
         errorLed(1);
-        response[0] = (uint8_t) RaspberryPi::ComException::Locked;
-        response[1] = 0x00;
+        response[0] = (uint8_t) RaspberryPi::ComException::Locked;                                                      // Add the "Locked
+        response[1] = 0x00;                                                                                             // Zero parametersresponse[1] = 0x00;
     }
     else
     {
-        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::TemperatureCheck);
-        response[1] = 0x00;
+        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::TemperatureCheck);      // Add the equivalent command response
+        response[1] = 0x00;                                                                                             // Add the amount of parameters
         
-        if (receivedCommand[1] == 1)                // Target temperature has been supplied
-        {
-            // TODO: Execute a cooling configuration update
-        } 
-        else                                        // Target temperature has not been supplied
-        {
-            // TODO: Execute a cooling configuration update
-        }
+        if (receivedCommand[1] == 1) coolingController->setLowerTargetTemperature(receivedCommand[2]);                  // Target temperature has been supplied
+        coolingController->updateFanSpeed();                                                                            // Update the fan speed according to the current temperatures
     }
 }
 
@@ -141,29 +136,26 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
     if (locked)
     {
         errorLed(1);
-        response[0] = (uint8_t) RaspberryPi::ComException::Locked;
-        response[1] = 0x00;
+        response[0] = (uint8_t) RaspberryPi::ComException::Locked;                                                      // Add the "Locked
+        response[1] = 0x00;                                                                                             // Zero parametersresponse[1] = 0x00;
     }
     else
     {
         if (receivedCommand[2] > 7) 
         {
             errorLed(1);
-            response[0] = (uint8_t) RaspberryPi::ComException::Parameter;   // Add the "Not enough parameters" Exception as command response
-            response[1] = 0x00;                                             // Zero parameters
+            response[0] = (uint8_t) RaspberryPi::ComException::Parameter;                                               // Add the "Not enough or wrong parameters" exception
+            response[1] = 0x00;                                                                                         // Add the amount of parameters
         }
         else
         {
-            response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Dispense);
-            response[1] = 0x01;
+            response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Dispense);          // Add the equivalent command response
+            response[1] = 0x01;                                                                                         // Add the amount of parameters
             
-            motorController->rotateMotor(receivedCommand[2]);
+            motorController->rotateMotor(receivedCommand[2]);                                                           // Rotate the requested motor
             
-            // TODO: Add whether the column just ran out of bottles or not
-            if ( distanceSensor->getSimpleData() & (1 << receivedCommand[2]) ) 
-                response[2] = 0x01;
-            else
-                response[2] = 0x00;
+            if ( distanceSensor->getSimpleData() & (1 << receivedCommand[2]) ) response[2] = 0x01;                      // The column just became empty
+            else response[2] = 0x00;                                                                                    // The column still contains bottles
         }
     }
 }
@@ -251,8 +243,8 @@ void initialize(void)
     
     // Initialize all the other hardware
     raspberryPi = new RaspberryPi(raspberrySerialPort);
-    coolingController = new CoolingController(temperatureSensorPins, fanGroupPins);
-    motorController = new MotorController(rotationSensorPins, motorTimerCounter, motorMultiplexPins);
+    coolingController = new CoolingController(temperatureSensorPins, fanGroupPins, coolingTimerCounter);
+    motorController = new MotorController(rotationSensorPins, motorMultiplexPins, motorTimerCounter, motorTcPin);
     distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins, emptyDistance);
 }
 
@@ -272,6 +264,5 @@ int main()
             busyLed(0);
             _delay_ms(2000);
         }
-        
     }
 }
