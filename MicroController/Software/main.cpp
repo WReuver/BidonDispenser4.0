@@ -31,9 +31,9 @@ using namespace TimerCounter;
 Pin greenLed = Pin::F3;
 Pin yellowLed = Pin::F4;
 Pin redLed = Pin::F6;
-void runningLed( uint8_t ledVal ) { SetPinValue(greenLed, (Value) ledVal); }
-void busyLed( uint8_t ledVal ) { SetPinValue(yellowLed, (Value) ledVal); }
-void errorLed( uint8_t ledVal ) { SetPinValue(redLed, (Value) ledVal); }
+void runningLed( uint8_t ledVal ) { SetPinValue(greenLed, (Value) ledVal); }        // This function controls the "running" LED, it will be on when the device is turned on
+void busyLed( uint8_t ledVal ) { SetPinValue(yellowLed, (Value) ledVal); }          // This function controls the "busy" LED, it will be on when the device is processing a command
+void errorLed( uint8_t ledVal ) { SetPinValue(redLed, (Value) ledVal); }            // This function controls the "error" LED, it will be on when an error has occured
 
 
 // Raspberry Pi
@@ -172,17 +172,14 @@ void executeDistanceCommand(uint8_t* response)
 {
     if (locked)
     {
-        response[0] = (uint8_t) RaspberryPi::ComException::Locked;
-        response[1] = 0x00;
+        response[0] = (uint8_t) RaspberryPi::ComException::Locked;                                                      // Add the "Locked" exception
+        response[1] = 0x00;                                                                                             // Zero parameters
     }
     else 
     {
-        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Distance);
-        response[1] = 0x01;
-        
-        // TODO: Add the empty status of all columns
-        response[2] = 0x00;
-        
+        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Distance);              // Add the equivalent command response
+        response[1] = 0x01;                                                                                             // Add the amount of parameters
+        response[2] = distanceSensor->getSimpleData();                                                                  // Add the empty state of all eight columns
     }
 }
 
@@ -190,13 +187,13 @@ void executecommand(uint8_t* response, uint8_t* receivedCommand)
 {
     switch ((RaspberryPi::Command) receivedCommand[0])
     {
-        case RaspberryPi::Command::Lock:                executeLockCommand(response);                                   break;
-        case RaspberryPi::Command::Unlock:              executeUnlockCommand(response);                                 break;
-        case RaspberryPi::Command::Sense:               executeSenseCommand(response);                                  break;
-        case RaspberryPi::Command::TemperatureCheck:    executeTemperatureCheckCommand(response, receivedCommand);      break;
-        case RaspberryPi::Command::Dispense:            executeDispenseCommand(response, receivedCommand);              break;
-        case RaspberryPi::Command::Distance:            executeDistanceCommand(response);                               break;
-        default:                                        /* Impossible */                                                break;
+        case RaspberryPi::Command::Lock:                executeLockCommand(response);                                   break;      // Received a lock command
+        case RaspberryPi::Command::Unlock:              executeUnlockCommand(response);                                 break;      // Received an unlock command
+        case RaspberryPi::Command::Sense:               executeSenseCommand(response);                                  break;      // Received a sense command
+        case RaspberryPi::Command::TemperatureCheck:    executeTemperatureCheckCommand(response, receivedCommand);      break;      // Received a temperature check command
+        case RaspberryPi::Command::Dispense:            executeDispenseCommand(response, receivedCommand);              break;      // Received a dispense command
+        case RaspberryPi::Command::Distance:            executeDistanceCommand(response);                               break;      // Received a distance command
+        default:                                                                                                        break;      // Impossible
     }
 }
 
@@ -206,13 +203,13 @@ void routine(void)
     {
         uint8_t operationStatus = raspberryPi->waitForNextCommand();        // 0 = success, 1 = command does not exist, 2 = timeout
         uint8_t* receivedCommand = raspberryPi->getCommand();               // Get the location to the received command
-        uint8_t response[6] = { 0 };
+        uint8_t response[6] = { 0 };                                        // The response will never be larger than six bytes
         
         busyLed(1);
         
         switch (operationStatus)
         {
-            case 0:     // Everything went fine
+            case 0:     // Everything went fine, the command is recognized and there was no timeout
             executecommand(response, receivedCommand);
             break;
             
