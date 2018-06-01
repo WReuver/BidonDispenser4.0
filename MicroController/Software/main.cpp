@@ -189,7 +189,7 @@ void executecommand(uint8_t* response, uint8_t* receivedCommand)
     }
 }
 
-void routine(void)
+void runRoutine(void)
 {
     while (1)
     {
@@ -233,8 +233,6 @@ void initialize(void)
     SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
     TimerCounter::InitializeGenericTC();
     
-    _delay_ms(1000);
-    
     // Initialize the status LEDs
     SetPinDirection(greenLed, Dir::Output);
     SetPinDirection(yellowLed, Dir::Output);
@@ -248,11 +246,72 @@ void initialize(void)
     distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins, emptyDistance);
 }
 
+uint8_t dispenseStatus = 0;
+
+void executeTestCommand(uint8_t* response, uint8_t* receivedCommand)
+{
+    response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse((RaspberryPi::Command) receivedCommand[0]);
+    
+    switch ((RaspberryPi::Command) receivedCommand[0])
+    {
+        case RaspberryPi::Command::Sense:       response[1] = 0x04; response[2] = IDENTIFIER[0]; response[3] = IDENTIFIER[1]; response[4] = IDENTIFIER[2]; response[5] = IDENTIFIER[3]; break;
+        case RaspberryPi::Command::Dispense:    response[1] = 0x01; response[2] = ( dispenseStatus++ % 2 ); break;
+        case RaspberryPi::Command::Distance:    response[1] = 0x01; response[2] = 0x03; break;
+        default:                                response[1] = 0x00;
+    }
+}
+
+void runTestRoutine(void) 
+{
+    while (1)
+    {
+        uint8_t operationStatus = raspberryPi->waitForNextCommand();        // 0 = success, 1 = command does not exist, 2 = timeout
+        uint8_t* receivedCommand = raspberryPi->getCommand();               // Get the location to the received command
+        uint8_t response[6] = { 0 };                                        // The response will never be larger than six bytes
+        
+        switch (operationStatus)
+        {
+            case 0:     // Everything went fine, the command is recognized and there was no timeout
+            executeTestCommand(response, receivedCommand);
+            break;
+            
+            
+            case 1:     // Command does not exist
+            errorLed(1);
+            response[0] = (uint8_t) RaspberryPi::ComException::Unknown;     // Add the "Command Unknown" Exception as command response
+            response[1] = 0x00;                                             // Zero parameters
+            break;
+            
+            
+            case 2:     // Timeout
+            errorLed(1);
+            response[0] = (uint8_t) RaspberryPi::ComException::TimeOut;     // Add the "Serial timeout" Exception as command response
+            response[1] = 0x00;                                             // Zero parameters
+            break;
+        }
+        
+        raspberryPi->returnResponse(response);                              // Return the response
+    }
+}
+
+void testInitialize(void)
+{
+    // Initialize the system clock and the generic timer-counter
+    SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
+    TimerCounter::InitializeGenericTC();
+    
+    // Initialize all the other hardware
+    raspberryPi = new RaspberryPi(raspberrySerialPort);
+}
+
 int main()
 {
-    initialize();
-    runningLed(1);
-    //routine();
+    testInitialize();
+    runTestRoutine();
+    
+    //initialize();
+    //runningLed(1);
+    //runRoutine();
     //runningLed(0);
     
     while (1) 
