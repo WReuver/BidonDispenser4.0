@@ -9,7 +9,7 @@ using Windows.Devices.Gpio;
 using Windows.Devices.Spi;
 
 namespace BidonDispenser {
-    class Pn532 {
+    class Pn532Software {
         public enum Operation {
             DataWrite = 0x01,
             StatusRead = 0x02,
@@ -59,26 +59,121 @@ namespace BidonDispenser {
         private SpiDevice spiPort;
         private bool spiIsInitialized = false;
 
-        public Pn532(int spiBusNo) {
-            initSpi(spiBusNo);
+        private GpioPin chipSelect;       // GPIO  8
+        private GpioPin minSout;          // GPIO  9
+        private GpioPin moutSin;          // GPIO 10
+        private GpioPin sourceClock;      // GPIO 11
+
+        public Pn532Software() {
+            initializePins();
         }
+
+
+
+        private async void initializePins() {
+            GpioController gpio = await GpioController.GetDefaultAsync();
+
+            if (gpio == null) {
+                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+                return;
+            }
+
+            chipSelect = gpio.OpenPin(8);
+            minSout = gpio.OpenPin(9);
+            moutSin = gpio.OpenPin(10);
+            sourceClock = gpio.OpenPin(11);
+
+            chipSelect.SetDriveMode(GpioPinDriveMode.Output);
+            minSout.SetDriveMode(GpioPinDriveMode.Input);
+            moutSin.SetDriveMode(GpioPinDriveMode.Output);
+            sourceClock.SetDriveMode(GpioPinDriveMode.Output);
+
+            chipSelect.Write(GpioPinValue.High);
+            moutSin.Write(GpioPinValue.Low);
+            sourceClock.Write(GpioPinValue.Low);
+
+            System.Diagnostics.Debug.WriteLine("The SPI pins have been initialized");
+            spiIsInitialized = true;
+        }
+
+        private byte spiTransceive(byte b) {
+            byte response = 0;
+
+            for (int i = 0; i < 8; i++) {
+                moutSin.Write((GpioPinValue) ((b >> i) & 0b1));
+                Thread.Sleep(TimeSpan.FromTicks(100));
+                sourceClock.Write(GpioPinValue.High);
+                response |= (byte) (((byte) minSout.Read()) << i);
+                Thread.Sleep(TimeSpan.FromTicks(100));
+                sourceClock.Write(GpioPinValue.Low);
+            }
+
+            return response;
+        }
+
+        private void spiWrite(byte[] data) {
+            System.Diagnostics.Debug.Write("Writing: \t");
+            for (int i = 0; i < data.Length; i++)
+                System.Diagnostics.Debug.Write(data[i] + " ");
+            System.Diagnostics.Debug.Write("\n");
+
+            data = swapBitOrder(data);
+
+            for (int i = 0; i < data.Length; i++) {
+                Thread.Sleep(1);
+                spiTransceive(data[i]);
+            }
+        }
+
+        private byte[] spiRead(int amount) {
+            byte[] readBuffer = new byte[amount];
+
+            for (int i = 0; i < amount; i++) {
+                Thread.Sleep(1);
+                readBuffer[i] = spiTransceive(0x00);
+            }
+            
+            readBuffer = swapBitOrder(readBuffer);
+
+            // Print what has been read
+            System.Diagnostics.Debug.Write("Reading: \t");
+            for (int i = 0; i < readBuffer.Length; i++)
+                System.Diagnostics.Debug.Write(readBuffer[i] + " ");
+            System.Diagnostics.Debug.Write("\n");
+
+            // Return the read data
+            return readBuffer;
+        }
+        
+        private void spiEnable() {
+            chipSelect.Write(GpioPinValue.Low);
+            Thread.Sleep(2);
+        }
+
+        private void spiDisable() {
+            chipSelect.Write(GpioPinValue.High);
+        }
+
+        //spiEnable();
+        //spiTransceive((byte) Operation.DataRead);
+        //readBuffer = spiRead(amount);
+        //spiDisable();
+
+
 
         private async void initSpi(int spiBusNo) {
             try {
                 System.Diagnostics.Debug.WriteLine("Initializing the SPI");
                 var settings = new SpiConnectionSettings(spiBusNo);
-                settings.ClockFrequency = 1_000_000;                      // Okay
+                settings.ClockFrequency = 100_000;                      // Okay
+                settings.DataBitLength = 8;                             // Okay
+                settings.SharingMode = SpiSharingMode.Exclusive;        // Okay
                 settings.Mode = SpiMode.Mode0;                          // Okay
 
-
-                var controller = await SpiController.GetDefaultAsync();
-                spiPort = controller.GetDevice(settings);
-
-                
-                //string spiAqs = SpiDevice.GetDeviceSelector();
-                //var devicesInfo = await DeviceInformation.FindAllAsync(spiAqs);
+                string spiAqs = SpiDevice.GetDeviceSelector("SPI0");
+                var devicesInfo = await DeviceInformation.FindAllAsync(spiAqs);
                 //System.Diagnostics.Debug.WriteLine("Device id: "+ devicesInfo[0].Id);
-                //spiPort = await SpiDevice.FromIdAsync(devicesInfo[0].Id, settings);
+                spiPort = await SpiDevice.FromIdAsync(devicesInfo[0].Id, settings);
             } catch (Exception e) {
                 System.Diagnostics.Debug.WriteLine("SPI Initialisation Error: ", e.Message);
             } finally {
@@ -124,7 +219,10 @@ namespace BidonDispenser {
             writeBuffer[7 + command.Length + 0] = (byte) (~checkSum & 0xFF);
             writeBuffer[7 + command.Length + 1] = (byte) Protocol.PostAmble;
 
-            writeData(writeBuffer);
+            //writeData(writeBuffer);
+            spiEnable();
+            spiWrite(writeBuffer);
+            spiDisable();
         }
 
         // Converts data to "least significant bit first"
@@ -139,7 +237,15 @@ namespace BidonDispenser {
 
         private bool readAck() {
             byte[] pn532Ack = { 0x00, 0x00, 0xFF, 0x00, 0xFF, 0x00};
-            byte[] ackBuffer = readData(6);
+            //byte[] ackBuffer = readData(6);
+
+            System.Diagnostics.Debug.Write("Writing: \t"+ (byte) Operation.DataRead);
+
+            spiEnable();
+            spiTransceive((byte) Operation.DataRead);
+
+            byte[] ackBuffer = spiRead(6);
+            spiDisable();
 
             return ackBuffer.SequenceEqual(pn532Ack);
         }
@@ -147,9 +253,17 @@ namespace BidonDispenser {
         public bool isReady() {
             byte[] command = { (byte) Operation.StatusRead };
             byte[] response = new byte[1];
-            
-            writeData(command);
-            response = readRaw(1);
+
+            //writeData(command);
+            //response = readRaw(1);
+
+            spiEnable();
+            spiWrite(command);
+            spiDisable();
+
+            spiEnable();
+            response = spiRead(1);
+            spiDisable();
 
             return ((response[0] & 0b1) == 1);
         }
@@ -168,55 +282,7 @@ namespace BidonDispenser {
 
             return true;
         }
-
-        // Read data from the SPI port
-        public byte[] readData(int amount) {
-            byte[] command = { (byte) Operation.DataRead };
-            byte[] readBuffer = new byte[amount];
-
-            writeData(command);                                     // Send the "read data" command
-            spiPort.Read(readBuffer);
-            readBuffer = swapBitOrder(readBuffer);
-
-            // Print what has been read
-            System.Diagnostics.Debug.Write("Reading: \t");
-            for (int i = 0; i < readBuffer.Length; i++)
-                System.Diagnostics.Debug.Write(readBuffer[i] + " ");
-            System.Diagnostics.Debug.Write("\n");
-
-            // Return the read data
-            return readBuffer;
-        }
-
-        // Read data from the SPI port without the "read data" command
-        public byte[] readRaw(int amount) {
-            byte[] readBuffer = new byte[amount];
-            
-            spiPort.Read(readBuffer);
-            readBuffer = swapBitOrder(readBuffer);
-
-            // Print what has been read
-            System.Diagnostics.Debug.Write("Reading: \t");
-            for (int i = 0; i < readBuffer.Length; i++)
-                System.Diagnostics.Debug.Write(readBuffer[i] + " ");
-            System.Diagnostics.Debug.Write("\n");
-
-            // Return the read data
-            return readBuffer;
-        }
-
-        // Write data to the SPI port
-        public void writeData(byte[] data) {
-
-            System.Diagnostics.Debug.Write("Writing: \t");
-            for (int i = 0; i < data.Length; i++)
-                System.Diagnostics.Debug.Write(data[i]+" ");
-            System.Diagnostics.Debug.Write("\n");
-
-            data = swapBitOrder(data);
-            spiPort.Write(data);
-        }
-
+       
         public void setup() {
             while (!spiIsInitialized);
 
@@ -239,7 +305,11 @@ namespace BidonDispenser {
             if (!sendCommandAck(command, 1_000))
                 return false;
 
-            response = readData(12);
+            //response = readData(12);
+
+            spiEnable();
+            response = spiRead(12);
+            spiDisable();
 
             return response.SequenceEqual(pn532Response);
         }
@@ -251,16 +321,15 @@ namespace BidonDispenser {
             if (!sendCommandAck(command))
                 return false;
 
-            response = readData(8);
+            //response = readData(8);
+
+            spiEnable();
+            response = spiRead(8);
+            spiDisable();
 
             return (response[5] == 0x15);
         }
 
-
-
-        public void dispose() {
-            spiPort.Dispose();
-        }
 
     }
 }

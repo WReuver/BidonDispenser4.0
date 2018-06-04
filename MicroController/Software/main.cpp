@@ -306,22 +306,57 @@ void testInitialize(void)
 
 int main()
 {
-    testInitialize();
-    runTestRoutine();
+    //testInitialize();
+    //runTestRoutine();
     
-    //initialize();
-    //runningLed(1);
+    initialize();
+    runningLed(1);
     //runRoutine();
     //runningLed(0);
     
     while (1) 
     {
-        for (int i = 0; i < 8; i++) 
-        {
-            busyLed(1);
-            motorController->rotateMotor(i);
-            busyLed(0);
-            _delay_ms(2000);
-        }
+        busyLed(1);
+        motorController->rotateMotor(0);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(1);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(2);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(3);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(4);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(5);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(6);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        busyLed(1);
+        motorController->rotateMotor(7);
+        busyLed(0);
+        _delay_ms(1000);
+        
+        
+        
     }
 }

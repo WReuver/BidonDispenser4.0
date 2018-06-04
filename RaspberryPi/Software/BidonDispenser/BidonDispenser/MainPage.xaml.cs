@@ -21,11 +21,14 @@ namespace BidonDispenser {
         private const Double promotionMsPerTick = 200;
         private const int msUntilPromotionMediaSwitch = 30_000;
         
+        //private Pn532Software nfcModule;
         private Pn532 nfcModule;
         private MicroController mc = null;
 
         public MainPage() {
             this.InitializeComponent();
+
+            Unloaded += unloadMainPage;
 
             // Check on which device we're running
             System.Diagnostics.Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
@@ -36,11 +39,13 @@ namespace BidonDispenser {
             initializePromotionTimer();
             
             if (windowsIot) {
-                initButtons();
-                mc = new MicroController();
-                
-                //nfcModule = new Pn532(0);
+                //initButtons();
+                //mc = new MicroController();
+
+                //nfcModule = new Pn532Software();
+                nfcModule = new Pn532(0);
                 //nfcModule.setup();
+                
             }
         }
 
@@ -52,6 +57,11 @@ namespace BidonDispenser {
 
             if (!windowsIot)
                 return;
+
+            //////////////////////////////////////////////////////
+            nfcModule.setup();
+            return;
+            //////////////////////////////////////////////////////
 
             String buttonFunction = ((Button) sender).Name;
             byte[] data;
@@ -250,6 +260,11 @@ namespace BidonDispenser {
         }
         
         
+
+        private void unloadMainPage(object sender, object args) {
+            nfcModule.dispose();
+            mc.dispose();
+        }
 
     }
 }

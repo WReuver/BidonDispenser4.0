@@ -101,6 +101,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MicroController.cs" />
+    <Compile Include="Pn532Software.cs" />
     <Compile Include="Pn532.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

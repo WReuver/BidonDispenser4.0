@@ -28,8 +28,8 @@ void Controllers::MotorController::rotateMotor(uint8_t motorNumber)
     setMuxChannel(motorNumberToMuxChannel[motorNumber]);
     
     TimerCounter::SetDutyCycleOnPin(timerCounter, 50, Gpio::GetPinNumber(tcPin));       // Set the duty cycle on pin 1 to 50%
-    _delay_ms(500);                                                                     // Wait a little bit
-    while ( rotationSensor->getData() == ( 1 << motorNumber ) );                        // Wait until a gap is seen by the IR sensor
+    _delay_ms(400);                                                                     // Wait a little bit
+    while (! (rotationSensor->getData() && ( 1 << motorNumber )) );                     // Wait until a gap is seen by the IR sensor
     TimerCounter::SetDutyCycleOnPin(timerCounter, 0, Gpio::GetPinNumber(tcPin));        // Set the duty cycle on pin 0 to 00%
 }
 

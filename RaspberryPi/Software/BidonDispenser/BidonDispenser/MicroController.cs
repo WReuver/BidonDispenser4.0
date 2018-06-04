@@ -198,5 +198,11 @@ namespace BidonDispenser {
             }
         }
 
+
+
+        public void dispose() {
+            serialPort.Dispose();
+        }
+
     }
 }
