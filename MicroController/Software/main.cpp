@@ -44,8 +44,8 @@ Usart::RxTx raspberrySerialPort = Usart::RxTx::D2_D3;
 // Cooling Controller Variables
 CoolingController* coolingController;
 Pin temperatureSensorPins[3] = { Pin::D6, Pin::D5, Pin::D4 };
-Pin fanGroupPins[2] = { Pin::C0, Pin::C1 };
-TC coolingTimerCounter = TC::TC0C;
+Pin fanGroupPins[2] = { Pin::C1, Pin::C0 };
+TC coolingTc = TC::TC0C;
 
 
 // Motor Controller Variables
@@ -237,18 +237,20 @@ void initialize(void)
     SetPinDirection(greenLed, Dir::Output);
     SetPinDirection(yellowLed, Dir::Output);
     SetPinDirection(redLed, Dir::Output);
-    
-    
+}
+
+void initializeHardware(void) 
+{
     // Initialize all the other hardware
     raspberryPi = new RaspberryPi(raspberrySerialPort);
-    coolingController = new CoolingController(temperatureSensorPins, fanGroupPins, coolingTimerCounter);
-    motorController = new MotorController(rotationSensorPins, motorMultiplexPins, motorTimerCounter, motorTcPin);
+    coolingController = new CoolingController(temperatureSensorPins, fanGroupPins, coolingTc);
+    motorController = new MotorController(motorMultiplexPins, motorTimerCounter, motorTcPin);
     distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins, emptyDistance);
 }
 
 uint8_t dispenseStatus = 0;
 
-void executeTestCommand(uint8_t* response, uint8_t* receivedCommand)
+void raspiTestCommand(uint8_t* response, uint8_t* receivedCommand)
 {
     response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse((RaspberryPi::Command) receivedCommand[0]);
     
@@ -261,8 +263,15 @@ void executeTestCommand(uint8_t* response, uint8_t* receivedCommand)
     }
 }
 
-void runTestRoutine(void) 
+void testRaspi(void) 
 {
+    // Initialize the system clock and the generic timer-counter
+    SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
+    TimerCounter::InitializeGenericTC();
+    
+    // Initialize all the other hardware
+    raspberryPi = new RaspberryPi(raspberrySerialPort);
+    
     while (1)
     {
         uint8_t operationStatus = raspberryPi->waitForNextCommand();        // 0 = success, 1 = command does not exist, 2 = timeout
@@ -272,7 +281,7 @@ void runTestRoutine(void)
         switch (operationStatus)
         {
             case 0:     // Everything went fine, the command is recognized and there was no timeout
-            executeTestCommand(response, receivedCommand);
+            raspiTestCommand(response, receivedCommand);
             break;
             
             
@@ -294,69 +303,35 @@ void runTestRoutine(void)
     }
 }
 
-void testInitialize(void)
+void testMotors(void) 
 {
-    // Initialize the system clock and the generic timer-counter
-    SystemClock::SetClockSource(SystemClock::Source::RC32MHz);
-    TimerCounter::InitializeGenericTC();
+    busyLed(1);
     
-    // Initialize all the other hardware
-    raspberryPi = new RaspberryPi(raspberrySerialPort);
+    while (1)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            motorController->rotateMotor(i);
+            _delay_ms(120000);
+        }
+    }
+}
+
+void testFans(void) 
+{
+    //coolingController->setFangroupSpeed(0, 20);
+    coolingController->setFangroupSpeed(1, 20);
 }
 
 int main()
 {
-    //testInitialize();
-    //runTestRoutine();
-    
     initialize();
-    runningLed(1);
+    initializeHardware();
+    //runningLed(1);
     //runRoutine();
     //runningLed(0);
     
-    while (1) 
-    {
-        busyLed(1);
-        motorController->rotateMotor(0);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(1);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(2);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(3);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(4);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(5);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(6);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        busyLed(1);
-        motorController->rotateMotor(7);
-        busyLed(0);
-        _delay_ms(1000);
-        
-        
-        
-    }
+    testFans();
+    testMotors();
+    
 }

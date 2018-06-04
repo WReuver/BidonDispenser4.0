@@ -25,6 +25,7 @@ namespace Controllers
 		private:
         TemperatureSensor* temperatureSensor[3];
         Gpio::Pin fanGroup[2];
+        TC timerCounter;
         float lowerTargetTemperature = 3.0;
         float lowerTemperature = 50.0;
         float middleTemperature = 50.0;
@@ -37,6 +38,7 @@ namespace Controllers
         ~CoolingController() {};
         void updateFanSpeed();                                                                                  // Read the temperature from the temperature sensors and adjust the fan speed accordingly
         void setLowerTargetTemperature(float targetTemp);                                                       // Set the target temperature of the lower temperature sensor
+        void setFangroupSpeed(uint8_t groupNo, uint8_t fanSpeed);
         
         
 		protected:
