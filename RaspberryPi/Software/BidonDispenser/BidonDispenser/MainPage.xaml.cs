@@ -16,11 +16,10 @@ using Windows.UI.Core;
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
         private MainModel mainModel = new MainModel();
-        private Boolean windowsIot = false;
 
-        private const Double promotionMsPerTick = 200;
-        private const int msUntilPromotionMediaSwitch = 30_000;
-        
+        private Boolean windowsIot = false;
+        private int columnAmount = 0;
+
         //private Pn532Software nfcModule;
         private Pn532 nfcModule;
         private MicroController mc = null;
@@ -28,6 +27,7 @@ namespace BidonDispenser {
         public MainPage() {
             this.InitializeComponent();
 
+            // Add the "unloadMainPage" function to the callbacks when the program is shutting down
             Unloaded += unloadMainPage;
 
             // Check on which device we're running
@@ -71,7 +71,7 @@ namespace BidonDispenser {
                 case "Sense":               data = new byte[] { (byte) MicroController.Command.Sense, 0x00 };                   break;
                 case "Lock":                data = new byte[] { (byte) MicroController.Command.Lock, 0x00 };                    break;
                 case "Unlock":              data = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };                  break;
-                case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x07 };  break;
+                case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x03 };  break;
                 case "Dispense":            data = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };          break;
                 case "Distance":            data = new byte[] { (byte) MicroController.Command.Distance, 0x00 };                break;
                 default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
@@ -85,7 +85,7 @@ namespace BidonDispenser {
 
         // Buttons //////
 
-        private Boolean buttonPressed = false;
+        private Boolean buttonsDisabled = false;
         private readonly int[] BUTTON_PIN = { 20, 21, 26, 16, 19, 13, 12, 6 };
         private List<GpioPin> buttonPins = new List<GpioPin>();
 
@@ -117,8 +117,8 @@ namespace BidonDispenser {
 
             if (e.Edge == GpioPinEdge.RisingEdge) {
 
-                if (buttonPressed) return;
-                buttonPressed = true;
+                if (buttonsDisabled) return;
+                buttonsDisabled = true;
 
                 int buttonNo = buttonPins.IndexOf(sender);
                 System.Diagnostics.Debug.WriteLine("Button " + buttonNo + " has been pressed");
@@ -152,8 +152,73 @@ namespace BidonDispenser {
                     default: break;
                 }
 
-                buttonPressed = false;
+                buttonsDisabled = false;
             }
+        }
+
+
+        // Misc Gpio //////
+
+        private readonly int DOOR_PIN = 5;
+        private GpioPin doorPin;                                    // High when the door is open
+        
+        private void initMiscGpio() {
+            GpioController gpio = GpioController.GetDefault();
+
+            if (gpio == null) {
+                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+                return;
+            }
+
+            doorPin = gpio.OpenPin(DOOR_PIN);
+
+            // Set the doorpin's drive mode to input and pullup (if supported)
+            if (doorPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp)) doorPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else doorPin.SetDriveMode(GpioPinDriveMode.Input);
+
+            doorPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
+            doorPin.ValueChanged += doorValueHasChanged;
+
+            System.Diagnostics.Debug.WriteLine("The misc gpio has been initialized");
+        }
+
+        private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            GpioPinValue pinVal = doorPin.Read();
+
+            if (pinVal == GpioPinValue.Low) {
+                // TODO: Unlock the microcontroller
+            } else {
+                // TODO: Lock the microcontroller
+            }
+        }
+
+
+        // Column Amount Selector Jumper //////
+
+        private readonly int COLUMNSELECTOR_PIN = 23;
+        
+        private int howManyColumnsAreThere() {
+            GpioController gpio = GpioController.GetDefault();
+
+            if (gpio != null) {
+
+                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);
+                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);
+
+                GpioPinValue pinVal = columnSelectorPin.Read();
+
+                if (pinVal == GpioPinValue.High)            // High = 4 columns
+                    return 4;
+                else if (pinVal == GpioPinValue.Low)        // Low = 8 columns
+                    return 8;
+                else
+                    return 0;                               // Err
+
+            } else {
+                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+            }
+
+            return 0;
         }
 
 
@@ -227,9 +292,12 @@ namespace BidonDispenser {
             thankYouTimer.Stop();
             showPickColourPanel();
         }
-        
-        
+
+
         // Promotion Timer //////
+
+        private const Double promotionMsPerTick = 200;
+        private const int msUntilPromotionMediaSwitch = 30_000;
 
         private void initializePromotionTimer() {
             DispatcherTimer promotionTimer = new DispatcherTimer();
@@ -258,6 +326,24 @@ namespace BidonDispenser {
             if (mainModel.promotionTimerTickCounter >= msUntilPromotionMediaSwitch) {
                 mainModel.promotionSource = (MainModel.promotionMediaName) (currentPromotionSource);            // Load the promotion source
             }
+        }
+
+
+        // Maintenance Timer //////
+
+        private const int maintenanceMinutesPerTick = 30;
+
+        private void initializeMaintenanceTimer() {
+            DispatcherTimer mainenanceTimer = new DispatcherTimer();
+            mainenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
+            mainenanceTimer.Tick += maintenanceTimerTick;
+            mainenanceTimer.Start();
+
+            System.Diagnostics.Debug.WriteLine("The maintenance timer has been initialized");
+        }
+
+        private void maintenanceTimerTick(object sender, object e) {
+
         }
         
         
