@@ -319,8 +319,8 @@ void testMotors(void)
 
 void testFans(void) 
 {
-    //coolingController->setFangroupSpeed(0, 20);
-    coolingController->setFangroupSpeed(1, 20);
+    coolingController->setFangroupSpeed(0, 0);
+    coolingController->setFangroupSpeed(1, 100);
 }
 
 int main()
@@ -331,7 +331,7 @@ int main()
     //runRoutine();
     //runningLed(0);
     
-    testFans();
+    //testFans();
     testMotors();
     
 }

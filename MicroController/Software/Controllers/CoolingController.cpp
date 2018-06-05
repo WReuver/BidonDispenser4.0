@@ -41,7 +41,7 @@ void Controllers::CoolingController::updateFanSpeed()
     }
     else
     {
-        setFangroupSpeed(0, 20);
+        setFangroupSpeed(0, 40);
         setFangroupSpeed(1, 0);
     }
 }
