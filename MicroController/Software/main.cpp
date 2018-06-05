@@ -323,6 +323,28 @@ void testFans(void)
     coolingController->setFangroupSpeed(1, 90);
 }
 
+void testDistSensor(void) 
+{
+    while (1) 
+    {
+        busyLed(1);
+        
+        volatile float distances[16] = { 0.0 };
+        float* resultLocation = distanceSensor->getData();
+        
+        for (int i = 0; i < 16; i++)
+            distances[i] = resultLocation[i];
+        
+        //const int sensorNo = 9;
+        
+        //for (int i = sensorNo; i < (sensorNo+1); i++)
+            //distances[i] = distanceSensor->getOneData(i);
+        
+        
+        busyLed(0);
+    }
+}
+
 int main()
 {
     initialize();
@@ -333,5 +355,6 @@ int main()
     
     //testFans();
     //testMotors();
+    //testDistSensor();
     
 }
