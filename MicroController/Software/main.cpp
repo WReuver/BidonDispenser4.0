@@ -44,7 +44,7 @@ Usart::RxTx raspberrySerialPort = Usart::RxTx::D2_D3;
 // Cooling Controller Variables
 CoolingController* coolingController;
 Pin temperatureSensorPins[3] = { Pin::D6, Pin::D5, Pin::D4 };
-Pin fanGroupPins[2] = { Pin::C1, Pin::C0 };
+Pin fanGroupPins[2] = { Pin::C0, Pin::C1 };
 TC coolingTc = TC::TC0C;
 
 
@@ -319,8 +319,19 @@ void testMotors(void)
 
 void testFans(void) 
 {
-    //coolingController->setFangroupSpeed(0, 50);
-    coolingController->setFangroupSpeed(1, 90);
+    //coolingController->setFangroupSpeed(0, 100);
+    //coolingController->setFangroupSpeed(1, 100);
+    
+    while (1) 
+    {
+        //coolingController->setFangroupSpeed(0, 80);
+        //coolingController->setFangroupSpeed(1, 80);
+        _delay_ms(5000);
+        //coolingController->setFangroupSpeed(0, 0);
+        //coolingController->setFangroupSpeed(1, 0);
+        _delay_ms(5000);
+    }
+    
 }
 
 void testDistSensor(void) 
@@ -335,7 +346,7 @@ void testDistSensor(void)
         for (int i = 0; i < 16; i++)
             distances[i] = resultLocation[i];
         
-        //const int sensorNo = 9;
+        //const int sensorNo = 13;
         
         //for (int i = sensorNo; i < (sensorNo+1); i++)
             //distances[i] = distanceSensor->getOneData(i);
@@ -353,7 +364,7 @@ int main()
     //runRoutine();
     //runningLed(0);
     
-    //testFans();
+    testFans();
     //testMotors();
     //testDistSensor();
     

@@ -28,6 +28,7 @@ Controllers::CoolingController::CoolingController(Gpio::Pin* temperatureSensorPi
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[0]));           // Enable the TC signal on the fangroup 0 pin
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[1]));           // Enable the TC signal on the fangroup 1 pin
     TimerCounter::SetPeriod(timerCounter, 250);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
+                                                                                        // Set the period to 250 (Source Clock / (Prescaler * (Period + 1)) = 127.490)
 }
 
 void Controllers::CoolingController::updateFanSpeed()

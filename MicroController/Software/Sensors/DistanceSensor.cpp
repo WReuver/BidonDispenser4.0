@@ -47,7 +47,7 @@ float* Sensors::DistanceSensor::getData()
     for (int i = 0; i < 16; i++) 
     {
         buffer[i] = getDistance(i);         // Get the distance of each sensor
-        _delay_ms(100);                     // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
+        _delay_ms(40);                      // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
     }
     
     return (float*) buffer;                 // Return a pointer which points to where the read data is stored
