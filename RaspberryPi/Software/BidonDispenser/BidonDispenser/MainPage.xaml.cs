@@ -39,11 +39,12 @@ namespace BidonDispenser {
             initializePromotionTimer();
             
             if (windowsIot) {
-                //initButtons();
-                //mc = new MicroController();
+                initButtons();
+                mc = new MicroController();
 
+                // Initialize the NFC module
                 //nfcModule = new Pn532Software();
-                nfcModule = new Pn532(0);
+                //nfcModule = new Pn532(0);
                 //nfcModule.setup();
                 
             }
@@ -260,10 +261,14 @@ namespace BidonDispenser {
         }
         
         
+        // Program shutdown //////
 
         private void unloadMainPage(object sender, object args) {
             nfcModule.dispose();
             mc.dispose();
+
+            foreach (GpioPin button in buttonPins)
+                button.Dispose();
         }
 
     }

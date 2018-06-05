@@ -309,18 +309,18 @@ void testMotors(void)
     
     while (1)
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 2; i < 8; i++)
         {
             motorController->rotateMotor(i);
-            _delay_ms(120000);
+            _delay_ms(2500);
         }
     }
 }
 
 void testFans(void) 
 {
-    coolingController->setFangroupSpeed(0, 0);
-    coolingController->setFangroupSpeed(1, 100);
+    //coolingController->setFangroupSpeed(0, 50);
+    coolingController->setFangroupSpeed(1, 90);
 }
 
 int main()
@@ -332,6 +332,6 @@ int main()
     //runningLed(0);
     
     //testFans();
-    testMotors();
+    //testMotors();
     
 }

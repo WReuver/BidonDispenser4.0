@@ -23,11 +23,11 @@ Controllers::CoolingController::CoolingController(Gpio::Pin* temperatureSensorPi
     fanGroup[1] = fanGroupPins[1];
     
     // Initialize the timercounter
-    TimerCounter::SetClock(timerCounter, ClockValue::Div8);                             // Start the clock for the timercounter and set the prescaler to 1
+    TimerCounter::SetClock(timerCounter, ClockValue::Div1);                             // Start the clock for the timercounter and set the prescaler to 1
     TimerCounter::SetWaveformGenMode(timerCounter, WaveformGenMode::SingleSlope);       // Set the waveform generation mode to Single slope PWM
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[0]));           // Enable the TC signal on the fangroup 0 pin
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[1]));           // Enable the TC signal on the fangroup 1 pin
-    TimerCounter::SetPeriod(timerCounter, 532);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
+    TimerCounter::SetPeriod(timerCounter, 250);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
 }
 
 void Controllers::CoolingController::updateFanSpeed()
