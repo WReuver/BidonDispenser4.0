@@ -40,10 +40,13 @@ namespace Controllers
         void setLowerTargetTemperature(float targetTemp);                                                       // Set the target temperature of the lower temperature sensor
         void setFangroupSpeed(uint8_t groupNo, uint8_t fanSpeed);
         
+        void gatherTemperatures();                                                                              // Reads the temperatures from the lower, middle and upper temperature sensors and stores the data in the designated variable
+        float getLowerTemperature();                                                                            // Basic getter for the lower temperature
+        float getMiddleTemperature();                                                                           // Basic getter for the middle temperature
+        float getUpperTemperature();                                                                            // Basic getter for the upper temperature
         
 		protected:
 		private:
-        void gatherTemperatures();                                                                              // Reads the temperatures from the lower, middle and upper temperature sensors and stores the data in the designated variable
         
         
 	}; //CoolingController

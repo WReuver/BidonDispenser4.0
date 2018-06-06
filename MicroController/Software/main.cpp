@@ -319,19 +319,37 @@ void testMotors(void)
 
 void testFans(void) 
 {
-    //coolingController->setFangroupSpeed(0, 100);
-    //coolingController->setFangroupSpeed(1, 100);
+    coolingController->setFangroupSpeed(0, 100);        // Lower fans
+    coolingController->setFangroupSpeed(1, 100);        // Upper fans
     
     while (1) 
     {
         //coolingController->setFangroupSpeed(0, 80);
         //coolingController->setFangroupSpeed(1, 80);
-        _delay_ms(5000);
+        //_delay_ms(5000);
         //coolingController->setFangroupSpeed(0, 0);
         //coolingController->setFangroupSpeed(1, 0);
-        _delay_ms(5000);
+        //_delay_ms(5000);
     }
     
+}
+
+void temperatureCheckTest(void) 
+{
+    while (1) 
+    {
+        busyLed(1);
+        
+        volatile float temperatures[3] = { 50.0 };
+        
+        coolingController->gatherTemperatures();
+        
+        temperatures[0] = coolingController->getLowerTemperature();
+        temperatures[1] = coolingController->getMiddleTemperature();
+        temperatures[2] = coolingController->getUpperTemperature();
+        
+        busyLed(0);
+    }
 }
 
 void testDistSensor(void) 
@@ -364,8 +382,9 @@ int main()
     //runRoutine();
     //runningLed(0);
     
-    testFans();
     //testMotors();
+    //testFans();
+    //temperatureCheckTest();
     //testDistSensor();
     
 }
