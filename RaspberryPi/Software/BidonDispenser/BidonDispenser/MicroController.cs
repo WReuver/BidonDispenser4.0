@@ -50,12 +50,16 @@ namespace BidonDispenser {
         };
 
 
-        public Boolean serialInitialized { get; private set; } = false;
+        private Boolean serialInitialized = false;
         private SerialDevice serialPort;
         private DataWriter serialPortTx;
         private DataReader serialPortRx;
         private CancellationTokenSource readCancellationTokenSource;
-        public List<byte> _response = new List<byte>();
+
+        private Mutex rightToExecuteCommand = new Mutex();
+        private int mutexTimeout = 15;
+        
+        private List<byte> _response = new List<byte>();
         public ReadOnlyCollection<byte> response => _response.AsReadOnly();
 
 
@@ -63,7 +67,151 @@ namespace BidonDispenser {
             initializeSerialPort(receiveTimeout);
         }
 
-        public Boolean transmitCommand(byte[] bytes) {
+
+        // 0 => Everything went fine
+        // 1 => Serial port is not initialized
+        // 2 => Regular Exception
+        // 3 => Critical Exception
+        public async Task<int> sendSenseCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Sense, 0x00 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+            
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+                
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+        public async Task<int> sendLockCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Lock, 0x00 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+        public async Task<int> sendUnlockCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+        public async Task<int> sendTemperatureCheckCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x03 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+        public async Task<int> sendDispenseCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+        public async Task<int> sendDistanceCommand() {
+            if (!serialInitialized)
+                return 1;
+
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Distance, 0x00 };
+            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            int response = -1;
+
+            try {
+                transmitCommand(bytesToSend);
+                response = await waitForResponse();
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                response = 3;
+
+            } finally {
+                rightToExecuteCommand.ReleaseMutex();
+            }
+
+            return response;
+        }
+
+
+        private void transmitCommand(byte[] bytes) {
             byte[] command = new byte[bytes.Length + 2];    // Bytes + preamble0 + preamble1
 
             command[0] = (byte) PreAmble.P0;                // Add the preamble part 1
@@ -73,15 +221,12 @@ namespace BidonDispenser {
                 command[2 + i] = bytes[i];
             
             transmitBytes(command);
-
-            return false;
         }
-
-        public byte waitForResponse() {
+        
+        private async Task<int> waitForResponse() {
             CancelReadTask();                                               // Stop the current read task
             readCancellationTokenSource = new CancellationTokenSource();    // Create a cancellation token to stop the reading
-            receiveBytes(readCancellationTokenSource.Token);                // Read the data and store it in a list
-            return 0;
+            return await receiveBytes(readCancellationTokenSource.Token);   // Read the data and store it in a list
         }
 
         private async void initializeSerialPort(int receiveTimeout) {
@@ -139,12 +284,15 @@ namespace BidonDispenser {
             }
         }
 
-        private async void receiveBytes(CancellationToken cancellationToken) {
+        // 0 => Everything went fine
+        // 1 => Serial port is not initialized
+        // 2 => Exception
+        private async Task<int> receiveBytes(CancellationToken cancellationToken) {
             try {
 
                 if (!serialInitialized) {
                     System.Diagnostics.Debug.WriteLine("The serial port is not initialized!");
-                    return;
+                    return 1;
                 }
                 
                 cancellationToken.ThrowIfCancellationRequested();                                                                   // If task cancellation was requested, comply
@@ -185,8 +333,11 @@ namespace BidonDispenser {
                     System.Diagnostics.Debug.WriteLine(" ]");
                 }
 
+                return 0;
+
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
+                return 2;
             }
         }
 

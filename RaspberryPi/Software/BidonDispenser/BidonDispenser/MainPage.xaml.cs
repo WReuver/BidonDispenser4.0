@@ -18,6 +18,7 @@ namespace BidonDispenser {
         private MainModel mainModel = new MainModel();
 
         private Boolean windowsIot = false;
+        private Boolean setupError = false;
         private int columnAmount = 0;
 
         //private Pn532Software nfcModule;
@@ -39,14 +40,24 @@ namespace BidonDispenser {
             initializePromotionTimer();
             
             if (windowsIot) {
-                initButtons();
                 mc = new MicroController();
 
+                columnAmount = howManyColumnsAreThere();
+
+                // TODO: Do change the UI according to the amount of columns
+
+                if (!initButtons(columnAmount))
+                    setupError = true;
+
+                
+
+
+                
+                
                 // Initialize the NFC module
                 //nfcModule = new Pn532Software();
                 //nfcModule = new Pn532(0);
                 //nfcModule.setup();
-                
             }
         }
 
@@ -60,57 +71,56 @@ namespace BidonDispenser {
                 return;
 
             //////////////////////////////////////////////////////
-            nfcModule.setup();
-            return;
+            //nfcModule.setup();
+            //return;
             //////////////////////////////////////////////////////
 
             String buttonFunction = ((Button) sender).Name;
-            byte[] data;
 
             switch (buttonFunction) {
-                case "Sense":               data = new byte[] { (byte) MicroController.Command.Sense, 0x00 };                   break;
-                case "Lock":                data = new byte[] { (byte) MicroController.Command.Lock, 0x00 };                    break;
-                case "Unlock":              data = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };                  break;
-                case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x03 };  break;
-                case "Dispense":            data = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };          break;
-                case "Distance":            data = new byte[] { (byte) MicroController.Command.Distance, 0x00 };                break;
+                case "Sense":               mc.sendSenseCommand();              break;
+                case "Lock":                mc.sendLockCommand();               break;
+                case "Unlock":              mc.sendUnlockCommand();             break;
+                case "TemperatureCheck":    mc.sendTemperatureCheckCommand();   break;
+                case "Dispense":            mc.sendDispenseCommand();           break;
+                case "Distance":            mc.sendDistanceCommand();           break;
                 default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
             }
-
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
         }
 
 
         // Buttons //////
 
         private Boolean buttonsDisabled = false;
-        private readonly int[] BUTTON_PIN = { 20, 21, 26, 16, 19, 13, 12, 6 };
+        private readonly int[] BUTTON_PINS = { 20, 21, 26, 16, 19, 13, 12, 6 };
         private List<GpioPin> buttonPins = new List<GpioPin>();
 
-        private void initButtons() {
-            GpioController gpio = GpioController.GetDefault();
+        private Boolean initButtons(int amount) {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
 
             if (gpio == null) {
                 System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
-                return;
+                return false;
             }
+
+            if (amount > 8)         amount = 8;                                                         // Max amount of eight
+            else if (amount < 0)    amount = 0;                                                         // Min amount of zero
             
-            for (int i = 0; i < BUTTON_PIN.Length; i++) {
-                buttonPins.Add(gpio.OpenPin(BUTTON_PIN[i]));                                // Open all the button pins
+            for (int i = 0; i < amount; i++) {
+                buttonPins.Add(gpio.OpenPin(BUTTON_PINS[i]));                                           // Open the button pins
 
-                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullDown)) {   // Set the buttons' drive mode to input and pulldown (if supported)
+                // Set the buttons' drive mode to input and pulldown (if supported)
+                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullDown))
                     buttonPins[i].SetDriveMode(GpioPinDriveMode.InputPullDown);
-                } else {
+                else
                     buttonPins[i].SetDriveMode(GpioPinDriveMode.Input);
-                }
 
-                buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);              // Set the buttons' debouncetimeout
-                buttonPins[i].ValueChanged += buttonValueHasChanged;                        // Configure which method has to be called when the button value has changed
+                buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);                          // Set a debounce timeout of 50ms
+                buttonPins[i].ValueChanged += buttonValueHasChanged;                                    // Add a callback
             }
 
-            System.Diagnostics.Debug.WriteLine("The buttons have been initialized");
+            System.Diagnostics.Debug.WriteLine(amount+" buttons have been initialized");
+            return true;
         }
 
         private void buttonValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
@@ -157,38 +167,47 @@ namespace BidonDispenser {
         }
 
 
-        // Misc Gpio //////
+        // Door Sensor //////
 
         private readonly int DOOR_PIN = 5;
-        private GpioPin doorPin;                                    // High when the door is open
+        private GpioPin doorSensorPin;
         
-        private void initMiscGpio() {
-            GpioController gpio = GpioController.GetDefault();
+        private Boolean initDoorSensor() {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
 
             if (gpio == null) {
                 System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
-                return;
+                return false;
             }
 
-            doorPin = gpio.OpenPin(DOOR_PIN);
+            doorSensorPin = gpio.OpenPin(DOOR_PIN);                                                     // Open the door sensor pin
 
             // Set the doorpin's drive mode to input and pullup (if supported)
-            if (doorPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp)) doorPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
-            else doorPin.SetDriveMode(GpioPinDriveMode.Input);
+            if (doorSensorPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                doorSensorPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else
+                doorSensorPin.SetDriveMode(GpioPinDriveMode.Input);
 
-            doorPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);
-            doorPin.ValueChanged += doorValueHasChanged;
+            doorSensorPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);                              // Set a debounce timeout of 50ms
+            doorSensorPin.ValueChanged += doorValueHasChanged;                                          // Add a callback
 
             System.Diagnostics.Debug.WriteLine("The misc gpio has been initialized");
+            return true;
         }
 
-        private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
-            GpioPinValue pinVal = doorPin.Read();
+        private async void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            GpioPinValue pinVal = doorSensorPin.Read();
 
             if (pinVal == GpioPinValue.Low) {
-                // TODO: Unlock the microcontroller
-            } else {
-                // TODO: Lock the microcontroller
+                while ((await mc.sendUnlockCommand()) == 2);            // Send the unlock command until succesfull
+
+                // Should we execute the mainenance check and restart the maintenance timer here?
+                //maintenanceTimer.Stop();
+                //maintenanceTimerTick(null, null);
+                //initializeMaintenanceTimer();
+
+            } else { 
+                while ((await mc.sendLockCommand()) == 2);              // Send the lock command until succesfull
             }
         }
 
@@ -198,27 +217,27 @@ namespace BidonDispenser {
         private readonly int COLUMNSELECTOR_PIN = 23;
         
         private int howManyColumnsAreThere() {
-            GpioController gpio = GpioController.GetDefault();
+            GpioController gpio = GpioController.GetDefault();                  // Get the default Gpio Controller
 
             if (gpio != null) {
 
-                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);
-                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);
+                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);   // Open the column selector pin
+                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);         // Set the pin to input
 
-                GpioPinValue pinVal = columnSelectorPin.Read();
+                GpioPinValue pinVal = columnSelectorPin.Read();                 // Read the pin value
+                columnSelectorPin.Dispose();                                    // Dispose the pin again
 
-                if (pinVal == GpioPinValue.High)            // High = 4 columns
+                if (pinVal == GpioPinValue.High)                                // High = 4 columns
                     return 4;
-                else if (pinVal == GpioPinValue.Low)        // Low = 8 columns
+                else if (pinVal == GpioPinValue.Low)                            // Low = 8 columns
                     return 8;
                 else
-                    return 0;                               // Err
+                    return 0;                                                   // Err = 0 columns
 
             } else {
                 System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+                return 0;                                                       // Err = 0 columns
             }
-
-            return 0;
         }
 
 
@@ -279,7 +298,7 @@ namespace BidonDispenser {
 
         // Thank You Timer //////
 
-        DispatcherTimer thankYouTimer;
+        private DispatcherTimer thankYouTimer;
         
         private void startThankYouTimer() {
             thankYouTimer = new DispatcherTimer();
@@ -296,11 +315,12 @@ namespace BidonDispenser {
 
         // Promotion Timer //////
 
+        private DispatcherTimer promotionTimer;
         private const Double promotionMsPerTick = 200;
         private const int msUntilPromotionMediaSwitch = 30_000;
 
         private void initializePromotionTimer() {
-            DispatcherTimer promotionTimer = new DispatcherTimer();
+            promotionTimer = new DispatcherTimer();
             promotionTimer.Interval = TimeSpan.FromMilliseconds(promotionMsPerTick);
             promotionTimer.Tick += promotionTimerTick;
             promotionTimer.Start();
@@ -331,30 +351,45 @@ namespace BidonDispenser {
 
         // Maintenance Timer //////
 
-        private const int maintenanceMinutesPerTick = 30;
+        private DispatcherTimer maintenanceTimer;
+        private const int maintenanceMinutesPerTick = 15;
 
         private void initializeMaintenanceTimer() {
-            DispatcherTimer mainenanceTimer = new DispatcherTimer();
-            mainenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
-            mainenanceTimer.Tick += maintenanceTimerTick;
-            mainenanceTimer.Start();
+            maintenanceTimer = new DispatcherTimer();
+            maintenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
+            maintenanceTimer.Tick += maintenanceTimerTick;
+            maintenanceTimer.Start();
 
             System.Diagnostics.Debug.WriteLine("The maintenance timer has been initialized");
         }
 
-        private void maintenanceTimerTick(object sender, object e) {
-
+        private async void maintenanceTimerTick(object sender, object e) {
+            int status = await mc.sendTemperatureCheckCommand();                        // Send the temperature check command
+            
+            // TODO: Decide what to do with each status    
         }
         
         
         // Program shutdown //////
 
         private void unloadMainPage(object sender, object args) {
-            nfcModule.dispose();
-            mc.dispose();
 
+            // Dispose the NFC module and the microcontroller
+            nfcModule?.dispose();
+            mc?.dispose();
+
+
+            // Dispose all pins
             foreach (GpioPin button in buttonPins)
-                button.Dispose();
+                button?.Dispose();
+
+            doorSensorPin?.Dispose();
+
+
+            // Stop all timers
+            thankYouTimer?.Stop();
+            promotionTimer?.Stop();
+            maintenanceTimer?.Stop();
         }
 
     }
