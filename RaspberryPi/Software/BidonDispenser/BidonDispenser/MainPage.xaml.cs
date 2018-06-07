@@ -199,7 +199,13 @@ namespace BidonDispenser {
             GpioPinValue pinVal = doorSensorPin.Read();
 
             if (pinVal == GpioPinValue.Low) {
-                while ((await mc.sendUnlockCommand()) == 2);            // Send the unlock command until succesfull
+                int status = -1;
+
+                do {
+
+                    status = await mc.sendUnlockCommand();
+
+                } while (status == 2);                                  // Send the unlock command until succesfull
 
                 // Should we execute the mainenance check and restart the maintenance timer here?
                 //maintenanceTimer.Stop();
