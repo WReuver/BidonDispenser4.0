@@ -93,13 +93,13 @@ Master::RaspberryPi::CommandResponse Master::RaspberryPi::getEquivalentCommandRe
 {
     switch (cmd)
     {
-        case Command::Lock:               return CommandResponse::Lock;
-        case Command::Unlock:             return CommandResponse::Unlock;
-        case Command::Sense:              return CommandResponse::Sense;
-        case Command::TemperatureCheck:   return CommandResponse::TemperatureCheck;
-        case Command::Dispense:           return CommandResponse::Dispense;
-        case Command::Distance:           return CommandResponse::Distance;        
-        default:                          return CommandResponse::ERROR;
+        case Command::Lock:             return CommandResponse::Lock;
+        case Command::Unlock:           return CommandResponse::Unlock;
+        case Command::Sense:            return CommandResponse::Sense;
+        case Command::Temperature:      return CommandResponse::Temperature;
+        case Command::Dispense:         return CommandResponse::Dispense;
+        case Command::Distance:         return CommandResponse::Distance;        
+        default:                        return CommandResponse::ERROR;
     }
 }
 
@@ -124,7 +124,7 @@ bool Master::RaspberryPi::commandExists(uint8_t cmd)
         case (uint8_t) Command::Lock:               return true;
         case (uint8_t) Command::Unlock:             return true;
         case (uint8_t) Command::Sense:              return true;
-        case (uint8_t) Command::TemperatureCheck:   return true;
+        case (uint8_t) Command::Temperature:        return true;
         case (uint8_t) Command::Dispense:           return true;
         case (uint8_t) Command::Distance:           return true;
         default:                                    return false;

@@ -49,13 +49,12 @@ SLAVE COMMAND:		[0x07]
 SLAVE PARAMETERS:	[0xAB] [0xBC] [0xCD] [0xDA]
 
 
-COMMANDNAME: 		Temperature Check
-DESCRIPTION:		Command the slave to read the temperatures and accordingly adjust the fan speed,
-							the master can also suppy the slave with a target temperature
+COMMANDNAME: 		Temperature
+DESCRIPTION:		Command the slave to return the three temperature values
 MASTER COMMAND:		[0x08]
-MASTER PARAMATERS:	[TARGET-TEMPERATURE (optional)]
+MASTER PARAMATERS:	-
 SLAVE COMMAND:		[0x09]
-SLAVE PARAMETERS:	-
+SLAVE PARAMETERS:	[LOWER TEMPERATURE * 5] [MIDDLE TEMPERATURE * 5] [UPPER TEMPERATURE * 5]
 
 
 COMMANDNAME: 		Dispense
