@@ -69,19 +69,12 @@ namespace BidonDispenser {
 
             if (!windowsIot)
                 return;
-
-            //////////////////////////////////////////////////////
-            //nfcModule.setup();
-            //return;
-            //////////////////////////////////////////////////////
-
-            String buttonFunction = ((Button) sender).Name;
-
-            switch (buttonFunction) {
+            
+            switch (((Button) sender).Name) {
                 case "Sense":               mc.sendSenseCommand();              break;
                 case "Lock":                mc.sendLockCommand();               break;
                 case "Unlock":              mc.sendUnlockCommand();             break;
-                case "TemperatureCheck":    mc.sendTemperatureCheckCommand();   break;
+                case "Temperature":         mc.sendTemperatureCommand();        break;
                 case "Dispense":            mc.sendDispenseCommand();           break;
                 case "Distance":            mc.sendDistanceCommand();           break;
                 default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
@@ -247,6 +240,31 @@ namespace BidonDispenser {
         }
 
 
+        // Commands //////
+
+        private async void sendCommand(MicroController.Command command) {
+
+            Task<int> commandTask = null;
+
+            switch (command) {
+                case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
+                case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
+                case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
+                case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
+                case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
+                case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
+            }
+
+            if (commandTask == null)
+                return;
+
+            int status = await commandTask;
+
+            // LEFT OFF HERE
+
+        }
+        
+        
         // Panel Show //////
 
         private enum uiPanel {
@@ -370,7 +388,7 @@ namespace BidonDispenser {
         }
 
         private async void maintenanceTimerTick(object sender, object e) {
-            int status = await mc.sendTemperatureCheckCommand();                        // Send the temperature check command
+            int status = await mc.sendTemperatureCommand();                        // Send the temperature check command
             
             // TODO: Decide what to do with each status    
         }

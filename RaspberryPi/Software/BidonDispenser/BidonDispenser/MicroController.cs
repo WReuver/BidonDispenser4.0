@@ -24,7 +24,7 @@ namespace BidonDispenser {
             Lock = 0x02,
             Unlock = 0x04,
             Sense = 0x06,
-            TemperatureCheck = 0x08,
+            Temperature = 0x08,
             Dispense = 0x0A,
             Distance = 0x0C,
             ERROR = 0xFF
@@ -35,7 +35,7 @@ namespace BidonDispenser {
             Lock = 0x03,
             Unlock = 0x05,
             Sense = 0x07,
-            TemperatureCheck = 0x09,
+            Temperature = 0x09,
             Dispense = 0x0B,
             Distance = 0x0D,
             ERROR = 0xFF
@@ -141,11 +141,11 @@ namespace BidonDispenser {
             return response;
         }
 
-        public async Task<int> sendTemperatureCheckCommand() {
+        public async Task<int> sendTemperatureCommand() {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x03 };
+            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Temperature, 0x01, 0x03 };
             rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
             int response = -1;
 

@@ -39,14 +39,13 @@
             Margin="10"
             Spacing="14">
 
-            <Button Name="Sense"            FontSize="50"   HorizontalAlignment="Center"    Content="Sense"                 Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="Lock"             FontSize="50"   HorizontalAlignment="Center"    Content="Lock"                  Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="Unlock"           FontSize="50"   HorizontalAlignment="Center"    Content="Unlock"                Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="TemperatureCheck" FontSize="50"   HorizontalAlignment="Center"    Content="Temperature Check"     Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="Dispense"         FontSize="50"   HorizontalAlignment="Center"    Content="Dispense"              Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="Distance"         FontSize="50"   HorizontalAlignment="Center"    Content="Distance"              Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Sense"        FontSize="50"   HorizontalAlignment="Center"    Content="Sense"         Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Lock"         FontSize="50"   HorizontalAlignment="Center"    Content="Lock"          Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Unlock"       FontSize="50"   HorizontalAlignment="Center"    Content="Unlock"        Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Temperature"  FontSize="50"   HorizontalAlignment="Center"    Content="Temperature"   Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Dispense"     FontSize="50"   HorizontalAlignment="Center"    Content="Dispense"      Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
+            <Button Name="Distance"     FontSize="50"   HorizontalAlignment="Center"    Content="Distance"      Click="serialTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
 
-            
         </StackPanel>
         
         <!-- "Pick A Colour" Panel -->
