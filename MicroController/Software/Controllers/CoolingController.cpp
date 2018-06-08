@@ -11,13 +11,9 @@ Controllers::CoolingController::CoolingController(Gpio::Pin* temperatureSensorPi
     timerCounter(coolingTimerCounter)
 {
     // Initialize the pins
-    Gpio::Pin ts0[1] = { temperatureSensorPins[0] };
-    Gpio::Pin ts1[1] = { temperatureSensorPins[1] };
-    Gpio::Pin ts2[1] = { temperatureSensorPins[2] };
-    
-    temperatureSensor[0] = new TemperatureSensor(ts0);
-    temperatureSensor[1] = new TemperatureSensor(ts1);
-    temperatureSensor[2] = new TemperatureSensor(ts2);
+    temperatureSensor[0] = new TemperatureSensor( (Gpio::Pin*) &temperatureSensorPins[0] );
+    temperatureSensor[1] = new TemperatureSensor( (Gpio::Pin*) &temperatureSensorPins[1] );
+    temperatureSensor[2] = new TemperatureSensor( (Gpio::Pin*) &temperatureSensorPins[2] );
     
     fanGroup[0] = fanGroupPins[0];
     fanGroup[1] = fanGroupPins[1];
@@ -27,7 +23,8 @@ Controllers::CoolingController::CoolingController(Gpio::Pin* temperatureSensorPi
     TimerCounter::SetWaveformGenMode(timerCounter, WaveformGenMode::SingleSlope);       // Set the waveform generation mode to Single slope PWM
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[0]));           // Enable the TC signal on the fangroup 0 pin
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[1]));           // Enable the TC signal on the fangroup 1 pin
-    TimerCounter::SetPeriod(timerCounter, 250);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
+    TimerCounter::SetPeriod(timerCounter, 532);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
+                                                                                        // Set the period to 250 (Source Clock / (Prescaler * (Period + 1)) = 127.490)
 }
 
 void Controllers::CoolingController::updateFanSpeed()
@@ -36,13 +33,13 @@ void Controllers::CoolingController::updateFanSpeed()
     
     if (lowerTargetTemperature < lowerTemperature) 
     {
-        setFangroupSpeed(0, 100);
-        setFangroupSpeed(1, 100);
+        //setFangroupSpeed(0, 100);
+        //setFangroupSpeed(1, 100);
     }
     else
     {
-        setFangroupSpeed(0, 40);
-        setFangroupSpeed(1, 0);
+        //setFangroupSpeed(0, 40);
+        //setFangroupSpeed(1, 0);
     }
 }
 
@@ -61,5 +58,20 @@ void Controllers::CoolingController::gatherTemperatures()
     lowerTemperature = temperatureSensor[0]->getData();
     middleTemperature = temperatureSensor[1]->getData();
     upperTemperature = temperatureSensor[2]->getData();
+}
+
+float Controllers::CoolingController::getLowerTemperature()
+{
+    return lowerTemperature;
+}
+
+float Controllers::CoolingController::getMiddleTemperature()
+{
+    return middleTemperature;
+}
+
+float Controllers::CoolingController::getUpperTemperature()
+{
+    return upperTemperature;
 }
 

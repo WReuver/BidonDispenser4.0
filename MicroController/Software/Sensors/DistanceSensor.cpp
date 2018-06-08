@@ -14,35 +14,48 @@
 /* Columns Layout (Top view, from the front):
  * 
  * ColumnNo:             00  01  02  03  04  05  06  07
- * ColumnSectionNo:     [08][09][10][11][12][13][14][15]    <-- Trigger 1
- * ColumnSectionNo:     [00][01][02][03][04][05][06][07]    <-- Trigger 0
+ * ColumnSectionNo:     [08][01][10][03][12][05][14][07]
+ * ColumnSectionNo:     [00][09][02][11][04][13][06][15]
+ *
+ * [00] t/m [07] --> Trigger 0
+ * [08] t/m [15] --> Trigger 1
+ * 
  */
 
-Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPin, Gpio::Pin echoPin, Gpio::Pin* multiplexPin, float emptyDistance) : 
-    // Initialize some variables
-    triggerPin(triggerPin), 
-    echoPin(echoPin), 
-    multiplexPin(multiplexPin),
-    emptyDistance(emptyDistance)
+Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPins, Gpio::Pin echoPins, Gpio::Pin* multiplexPins, float theEmptyDistance) 
 {
     for (int i = 0; i < 2; i++) 
+    {
+        triggerPin[i] = triggerPins[i];
         Gpio::SetPinDirection(triggerPin[i], Gpio::Dir::Output);        // Configure the trigger pins as output
+    }        
     
+    echoPin = echoPins;
     Gpio::SetPinDirection(echoPin, Gpio::Dir::Input);                   // Configure the echo pin as input
      
     for (int i = 0; i < 4; i++) 
+    {
+        multiplexPin[i] = multiplexPins[i];
         Gpio::SetPinDirection(multiplexPin[i], Gpio::Dir::Output);      // Configure the mux pins as output
+    }
+    
+    emptyDistance = theEmptyDistance;
 }
 
 float* Sensors::DistanceSensor::getData()
 {
     for (int i = 0; i < 16; i++) 
     {
-        buffer[i] = getDistance(i);     // Get the distance of each sensor
-        _delay_ms(1);                   // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
+        buffer[i] = getDistance(i);         // Get the distance of each sensor
+        _delay_ms(40);                      // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
     }
     
-    return buffer;                      // Return a pointer which points to where the read data is stored
+    return (float*) buffer;                 // Return a pointer which points to where the read data is stored
+}
+
+float Sensors::DistanceSensor::getOneData(uint8_t channel) 
+{
+    return getDistance(channel);
 }
 
 uint8_t Sensors::DistanceSensor::getSimpleData()

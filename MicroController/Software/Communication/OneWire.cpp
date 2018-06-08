@@ -10,7 +10,7 @@
 uint8_t Communication::OneWire::Initialize(Gpio::Pin pin)
 {
     pinFloat(pin);
-    while (Gpio::GetPinValue(Gpio::Pin::B0) == Gpio::Value::Low);       // Wait until the pin is high
+    while (Gpio::GetPinValue(pin) == Gpio::Value::Low);       // Wait until the pin is high
     
     pinLow(pin);                                                        // Pull the pin low
      _delay_us(500);

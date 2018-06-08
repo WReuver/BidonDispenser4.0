@@ -23,16 +23,17 @@ namespace Sensors
 		protected:
 		private:
 		float buffer[16] = { 0.0 };                                                                                 // Buffer for the data
-        Gpio::Pin* triggerPin;                                                                                      // Two trigger pins
+        Gpio::Pin triggerPin[2];                                                                                    // Two trigger pins
         Gpio::Pin echoPin;                                                                                          // One echo pin
-		Gpio::Pin* multiplexPin;                                                                                    // Four multiplexer pins
+		Gpio::Pin multiplexPin[4];                                                                                  // Four multiplexer pins
         float emptyDistance;                                                                                        // If the distance is larger than "emptyDistance" the column will be seen as empty
         
 		// Methods
 		public:
         DistanceSensor(Gpio::Pin* triggerPin, Gpio::Pin echoPin, Gpio::Pin* multiplexPin, float emptyDistance);     // Default constructor
 		~DistanceSensor() {};                                                                                       // Default destructor
-		float* getData();                                                                                           // Get the data from the sensor
+		float* getData();                                                                                           // Get the data from all the sensors
+        float getOneData(uint8_t channel);                                                                          // Get the data from only one sensor
         uint8_t getSimpleData();                                                                                    // Get the data in a simpler form
         
 		protected:

@@ -29,7 +29,7 @@ namespace Master
             Lock                = 0x02,
             Unlock              = 0x04,
             Sense               = 0x06,
-            TemperatureCheck    = 0x08,
+            Temperature         = 0x08,
             Dispense            = 0x0A,
             Distance            = 0x0C,
             ERROR               = 0xFF
@@ -40,7 +40,7 @@ namespace Master
             Lock                = 0x03,
             Unlock              = 0x05,
             Sense               = 0x07,
-            TemperatureCheck    = 0x09,
+            Temperature         = 0x09,
             Dispense            = 0x0B,
             Distance            = 0x0D,
             ERROR               = 0xFF

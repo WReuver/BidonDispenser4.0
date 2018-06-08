@@ -44,7 +44,7 @@ Usart::RxTx raspberrySerialPort = Usart::RxTx::D2_D3;
 // Cooling Controller Variables
 CoolingController* coolingController;
 Pin temperatureSensorPins[3] = { Pin::D6, Pin::D5, Pin::D4 };
-Pin fanGroupPins[2] = { Pin::C1, Pin::C0 };
+Pin fanGroupPins[2] = { Pin::C0, Pin::C1 };
 TC coolingTc = TC::TC0C;
 
 
@@ -113,7 +113,7 @@ void executeSenseCommand(uint8_t* response)
     }
 }
 
-void executeTemperatureCheckCommand(uint8_t* response, uint8_t* receivedCommand)
+void executeTemperatureCommand(uint8_t* response, uint8_t* receivedCommand)
 {
     if (locked)
     {
@@ -123,11 +123,14 @@ void executeTemperatureCheckCommand(uint8_t* response, uint8_t* receivedCommand)
     }
     else
     {
-        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::TemperatureCheck);      // Add the equivalent command response
-        response[1] = 0x00;                                                                                             // Add the amount of parameters
+        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Temperature);           // Add the equivalent command response
+        response[1] = 0x03;                                                                                             // Add the amount of parameters
         
-        if (receivedCommand[1] == 1) coolingController->setLowerTargetTemperature(receivedCommand[2]);                  // Target temperature has been supplied
-        coolingController->updateFanSpeed();                                                                            // Update the fan speed according to the current temperatures
+        coolingController->gatherTemperatures();                                                                        // Refresh all t he temperature variables
+        
+        response[2] = (uint8_t) ( coolingController->getLowerTemperature() * 5.0 );                                     // Add the lower temperature to the response
+        response[3] = (uint8_t) ( coolingController->getMiddleTemperature() * 5.0 );                                    // Add the middle temperature to the response
+        response[4] = (uint8_t) ( coolingController->getUpperTemperature() * 5.0 );                                     // Add the upper temperature to the response
     }
 }
 
@@ -182,7 +185,7 @@ void executecommand(uint8_t* response, uint8_t* receivedCommand)
         case RaspberryPi::Command::Lock:                executeLockCommand(response);                                   break;      // Received a lock command
         case RaspberryPi::Command::Unlock:              executeUnlockCommand(response);                                 break;      // Received an unlock command
         case RaspberryPi::Command::Sense:               executeSenseCommand(response);                                  break;      // Received a sense command
-        case RaspberryPi::Command::TemperatureCheck:    executeTemperatureCheckCommand(response, receivedCommand);      break;      // Received a temperature check command
+        case RaspberryPi::Command::Temperature:         executeTemperatureCommand(response, receivedCommand);           break;      // Received a temperature command
         case RaspberryPi::Command::Dispense:            executeDispenseCommand(response, receivedCommand);              break;      // Received a dispense command
         case RaspberryPi::Command::Distance:            executeDistanceCommand(response);                               break;      // Received a distance command
         default:                                                                                                        break;      // Impossible
@@ -259,6 +262,7 @@ void raspiTestCommand(uint8_t* response, uint8_t* receivedCommand)
         case RaspberryPi::Command::Sense:       response[1] = 0x04; response[2] = IDENTIFIER[0]; response[3] = IDENTIFIER[1]; response[4] = IDENTIFIER[2]; response[5] = IDENTIFIER[3]; break;
         case RaspberryPi::Command::Dispense:    response[1] = 0x01; response[2] = ( dispenseStatus++ % 2 ); break;
         case RaspberryPi::Command::Distance:    response[1] = 0x01; response[2] = 0x03; break;
+        case RaspberryPi::Command::Temperature:
         default:                                response[1] = 0x00;
     }
 }
@@ -303,24 +307,83 @@ void testRaspi(void)
     }
 }
 
+bool infiniteTest = true;
+
 void testMotors(void) 
 {
-    busyLed(1);
-    
-    while (1)
+    do
     {
-        for (int i = 2; i < 8; i++)
+        busyLed(1);
+        
+        for (int i = 0; i < 8; i++)
         {
             motorController->rotateMotor(i);
-            _delay_ms(2500);
+            _delay_ms(1000);
         }
-    }
+        
+        busyLed(0);
+    } while (infiniteTest);
 }
 
 void testFans(void) 
 {
-    //coolingController->setFangroupSpeed(0, 50);
-    coolingController->setFangroupSpeed(1, 90);
+    //coolingController->setFangroupSpeed(0, 50);        // Lower fans
+    //coolingController->setFangroupSpeed(1, 50);        // Upper fans
+    
+    do 
+    {
+        busyLed(1);
+        
+        coolingController->setFangroupSpeed(0, 100);
+        coolingController->setFangroupSpeed(1, 100);
+        _delay_ms(5000);
+        coolingController->setFangroupSpeed(0, 0);
+        coolingController->setFangroupSpeed(1, 0);
+        _delay_ms(5000);
+        
+        busyLed(0);
+    } while (infiniteTest);
+    
+}
+
+void temperatureCheckTest(void) 
+{
+    do
+    {
+        busyLed(1);
+        
+        volatile float temperatures[3] = { 50.0 };
+        
+        coolingController->gatherTemperatures();
+        
+        temperatures[0] = coolingController->getLowerTemperature();
+        temperatures[1] = coolingController->getMiddleTemperature();
+        temperatures[2] = coolingController->getUpperTemperature();
+        
+        busyLed(0);
+    } while (infiniteTest);
+}
+
+void testDistSensor(void) 
+{
+    do 
+    {
+        busyLed(1);
+        
+        volatile float distances[16] = { 0.0 };
+        float* resultLocation = distanceSensor->getData();
+        
+        for (int i = 0; i < 16; i++)
+            distances[i] = resultLocation[i];
+        
+        //const int sensorNo = 13;
+        
+        //for (int i = sensorNo; i < (sensorNo+1); i++)
+            //distances[i] = distanceSensor->getOneData(i);
+        
+        
+        busyLed(0);
+    } while (infiniteTest);
 }
 
 int main()
@@ -331,7 +394,9 @@ int main()
     //runRoutine();
     //runningLed(0);
     
-    //testFans();
     //testMotors();
+    //testFans();
+    //temperatureCheckTest();
+    //testDistSensor();
     
 }
