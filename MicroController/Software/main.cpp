@@ -390,9 +390,18 @@ int main()
 {
     initialize();
     initializeHardware();
-    //runningLed(1);
-    //runRoutine();
-    //runningLed(0);
+    runningLed(1);
+    runRoutine();
+    runningLed(0);
+    
+    //   raspberrySerialPort
+    //while (1) {
+        //busyLed(1);
+        //Usart::TransmitData(raspberrySerialPort, 0x12);
+        //_delay_ms(250);
+        //busyLed(0);
+        //_delay_ms(250);
+    //}
     
     //testMotors();
     //testFans();
