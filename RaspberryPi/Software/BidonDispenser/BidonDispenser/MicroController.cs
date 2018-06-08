@@ -55,9 +55,6 @@ namespace BidonDispenser {
         private DataWriter serialPortTx;
         private DataReader serialPortRx;
         private CancellationTokenSource readCancellationTokenSource;
-
-        private Mutex rightToExecuteCommand = new Mutex();
-        private int mutexTimeout = 15;
         
         private List<byte> _response = new List<byte>();
         public ReadOnlyCollection<byte> response => _response.AsReadOnly();
@@ -68,16 +65,16 @@ namespace BidonDispenser {
         }
 
 
+        // Send command responses:
         // 0 => Everything went fine
         // 1 => Serial port is not initialized
-        // 2 => Regular Exception
-        // 3 => Critical Exception
+        // 2 => Exception was catched
+
         public async Task<int> sendSenseCommand() {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Sense, 0x00 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Sense, 0x00 };
             int response = -1;
             
             try {
@@ -86,10 +83,7 @@ namespace BidonDispenser {
                 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -99,8 +93,7 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Lock, 0x00 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Lock, 0x00 };
             int response = -1;
 
             try {
@@ -109,10 +102,7 @@ namespace BidonDispenser {
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -122,8 +112,7 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Unlock, 0x00 };
             int response = -1;
 
             try {
@@ -132,10 +121,7 @@ namespace BidonDispenser {
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -145,8 +131,7 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Temperature, 0x01, 0x03 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Temperature, 0x00 };
             int response = -1;
 
             try {
@@ -155,10 +140,7 @@ namespace BidonDispenser {
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -168,8 +150,7 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, 0x00 };
             int response = -1;
 
             try {
@@ -178,10 +159,7 @@ namespace BidonDispenser {
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -191,8 +169,7 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return 1;
 
-            byte[] bytesToSend = new byte[] { (byte) MicroController.Command.Distance, 0x00 };
-            rightToExecuteCommand.WaitOne(TimeSpan.FromSeconds(mutexTimeout));
+            byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x00 };
             int response = -1;
 
             try {
@@ -201,10 +178,7 @@ namespace BidonDispenser {
 
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                response = 3;
-
-            } finally {
-                rightToExecuteCommand.ReleaseMutex();
+                response = 2;
             }
 
             return response;
@@ -283,10 +257,7 @@ namespace BidonDispenser {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
-
-        // 0 => Everything went fine
-        // 1 => Serial port is not initialized
-        // 2 => Exception
+        
         private async Task<int> receiveBytes(CancellationToken cancellationToken) {
             try {
 
@@ -349,6 +320,18 @@ namespace BidonDispenser {
             }
         }
 
+
+        public CommandResponse getEquivalentCommandResponse(Command command) {
+            switch (command) {
+                case Command.Sense:         return CommandResponse.Sense;
+                case Command.Lock:          return CommandResponse.Lock;
+                case Command.Unlock:        return CommandResponse.Unlock;
+                case Command.Temperature:   return CommandResponse.Temperature;
+                case Command.Dispense:      return CommandResponse.Dispense;
+                case Command.Distance:      return CommandResponse.Distance;
+                default:                    return CommandResponse.ERROR;
+            }
+        }
 
 
         public void dispose() {

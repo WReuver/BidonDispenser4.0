@@ -242,26 +242,108 @@ namespace BidonDispenser {
 
         // Commands //////
 
+        // -1 => No command has been executed yet
+        //  0 => Everything went fine
+        //  1 => Could not claim the mutex within the given time period
+        //  2 => Serial port is not initialized
+        //  3 => Exception was caught while preparing to send a command
+        //  4 => Exception was caught while sending a command
+        //  5 => Slave Exception
+        private Dictionary<MicroController.Command, int> commandStatus = new Dictionary<MicroController.Command, int>() {
+            [MicroController.Command.Sense] = -1,
+            [MicroController.Command.Lock] = -1,
+            [MicroController.Command.Unlock] = -1,
+            [MicroController.Command.Temperature] = -1,
+            [MicroController.Command.Dispense] = -1,
+            [MicroController.Command.Distance] = -1
+        };
+        private List<byte> sensePars = new List<byte>();
+        private List<byte> temperaturePars = new List<byte>();
+        private List<byte> dispensePars = new List<byte>();
+        private List<byte> distancePars = new List<byte>();
+
+        private Mutex commandRight = new Mutex();                       // The mutex which decides whether the current thread has command right or not
+        private int mutexTimeout = 15_000;                              // How many seconds the program should wait for the mutex
+
         private async void sendCommand(MicroController.Command command) {
 
             Task<int> commandTask = null;
+            int status = -1;
 
-            switch (command) {
-                case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
-                case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
-                case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
-                case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
-                case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
-                case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
+            try {
+                commandStatus[command] = -1;
+                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
+            } 
+            catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                commandStatus[command] = 1;
+                return;
             }
 
-            if (commandTask == null)
+            try {
+                switch (command) {
+                    case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
+                    case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
+                    case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
+                    case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
+                    case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
+                    case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
+                }
+
+                if (commandTask == null)
                 return;
 
-            int status = await commandTask;
+                // Send command responses:
+                // 0 => Everything went fine
+                // 1 => Serial port is not initialized
+                // 2 => Exception was catched
+                status = await commandTask;
+            
+                // Retry once if an exception has occurred 
+                if (status == 2) {
+                    switch (command) {
+                        case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
+                        case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
+                        case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
+                        case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
+                        case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
+                        case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
+                    }
+                    status = await commandTask;
 
-            // LEFT OFF HERE
+                    if (status == 2) {
+                        commandStatus[command] = 4;
+                        return;
+                    }
+                }
 
+                // The serial port has not been initialized
+                if (status == 1) {
+                    commandStatus[command] = 2;
+                    return;
+                }
+
+                // Wrong command response, possibly a slave exception
+                if ( mc.response[1] != (byte) mc.getEquivalentCommandResponse(command)) {
+                    commandStatus[command] = 5;
+                    return;
+                }
+
+                // LEFT OFF HERE
+
+
+
+
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                commandStatus[command] = 3;
+
+            } finally {
+                commandRight.ReleaseMutex();                            // Release the mutex
+            }
+
+            
+            
         }
         
         
