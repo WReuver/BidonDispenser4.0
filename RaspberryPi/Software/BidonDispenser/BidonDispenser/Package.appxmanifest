@@ -24,10 +24,35 @@
           <uap:Rotation Preference="portraitFlipped" />
         </uap:InitialRotationPreference>
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="txt">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.txt</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="png">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.png</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="gif">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.gif</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
     <iot:Capability Name="lowLevelDevices" />
+    <uap:Capability Name="removableStorage" />
+    <uap:Capability Name="picturesLibrary" />
     <DeviceCapability Name="serialcommunication">
       <Device Id="any">
         <Function Type="name:serialPort" />

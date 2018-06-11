@@ -64,7 +64,16 @@ namespace BidonDispenser {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(progressBarValue)));
             }
         }
-        
+
+        private int _lowerTemperature = 20;
+        public int lowerTemperature {
+            get => _lowerTemperature;
+            set {
+                _lowerTemperature = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(bottleTemperature)));
+            }
+        }
+
         private promotionMediaName _promotionSource = 0;
         public promotionMediaName promotionSource {
             get => _promotionSource;
@@ -95,6 +104,7 @@ namespace BidonDispenser {
         
         // Bindings
         public int progressBarValue         => promotionTimerTickCounter;                   // Progressbar
+        public int bottleTemperature        => lowerTemperature;                            // Bottle Temperature
         public String promotionImage        => promotionMedia[promotionSource];             // Promotion image
         public String promotionImagePreload => promotionMedia[promotionSourcePreload];      // Promotion image - preload
         public String selectedColourText    => bottleColourText[selectedBottleColour];      // Selected bottle colour text

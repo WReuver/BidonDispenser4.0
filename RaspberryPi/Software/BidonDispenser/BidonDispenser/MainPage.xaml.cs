@@ -12,6 +12,9 @@ using Windows.System.Profile;
 using Windows.UI.ViewManagement;
 using System.Collections.Generic;
 using Windows.UI.Core;
+using System.Diagnostics;
+using Windows.Storage;
+using System.IO;
 
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
@@ -32,7 +35,7 @@ namespace BidonDispenser {
             Unloaded += unloadMainPage;
 
             // Check on which device we're running
-            System.Diagnostics.Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
+            Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT") {
                 windowsIot = true;
             }
@@ -40,20 +43,23 @@ namespace BidonDispenser {
             initializePromotionTimer();
             
             if (windowsIot) {
-                mc = new MicroController();
 
-                columnAmount = howManyColumnsAreThere();
-
-                // TODO: Do change the UI according to the amount of columns
-
-                if (!initButtons(columnAmount))
-                    setupError = true;
-
+                temperatureLoggerMode();
                 
+                //mc = new MicroController();
+                //columnAmount = howManyColumnsAreThere();
+                //Debug.WriteLine("There are " + columnAmount + "Columns");
+                //if (columnAmount == 0)
+                //    setupError = true;
+                //
+                //if (!initButtons(columnAmount))
+                //    setupError = true;
+                //
 
 
-                
-                
+
+
+
                 // Initialize the NFC module
                 //nfcModule = new Pn532Software();
                 //nfcModule = new Pn532(0);
@@ -62,10 +68,36 @@ namespace BidonDispenser {
         }
 
 
+        // Temperature Logger Mode //////
+        private async void temperatureLoggerMode() {
+
+            mc = new MicroController();
+            while (!mc.serialInitialized);
+
+            while (true) {
+                redLedState(GpioPinValue.High);
+                StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
+                StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
+                //await FileIO.WriteTextAsync(logFile, "Swift as a shadow");
+
+                var result = await mc.sendTemperatureCommand();
+
+                if (result.Item2.Count > 4) {
+                    String data = result.Item2[2]/5 + "," + result.Item2[3] / 5 + "," + result.Item2[4] / 5;
+                    await FileIO.WriteTextAsync(logFile, data);
+                }
+
+                redLedState(GpioPinValue.Low);
+                Thread.Sleep(5 * 60 * 1000);    // Five minutes
+            }
+
+        }
+        
+        
         // Serial Test //////
 
         private void serialTest(object sender, RoutedEventArgs rea) {
-            System.Diagnostics.Debug.WriteLine("Click: " + ((Button) sender).Name );
+            Debug.WriteLine("Click: " + ((Button) sender).Name );
 
             if (!windowsIot)
                 return;
@@ -77,11 +109,45 @@ namespace BidonDispenser {
                 case "Temperature":         mc.sendTemperatureCommand();        break;
                 case "Dispense":            mc.sendDispenseCommand();           break;
                 case "Distance":            mc.sendDistanceCommand();           break;
-                default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
+                default: Debug.WriteLine("Unknown button"); return;
             }
         }
 
 
+        // LEDs //////
+
+        private readonly int ORANGELED_PIN = 27;
+        private readonly int REDLED_PIN = 22;
+        private GpioPin orangeLed;
+        private GpioPin redLed;
+
+        private Boolean initializeLeds() {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
+
+            if (gpio == null) {
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return false;
+            }
+
+            orangeLed = gpio.OpenPin(ORANGELED_PIN);
+            redLed = gpio.OpenPin(REDLED_PIN);
+
+            orangeLed.SetDriveMode(GpioPinDriveMode.Output);
+            redLed.SetDriveMode(GpioPinDriveMode.Output);
+
+            Debug.WriteLine("The LEDs have been initialized");
+            return true;
+        }
+
+        private void orangeLedState(GpioPinValue val) {
+            orangeLed?.Write(val);
+        }
+
+        private void redLedState(GpioPinValue val) {
+            redLed?.Write(val);
+        }
+        
+        
         // Buttons //////
 
         private Boolean buttonsDisabled = false;
@@ -92,7 +158,7 @@ namespace BidonDispenser {
             GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
 
             if (gpio == null) {
-                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+                Debug.WriteLine("There is no Gpio controller on this device");
                 return false;
             }
 
@@ -112,7 +178,7 @@ namespace BidonDispenser {
                 buttonPins[i].ValueChanged += buttonValueHasChanged;                                    // Add a callback
             }
 
-            System.Diagnostics.Debug.WriteLine(amount+" buttons have been initialized");
+            Debug.WriteLine(amount+" buttons have been initialized");
             return true;
         }
 
@@ -124,7 +190,7 @@ namespace BidonDispenser {
                 buttonsDisabled = true;
 
                 int buttonNo = buttonPins.IndexOf(sender);
-                System.Diagnostics.Debug.WriteLine("Button " + buttonNo + " has been pressed");
+                Debug.WriteLine("Button " + buttonNo + " has been pressed");
 
                 switch (currentPanel) {
 
@@ -169,7 +235,7 @@ namespace BidonDispenser {
             GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
 
             if (gpio == null) {
-                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
+                Debug.WriteLine("There is no Gpio controller on this device");
                 return false;
             }
 
@@ -184,30 +250,57 @@ namespace BidonDispenser {
             doorSensorPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);                              // Set a debounce timeout of 50ms
             doorSensorPin.ValueChanged += doorValueHasChanged;                                          // Add a callback
 
-            System.Diagnostics.Debug.WriteLine("The misc gpio has been initialized");
+            Debug.WriteLine("The misc gpio has been initialized");
             return true;
         }
 
-        private async void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+        private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
             GpioPinValue pinVal = doorSensorPin.Read();
 
-            if (pinVal == GpioPinValue.Low) {
-                int status = -1;
+            if (pinVal == GpioPinValue.Low)
+                doorOpened();
+            else
+                doorClosed();
+        }
 
-                do {
+        // Send the lock command, if it fails => retry once
+        private async void doorOpened() {
+            Boolean retry = false;
+            Boolean hasRetried = false;
 
-                    status = await mc.sendUnlockCommand();
+            do {
+                if (retry) hasRetried = true;                   // Update the "hasTried" variable
+                var result = await mc.sendLockCommand();        // Get the result
+                
+                switch (result.Item1) {
 
-                } while (status == 2);                                  // Send the unlock command until succesfull
+                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
+                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
+                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
+                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
+                    default: retry = false; break;                                                      // Should not be possible
+                }
+            } while (retry && !hasRetried);
+        }
 
-                // Should we execute the mainenance check and restart the maintenance timer here?
-                //maintenanceTimer.Stop();
-                //maintenanceTimerTick(null, null);
-                //initializeMaintenanceTimer();
+        // Send the unlock command, if it fails => retry once
+        private async void doorClosed() {
+            Boolean retry = false;
+            Boolean hasRetried = false;
 
-            } else { 
-                while ((await mc.sendLockCommand()) == 2);              // Send the lock command until succesfull
-            }
+            do {
+                if (retry) hasRetried = true;                   // Update the "hasTried" variable
+                var result = await mc.sendUnlockCommand();      // Get the result
+                
+                switch (result.Item1) {
+
+                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
+                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
+                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
+                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
+                    default: retry = false; break;                                                      // Should not be possible
+                }
+            } while (retry && !hasRetried);
         }
 
 
@@ -216,134 +309,27 @@ namespace BidonDispenser {
         private readonly int COLUMNSELECTOR_PIN = 23;
         
         private int howManyColumnsAreThere() {
-            GpioController gpio = GpioController.GetDefault();                  // Get the default Gpio Controller
+            GpioController gpio = GpioController.GetDefault();                      // Get the default Gpio Controller
 
             if (gpio != null) {
 
-                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);   // Open the column selector pin
-                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);         // Set the pin to input
+                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);       // Open the column selector pin
+                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);             // Set the pin to input
 
-                GpioPinValue pinVal = columnSelectorPin.Read();                 // Read the pin value
-                columnSelectorPin.Dispose();                                    // Dispose the pin again
+                GpioPinValue pinVal = columnSelectorPin.Read();                     // Read the pin value
+                columnSelectorPin.Dispose();                                        // Dispose the pin again
 
-                if (pinVal == GpioPinValue.High)                                // High = 4 columns
+                if (pinVal == GpioPinValue.High)                                    // High = 4 columns
                     return 4;
-                else if (pinVal == GpioPinValue.Low)                            // Low = 8 columns
+                else if (pinVal == GpioPinValue.Low)                                // Low = 8 columns
                     return 8;
                 else
-                    return 0;                                                   // Err = 0 columns
+                    return 0;                                                       // Err = 0 columns
 
             } else {
-                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
-                return 0;                                                       // Err = 0 columns
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return 0;                                                           // Err = 0 columns
             }
-        }
-
-
-        // Commands //////
-
-        // -1 => No command has been executed yet
-        //  0 => Everything went fine
-        //  1 => Could not claim the mutex within the given time period
-        //  2 => Serial port is not initialized
-        //  3 => Exception was caught while preparing to send a command
-        //  4 => Exception was caught while sending a command
-        //  5 => Slave Exception
-        private Dictionary<MicroController.Command, int> commandStatus = new Dictionary<MicroController.Command, int>() {
-            [MicroController.Command.Sense] = -1,
-            [MicroController.Command.Lock] = -1,
-            [MicroController.Command.Unlock] = -1,
-            [MicroController.Command.Temperature] = -1,
-            [MicroController.Command.Dispense] = -1,
-            [MicroController.Command.Distance] = -1
-        };
-        private List<byte> sensePars = new List<byte>();
-        private List<byte> temperaturePars = new List<byte>();
-        private List<byte> dispensePars = new List<byte>();
-        private List<byte> distancePars = new List<byte>();
-
-        private Mutex commandRight = new Mutex();                       // The mutex which decides whether the current thread has command right or not
-        private int mutexTimeout = 15_000;                              // How many seconds the program should wait for the mutex
-
-        private async void sendCommand(MicroController.Command command) {
-
-            Task<int> commandTask = null;
-            int status = -1;
-
-            try {
-                commandStatus[command] = -1;
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } 
-            catch (Exception ex) {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                commandStatus[command] = 1;
-                return;
-            }
-
-            try {
-                switch (command) {
-                    case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
-                    case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
-                    case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
-                    case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
-                    case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
-                    case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
-                }
-
-                if (commandTask == null)
-                return;
-
-                // Send command responses:
-                // 0 => Everything went fine
-                // 1 => Serial port is not initialized
-                // 2 => Exception was catched
-                status = await commandTask;
-            
-                // Retry once if an exception has occurred 
-                if (status == 2) {
-                    switch (command) {
-                        case MicroController.Command.Sense:             commandTask = mc.sendSenseCommand();            break;
-                        case MicroController.Command.Lock:              commandTask = mc.sendLockCommand();             break;
-                        case MicroController.Command.Unlock:            commandTask = mc.sendUnlockCommand();           break;
-                        case MicroController.Command.Temperature:       commandTask = mc.sendTemperatureCommand();      break;
-                        case MicroController.Command.Dispense:          commandTask = mc.sendDispenseCommand();         break;
-                        case MicroController.Command.Distance:          commandTask = mc.sendDistanceCommand();         break;
-                    }
-                    status = await commandTask;
-
-                    if (status == 2) {
-                        commandStatus[command] = 4;
-                        return;
-                    }
-                }
-
-                // The serial port has not been initialized
-                if (status == 1) {
-                    commandStatus[command] = 2;
-                    return;
-                }
-
-                // Wrong command response, possibly a slave exception
-                if ( mc.response[1] != (byte) mc.getEquivalentCommandResponse(command)) {
-                    commandStatus[command] = 5;
-                    return;
-                }
-
-                // LEFT OFF HERE
-
-
-
-
-            } catch (Exception ex) {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                commandStatus[command] = 3;
-
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
-            }
-
-            
-            
         }
         
         
@@ -431,7 +417,7 @@ namespace BidonDispenser {
             promotionTimer.Tick += promotionTimerTick;
             promotionTimer.Start();
 
-            System.Diagnostics.Debug.WriteLine("The promotion timer has been initialized");
+            Debug.WriteLine("The promotion timer has been initialized");
         }
 
         static int currentPromotionSource = 0;
@@ -458,7 +444,7 @@ namespace BidonDispenser {
         // Maintenance Timer //////
 
         private DispatcherTimer maintenanceTimer;
-        private const int maintenanceMinutesPerTick = 15;
+        private const int maintenanceMinutesPerTick = 10;
 
         private void initializeMaintenanceTimer() {
             maintenanceTimer = new DispatcherTimer();
@@ -466,13 +452,32 @@ namespace BidonDispenser {
             maintenanceTimer.Tick += maintenanceTimerTick;
             maintenanceTimer.Start();
 
-            System.Diagnostics.Debug.WriteLine("The maintenance timer has been initialized");
+            Debug.WriteLine("The maintenance timer has been initialized");
         }
 
         private async void maintenanceTimerTick(object sender, object e) {
-            int status = await mc.sendTemperatureCommand();                        // Send the temperature check command
-            
-            // TODO: Decide what to do with each status    
+
+            Tuple<int, List<Byte>> result;
+            Boolean retry = false;
+            Boolean hasRetried = false;
+
+            do {
+                if (retry) hasRetried = true;                   // Update the "hasTried" variable
+                result = await mc.sendLockCommand();            // Get the result
+                
+                switch (result.Item1) {
+
+                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
+                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
+                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
+                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
+                    default: retry = false; break;                                                      // Should not be possible
+                }
+            } while (retry && !hasRetried);
+
+            if ((result.Item1 == 0) && (result.Item2.Count > 2)) {
+                mainModel.lowerTemperature = result.Item2[2] / 5;                                       // Update the lower temperature
+            }
         }
         
         

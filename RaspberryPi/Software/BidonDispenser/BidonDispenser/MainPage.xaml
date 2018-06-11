@@ -26,6 +26,7 @@
         <ProgressBar 
             x:Name="progressBar" 
             Value="{x:Bind mainModel.progressBarValue, Mode=OneWay}"
+            IsIndeterminate="True"
             Maximum="30000" 
             Background="#EEEEEE" 
             Foreground="#DFDFDF"/>
