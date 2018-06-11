@@ -252,6 +252,7 @@ void initializeHardware(void)
 }
 
 uint8_t dispenseStatus = 0;
+bool infiniteTest = true;
 
 void raspiTestCommand(uint8_t* response, uint8_t* receivedCommand)
 {
@@ -307,21 +308,18 @@ void testRaspi(void)
     }
 }
 
-bool infiniteTest = true;
-
 void testMotors(void) 
 {
     do
     {
-        busyLed(1);
-        
         for (int i = 0; i < 8; i++)
         {
+            busyLed(1);
             motorController->rotateMotor(i);
             _delay_ms(1000);
+            busyLed(0);
+            _delay_ms(1000);
         }
-        
-        busyLed(0);
     } while (infiniteTest);
 }
 
@@ -394,7 +392,7 @@ int main()
     //runRoutine();
     //runningLed(0);
     
-    //testMotors();
+    testMotors();
     //testFans();
     //temperatureCheckTest();
     //testDistSensor();
