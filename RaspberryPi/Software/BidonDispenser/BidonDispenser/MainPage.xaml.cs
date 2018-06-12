@@ -23,10 +23,11 @@ namespace BidonDispenser {
         private Boolean windowsIot = false;
         private Boolean setupError = false;
         private int columnAmount = 0;
+        
+        private MicroController mc = null;
 
         //private Pn532Software nfcModule;
         private Pn532 nfcModule;
-        private MicroController mc = null;
 
         public MainPage() {
             this.InitializeComponent();
@@ -43,18 +44,21 @@ namespace BidonDispenser {
             initializePromotionTimer();
             
             if (windowsIot) {
-
-                temperatureLoggerMode();
                 
-                //mc = new MicroController();
-                //columnAmount = howManyColumnsAreThere();
-                //Debug.WriteLine("There are " + columnAmount + "Columns");
-                //if (columnAmount == 0)
-                //    setupError = true;
-                //
-                //if (!initButtons(columnAmount))
-                //    setupError = true;
-                //
+                //temperatureLoggerMode();
+
+                mc = new MicroController();
+                initializeLeds();
+
+                columnAmount = howManyColumnsAreThere();
+                Debug.WriteLine("There are " + columnAmount + " Columns");
+
+                if (columnAmount == 0)
+                    setupError = true;
+                
+                if (!initButtons(columnAmount))
+                    setupError = true;
+                
 
 
 
@@ -72,25 +76,25 @@ namespace BidonDispenser {
         private async void temperatureLoggerMode() {
 
             mc = new MicroController();
-            while (!mc.serialInitialized);
+            initializeLeds();
+            //while (!mc.serialInitialized);
+            Thread.Sleep(3000);
 
             while (true) {
                 redLedState(GpioPinValue.High);
                 StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
                 StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
-                //await FileIO.WriteTextAsync(logFile, "Swift as a shadow");
 
                 var result = await mc.sendTemperatureCommand();
 
                 if (result.Item2.Count > 4) {
-                    String data = result.Item2[2]/5 + "," + result.Item2[3] / 5 + "," + result.Item2[4] / 5;
-                    await FileIO.WriteTextAsync(logFile, data);
+                    String data = result.Item2[2]/5 + "," + result.Item2[3] / 5 + "," + result.Item2[4] / 5 + "\n";
+                    await FileIO.AppendTextAsync(logFile, data);
                 }
 
                 redLedState(GpioPinValue.Low);
                 Thread.Sleep(5 * 60 * 1000);    // Five minutes
             }
-
         }
         
         
@@ -202,13 +206,20 @@ namespace BidonDispenser {
                         
                         // Show the "finishing up" panel
                         showFinishingUpPanel();
+                        finish(nfcCancellationTokenSrc.Token);
                         break;
                     
                     
                     case uiPanel.finishingUp:
                         // Cancel the operation if the user presses the left most button
-                        if (buttonNo == 0)
+                        if (buttonNo == 0) {
+                            cancel();
                             showPickColourPanel();
+                        } else if (buttonNo == 7) {                         // Work around for now
+                            cancel();                                       // Cancel the wait for the payment
+                            hack((int) mainModel.selectedBottleColour);     // Dispense the selcted column
+                            showThankYouPanel();                            // Show the final panel
+                        }
                         break;
                     
                     
@@ -331,8 +342,50 @@ namespace BidonDispenser {
                 return 0;                                                           // Err = 0 columns
             }
         }
+
+
+        // Finishing Up //////
         
-        
+        private CancellationTokenSource nfcCancellationTokenSrc;
+
+        private async void finish(CancellationToken cancellationToken, int timeout = 30) {
+            try {
+
+                cancellationToken.ThrowIfCancellationRequested();                       // If task cancellation was requested, comply
+                
+                using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)) {
+                    // await serialPortRx.LoadAsync(1).AsTask(childCancellationTokenSource.Token);
+
+                    // Wait for an NFC to be presented
+                    // Check whether it is one of "our" tags or not
+                    // Send a password ack request
+                    // Check whether it contains one or more credits
+                    // Send a password ack request
+                    // Remove one credit
+                    // If successful, dispense the requested bidon colour
+                    // If not, show an error screen?
+                    // Done
+
+                }
+                
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        private void cancel() {
+            if (nfcCancellationTokenSrc != null) {
+                if (!nfcCancellationTokenSrc.IsCancellationRequested) {
+                    nfcCancellationTokenSrc.Cancel();
+                }
+            }
+        }
+
+        private void hack(int column) {
+
+        }
+
+
         // Panel Show //////
 
         private enum uiPanel {

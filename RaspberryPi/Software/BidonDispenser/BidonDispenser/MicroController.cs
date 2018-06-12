@@ -263,7 +263,7 @@ namespace BidonDispenser {
         }
 
         private async Task<Tuple<int, List<Byte>>> waitForResponse() {
-            CancelReadTask();                                               // Stop the current read task
+            cancelReadTask();                                               // Stop the current read task
             readCancellationTokenSource = new CancellationTokenSource();    // Create a cancellation token to stop the reading
             return await receiveBytes(readCancellationTokenSource.Token);   // Read the data and store it in a list
         }
@@ -380,7 +380,7 @@ namespace BidonDispenser {
             }
         }
 
-        private void CancelReadTask() {
+        private void cancelReadTask() {
             if (readCancellationTokenSource != null) {
                 if (!readCancellationTokenSource.IsCancellationRequested) {
                     readCancellationTokenSource.Cancel();
