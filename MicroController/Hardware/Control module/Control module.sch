@@ -14804,9 +14804,9 @@ Source: www.st.com, BAT60J.pdf</description>
 <part name="P+16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
 <part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="U3" library="Texas Instruments_By_element14_Batch_1" deviceset="TLV1117-33CDCY" device=""/>
-<part name="C5" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="153CLV-0505" value="22uF"/>
+<part name="C3" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="153CLV-0505" value="22uF"/>
 <part name="GND8" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C7" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C7" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND11" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="P+19" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
@@ -14814,12 +14814,12 @@ Source: www.st.com, BAT60J.pdf</description>
 <part name="GND12" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND13" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C9" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C9" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND14" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND16" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="J3" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
+<part name="RJ45_BLUE" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
 <part name="GND21" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND22" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND23" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -14900,9 +14900,9 @@ Source: www.st.com, BAT60J.pdf</description>
 <part name="P+51" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
 <part name="P+49" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="P+52" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
-<part name="J4" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
-<part name="J2" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
-<part name="COMMUNICATION" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
+<part name="RJ45_RED" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
+<part name="RJ45_WHITE" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
+<part name="RJ45_COMM" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="0446200002" device="" value="0446200002"/>
 <part name="GND17" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+57" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="VCC" device=""/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -14934,31 +14934,31 @@ Source: www.st.com, BAT60J.pdf</description>
 <part name="SENSOR7" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-?-03" device="05-7038"/>
 <part name="SENSOR8" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-?-03" device="05-7038"/>
 <part name="P+36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
-<part name="C19" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
-<part name="C3" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C12" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
+<part name="C6" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="U8" library="NSC_By_element14_Batch_1.1" deviceset="LM2937IMP-5.0" device=""/>
 <part name="GND6" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+53" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="P+54" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="P+55" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="P+37" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
-<part name="C20" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C8" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND46" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="FAN_2" library="adafruit" deviceset="1X2" device="-3.5MM"/>
 <part name="FAN_1" library="adafruit" deviceset="1X2" device="-3.5MM"/>
-<part name="C21" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C13" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND47" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R30" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="R-US_" device="R0805" value="330"/>
 <part name="LED3" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="LED" device="CHIPLED_0805"/>
 <part name="GND72" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C25" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C11" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND74" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="C26" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="1.0uF"/>
+<part name="C10" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
 <part name="GND75" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="A4L-LOC" device=""/>
-<part name="J1" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_02" device="5MM" package3d_urn="urn:adsk.eagle:package:38044/1"/>
-<part name="C1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="150CLZ-0810"/>
-<part name="C2" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="150CLZ-0810"/>
+<part name="12V" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_02" device="5MM" package3d_urn="urn:adsk.eagle:package:38044/1"/>
+<part name="C1" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="150CLZ-0810" value="100uF"/>
+<part name="C2" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="150CLZ-0810" value="100uF"/>
 <part name="GND2" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
@@ -14974,10 +14974,14 @@ Source: www.st.com, BAT60J.pdf</description>
 <part name="R32" library="SparkFun" deviceset="RESISTOR" device="0603-RES" value="1K"/>
 <part name="D1" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAT60J" device="" package3d_urn="urn:adsk.eagle:package:43461/1"/>
 <part name="D2" library="diode" library_urn="urn:adsk.eagle:library:210" deviceset="BAT60J" device="" package3d_urn="urn:adsk.eagle:package:43461/1"/>
-<part name="C8" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="153CLV-0505" value="22uF"/>
+<part name="C5" library="adafruit" library_urn="urn:adsk.eagle:library:420" deviceset="CPOL-US" device="153CLV-0505" value="22uF"/>
 <part name="GND38" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="P+56" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
 <part name="P+58" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+12V" device=""/>
+<part name="C14" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
+<part name="GND10" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C15" library="SparkFun-Capacitors" library_urn="urn:adsk.eagle:library:510" deviceset="1.0UF" device="-0805-25V-(+80/-20%)" package3d_urn="urn:adsk.eagle:package:37429/1" value="100nF"/>
+<part name="GND36" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -15371,41 +15375,45 @@ Source: www.st.com, BAT60J.pdf</description>
 <instance part="U3" gate="A" x="50.8" y="35.56"/>
 <instance part="P+20" gate="1" x="27.94" y="45.72"/>
 <instance part="GND12" gate="1" x="27.94" y="15.24"/>
-<instance part="P+21" gate="VCC" x="88.9" y="45.72"/>
+<instance part="P+21" gate="VCC" x="88.9" y="43.18"/>
 <instance part="GND13" gate="1" x="99.06" y="15.24"/>
-<instance part="C9" gate="G$1" x="99.06" y="25.4"/>
+<instance part="C9" gate="G$1" x="99.06" y="22.86"/>
 <instance part="GND14" gate="1" x="78.74" y="15.24"/>
 <instance part="C4" gate="G$1" x="78.74" y="25.4"/>
-<instance part="C25" gate="G$1" x="114.3" y="25.4"/>
-<instance part="GND74" gate="1" x="114.3" y="15.24"/>
-<instance part="C26" gate="G$1" x="106.68" y="25.4"/>
-<instance part="GND75" gate="1" x="106.68" y="15.24"/>
+<instance part="C11" gate="G$1" x="119.38" y="22.86"/>
+<instance part="GND74" gate="1" x="119.38" y="15.24"/>
+<instance part="C10" gate="G$1" x="109.22" y="22.86"/>
+<instance part="GND75" gate="1" x="109.22" y="15.24"/>
 <instance part="FRAME2" gate="G$1" x="0" y="0"/>
 <instance part="GND7" gate="1" x="27.94" y="63.5"/>
-<instance part="C5" gate="G$1" x="86.36" y="73.66"/>
-<instance part="GND8" gate="1" x="86.36" y="63.5"/>
-<instance part="C7" gate="G$1" x="93.98" y="73.66"/>
+<instance part="C3" gate="G$1" x="83.82" y="73.66"/>
+<instance part="GND8" gate="1" x="83.82" y="63.5"/>
+<instance part="C7" gate="G$1" x="93.98" y="71.12"/>
 <instance part="GND11" gate="1" x="93.98" y="63.5"/>
-<instance part="P+18" gate="1" x="101.6" y="88.9"/>
+<instance part="P+18" gate="1" x="104.14" y="88.9"/>
 <instance part="P+38" gate="1" x="27.94" y="93.98"/>
-<instance part="C3" gate="G$1" x="27.94" y="81.28"/>
+<instance part="C6" gate="G$1" x="27.94" y="81.28"/>
 <instance part="U8" gate="A" x="58.42" y="86.36"/>
 <instance part="GND6" gate="1" x="35.56" y="63.5"/>
-<instance part="C20" gate="G$1" x="101.6" y="73.66"/>
-<instance part="GND46" gate="1" x="101.6" y="63.5"/>
-<instance part="J1" gate="G$1" x="27.94" y="149.86"/>
-<instance part="P+19" gate="1" x="81.28" y="160.02"/>
-<instance part="GND49" gate="1" x="73.66" y="134.62"/>
-<instance part="C19" gate="G$1" x="73.66" y="142.24"/>
-<instance part="C21" gate="G$1" x="81.28" y="142.24"/>
-<instance part="GND47" gate="1" x="81.28" y="134.62"/>
+<instance part="C8" gate="G$1" x="104.14" y="71.12"/>
+<instance part="GND46" gate="1" x="104.14" y="63.5"/>
+<instance part="12V" gate="G$1" x="27.94" y="149.86"/>
+<instance part="P+19" gate="1" x="76.2" y="160.02"/>
+<instance part="GND49" gate="1" x="66.04" y="134.62"/>
+<instance part="C12" gate="G$1" x="66.04" y="142.24"/>
+<instance part="C13" gate="G$1" x="76.2" y="142.24"/>
+<instance part="GND47" gate="1" x="76.2" y="134.62"/>
 <instance part="C1" gate="G$1" x="45.72" y="144.78"/>
 <instance part="C2" gate="G$1" x="55.88" y="144.78"/>
 <instance part="GND2" gate="1" x="55.88" y="134.62"/>
 <instance part="GND3" gate="1" x="45.72" y="134.62"/>
 <instance part="GND4" gate="1" x="35.56" y="134.62"/>
-<instance part="C8" gate="G$1" x="88.9" y="25.4"/>
+<instance part="C5" gate="G$1" x="88.9" y="25.4"/>
 <instance part="GND38" gate="1" x="88.9" y="15.24"/>
+<instance part="C14" gate="G$1" x="129.54" y="22.86"/>
+<instance part="GND10" gate="1" x="129.54" y="15.24"/>
+<instance part="C15" gate="G$1" x="139.7" y="22.86"/>
+<instance part="GND36" gate="1" x="139.7" y="15.24"/>
 </instances>
 <busses>
 </busses>
@@ -15420,7 +15428,7 @@ Source: www.st.com, BAT60J.pdf</description>
 <segment>
 <pinref part="GND13" gate="1" pin="GND"/>
 <pinref part="C9" gate="G$1" pin="2"/>
-<wire x1="99.06" y1="17.78" x2="99.06" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="17.78" x2="99.06" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND14" gate="1" pin="GND"/>
@@ -15429,28 +15437,28 @@ Source: www.st.com, BAT60J.pdf</description>
 </segment>
 <segment>
 <pinref part="GND74" gate="1" pin="GND"/>
-<pinref part="C25" gate="G$1" pin="2"/>
-<wire x1="114.3" y1="17.78" x2="114.3" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="C11" gate="G$1" pin="2"/>
+<wire x1="119.38" y1="17.78" x2="119.38" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND75" gate="1" pin="GND"/>
-<pinref part="C26" gate="G$1" pin="2"/>
-<wire x1="106.68" y1="17.78" x2="106.68" y2="22.86" width="0.1524" layer="91"/>
+<pinref part="C10" gate="G$1" pin="2"/>
+<wire x1="109.22" y1="17.78" x2="109.22" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND7" gate="1" pin="GND"/>
 <wire x1="27.94" y1="78.74" x2="27.94" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="C3" gate="G$1" pin="2"/>
+<pinref part="C6" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
-<pinref part="C5" gate="G$1" pin="-"/>
-<wire x1="86.36" y1="66.04" x2="86.36" y2="68.58" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="-"/>
+<wire x1="83.82" y1="66.04" x2="83.82" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND11" gate="1" pin="GND"/>
 <pinref part="C7" gate="G$1" pin="2"/>
-<wire x1="93.98" y1="66.04" x2="93.98" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="66.04" x2="93.98" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="U8" gate="A" pin="GND_(TAB)"/>
@@ -15464,21 +15472,21 @@ Source: www.st.com, BAT60J.pdf</description>
 </segment>
 <segment>
 <pinref part="GND46" gate="1" pin="GND"/>
-<pinref part="C20" gate="G$1" pin="2"/>
-<wire x1="101.6" y1="66.04" x2="101.6" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="C8" gate="G$1" pin="2"/>
+<wire x1="104.14" y1="66.04" x2="104.14" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND49" gate="1" pin="GND"/>
-<pinref part="C19" gate="G$1" pin="2"/>
-<wire x1="73.66" y1="139.7" x2="73.66" y2="137.16" width="0.1524" layer="91"/>
+<pinref part="C12" gate="G$1" pin="2"/>
+<wire x1="66.04" y1="139.7" x2="66.04" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND47" gate="1" pin="GND"/>
-<pinref part="C21" gate="G$1" pin="2"/>
-<wire x1="81.28" y1="137.16" x2="81.28" y2="139.7" width="0.1524" layer="91"/>
+<pinref part="C13" gate="G$1" pin="2"/>
+<wire x1="76.2" y1="137.16" x2="76.2" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="J1" gate="G$1" pin="1"/>
+<pinref part="12V" gate="G$1" pin="1"/>
 <pinref part="GND4" gate="1" pin="GND"/>
 <wire x1="35.56" y1="149.86" x2="35.56" y2="137.16" width="0.1524" layer="91"/>
 </segment>
@@ -15493,9 +15501,19 @@ Source: www.st.com, BAT60J.pdf</description>
 <wire x1="55.88" y1="139.7" x2="55.88" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="C8" gate="G$1" pin="-"/>
+<pinref part="C5" gate="G$1" pin="-"/>
 <pinref part="GND38" gate="1" pin="GND"/>
 <wire x1="88.9" y1="20.32" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND10" gate="1" pin="GND"/>
+<pinref part="C14" gate="G$1" pin="2"/>
+<wire x1="129.54" y1="17.78" x2="129.54" y2="20.32" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND36" gate="1" pin="GND"/>
+<pinref part="C15" gate="G$1" pin="2"/>
+<wire x1="139.7" y1="17.78" x2="139.7" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -15505,28 +15523,36 @@ Source: www.st.com, BAT60J.pdf</description>
 <wire x1="73.66" y1="33.02" x2="71.12" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="78.74" y1="27.94" x2="78.74" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="P+21" gate="VCC" pin="VCC"/>
-<wire x1="88.9" y1="43.18" x2="88.9" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="40.64" x2="88.9" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="88.9" y1="33.02" x2="78.74" y2="33.02" width="0.1524" layer="91"/>
 <junction x="78.74" y="33.02"/>
 <pinref part="C4" gate="G$1" pin="+"/>
 <junction x="88.9" y="33.02"/>
-<pinref part="C25" gate="G$1" pin="1"/>
-<wire x1="114.3" y1="30.48" x2="114.3" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="114.3" y1="33.02" x2="106.68" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="C26" gate="G$1" pin="1"/>
-<wire x1="106.68" y1="33.02" x2="99.06" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="C11" gate="G$1" pin="1"/>
+<wire x1="119.38" y1="27.94" x2="119.38" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="33.02" x2="109.22" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="C10" gate="G$1" pin="1"/>
+<wire x1="109.22" y1="33.02" x2="99.06" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="33.02" x2="88.9" y2="33.02" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="30.48" x2="106.68" y2="33.02" width="0.1524" layer="91"/>
-<junction x="106.68" y="33.02"/>
+<wire x1="109.22" y1="27.94" x2="109.22" y2="33.02" width="0.1524" layer="91"/>
+<junction x="109.22" y="33.02"/>
 <pinref part="U3" gate="A" pin="OUTPUT_2"/>
 <wire x1="71.12" y1="30.48" x2="73.66" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="73.66" y1="30.48" x2="73.66" y2="33.02" width="0.1524" layer="91"/>
 <junction x="73.66" y="33.02"/>
 <pinref part="C9" gate="G$1" pin="1"/>
-<wire x1="99.06" y1="30.48" x2="99.06" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="27.94" x2="99.06" y2="33.02" width="0.1524" layer="91"/>
 <junction x="99.06" y="33.02"/>
-<pinref part="C8" gate="G$1" pin="+"/>
+<pinref part="C5" gate="G$1" pin="+"/>
 <wire x1="88.9" y1="27.94" x2="88.9" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="C14" gate="G$1" pin="1"/>
+<wire x1="129.54" y1="27.94" x2="129.54" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="33.02" x2="119.38" y2="33.02" width="0.1524" layer="91"/>
+<junction x="119.38" y="33.02"/>
+<pinref part="C15" gate="G$1" pin="1"/>
+<wire x1="139.7" y1="27.94" x2="139.7" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="139.7" y1="33.02" x2="129.54" y2="33.02" width="0.1524" layer="91"/>
+<junction x="129.54" y="33.02"/>
 </segment>
 </net>
 <net name="+12V" class="0">
@@ -15540,18 +15566,18 @@ Source: www.st.com, BAT60J.pdf</description>
 <wire x1="27.94" y1="86.36" x2="27.94" y2="91.44" width="0.1524" layer="91"/>
 <junction x="27.94" y="86.36"/>
 <pinref part="P+38" gate="1" pin="+12V"/>
-<pinref part="C3" gate="G$1" pin="1"/>
+<pinref part="C6" gate="G$1" pin="1"/>
 <pinref part="U8" gate="A" pin="VIN"/>
 <wire x1="38.1" y1="86.36" x2="27.94" y2="86.36" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="73.66" y1="147.32" x2="73.66" y2="152.4" width="0.1524" layer="91"/>
-<junction x="73.66" y="152.4"/>
-<pinref part="C19" gate="G$1" pin="1"/>
-<pinref part="C21" gate="G$1" pin="1"/>
-<wire x1="81.28" y1="147.32" x2="81.28" y2="152.4" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="152.4" x2="73.66" y2="152.4" width="0.1524" layer="91"/>
-<pinref part="J1" gate="G$1" pin="2"/>
+<wire x1="66.04" y1="147.32" x2="66.04" y2="152.4" width="0.1524" layer="91"/>
+<junction x="66.04" y="152.4"/>
+<pinref part="C12" gate="G$1" pin="1"/>
+<pinref part="C13" gate="G$1" pin="1"/>
+<wire x1="76.2" y1="147.32" x2="76.2" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="152.4" x2="66.04" y2="152.4" width="0.1524" layer="91"/>
+<pinref part="12V" gate="G$1" pin="2"/>
 <wire x1="35.56" y1="152.4" x2="45.72" y2="152.4" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="+"/>
 <wire x1="45.72" y1="152.4" x2="55.88" y2="152.4" width="0.1524" layer="91"/>
@@ -15559,30 +15585,30 @@ Source: www.st.com, BAT60J.pdf</description>
 <pinref part="C1" gate="G$1" pin="+"/>
 <wire x1="45.72" y1="147.32" x2="45.72" y2="152.4" width="0.1524" layer="91"/>
 <junction x="45.72" y="152.4"/>
-<wire x1="55.88" y1="152.4" x2="73.66" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="152.4" x2="66.04" y2="152.4" width="0.1524" layer="91"/>
 <junction x="55.88" y="152.4"/>
 <pinref part="P+19" gate="1" pin="+12V"/>
-<wire x1="81.28" y1="157.48" x2="81.28" y2="152.4" width="0.1524" layer="91"/>
-<junction x="81.28" y="152.4"/>
+<wire x1="76.2" y1="157.48" x2="76.2" y2="152.4" width="0.1524" layer="91"/>
+<junction x="76.2" y="152.4"/>
 </segment>
 </net>
 <net name="+5V" class="0">
 <segment>
 <pinref part="P+18" gate="1" pin="+5V"/>
-<wire x1="101.6" y1="86.36" x2="101.6" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="81.28" x2="93.98" y2="81.28" width="0.1524" layer="91"/>
-<pinref part="C5" gate="G$1" pin="+"/>
-<wire x1="93.98" y1="81.28" x2="86.36" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="81.28" x2="78.74" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="86.36" y1="76.2" x2="86.36" y2="81.28" width="0.1524" layer="91"/>
-<junction x="86.36" y="81.28"/>
+<wire x1="104.14" y1="86.36" x2="104.14" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="81.28" x2="93.98" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="C3" gate="G$1" pin="+"/>
+<wire x1="93.98" y1="81.28" x2="83.82" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="81.28" x2="78.74" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="76.2" x2="83.82" y2="81.28" width="0.1524" layer="91"/>
+<junction x="83.82" y="81.28"/>
 <pinref part="C7" gate="G$1" pin="1"/>
-<wire x1="93.98" y1="78.74" x2="93.98" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="76.2" x2="93.98" y2="81.28" width="0.1524" layer="91"/>
 <junction x="93.98" y="81.28"/>
 <pinref part="U8" gate="A" pin="VOUT"/>
-<pinref part="C20" gate="G$1" pin="1"/>
-<wire x1="101.6" y1="78.74" x2="101.6" y2="81.28" width="0.1524" layer="91"/>
-<junction x="101.6" y="81.28"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<wire x1="104.14" y1="76.2" x2="104.14" y2="81.28" width="0.1524" layer="91"/>
+<junction x="104.14" y="81.28"/>
 </segment>
 </net>
 </nets>
@@ -16587,7 +16613,7 @@ Source: www.st.com, BAT60J.pdf</description>
 <instance part="P+34" gate="VCC" x="104.14" y="157.48"/>
 <instance part="P+54" gate="1" x="25.4" y="157.48"/>
 <instance part="P+55" gate="1" x="96.52" y="157.48"/>
-<instance part="COMMUNICATION" gate="P" x="187.96" y="147.32" smashed="yes" rot="R90">
+<instance part="RJ45_COMM" gate="P" x="187.96" y="147.32" smashed="yes" rot="R90">
 <attribute name="NAME" x="177.292" y="151.13" size="1.778" layer="95" rot="R90"/>
 </instance>
 <instance part="GND17" gate="1" x="203.2" y="129.54"/>
@@ -16631,33 +16657,33 @@ Source: www.st.com, BAT60J.pdf</description>
 <wire x1="104.14" y1="116.84" x2="104.14" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="COMMUNICATION" gate="P" pin="S2"/>
+<pinref part="RJ45_COMM" gate="P" pin="S2"/>
 <pinref part="GND17" gate="1" pin="GND"/>
 <wire x1="200.66" y1="149.86" x2="203.2" y2="149.86" width="0.1524" layer="91"/>
 <wire x1="203.2" y1="149.86" x2="203.2" y2="147.32" width="0.1524" layer="91"/>
-<pinref part="COMMUNICATION" gate="P" pin="S1"/>
+<pinref part="RJ45_COMM" gate="P" pin="S1"/>
 <wire x1="203.2" y1="147.32" x2="203.2" y2="132.08" width="0.1524" layer="91"/>
 <wire x1="200.66" y1="147.32" x2="203.2" y2="147.32" width="0.1524" layer="91"/>
 <junction x="203.2" y="147.32"/>
 </segment>
 <segment>
-<pinref part="COMMUNICATION" gate="P" pin="1"/>
+<pinref part="RJ45_COMM" gate="P" pin="1"/>
 <pinref part="GND48" gate="1" pin="GND"/>
 <wire x1="177.8" y1="144.78" x2="177.8" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND20" gate="1" pin="GND"/>
-<pinref part="COMMUNICATION" gate="P" pin="3"/>
+<pinref part="RJ45_COMM" gate="P" pin="3"/>
 <wire x1="182.88" y1="124.46" x2="182.88" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND19" gate="1" pin="GND"/>
-<pinref part="COMMUNICATION" gate="P" pin="5"/>
+<pinref part="RJ45_COMM" gate="P" pin="5"/>
 <wire x1="187.96" y1="124.46" x2="187.96" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND18" gate="1" pin="GND"/>
-<pinref part="COMMUNICATION" gate="P" pin="7"/>
+<pinref part="RJ45_COMM" gate="P" pin="7"/>
 <wire x1="193.04" y1="124.46" x2="193.04" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -16810,7 +16836,7 @@ Source: www.st.com, BAT60J.pdf</description>
 </segment>
 <segment>
 <pinref part="P+57" gate="VCC" pin="VCC"/>
-<pinref part="COMMUNICATION" gate="P" pin="8"/>
+<pinref part="RJ45_COMM" gate="P" pin="8"/>
 <wire x1="195.58" y1="132.08" x2="195.58" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -16943,7 +16969,7 @@ Source: www.st.com, BAT60J.pdf</description>
 </net>
 <net name="+12V" class="0">
 <segment>
-<pinref part="COMMUNICATION" gate="P" pin="2"/>
+<pinref part="RJ45_COMM" gate="P" pin="2"/>
 <wire x1="180.34" y1="132.08" x2="180.34" y2="144.78" width="0.1524" layer="91"/>
 <pinref part="P+36" gate="1" pin="+12V"/>
 </segment>
@@ -16965,7 +16991,7 @@ Source: www.st.com, BAT60J.pdf</description>
 </net>
 <net name="TX_ATXMEGA" class="0">
 <segment>
-<pinref part="COMMUNICATION" gate="P" pin="6"/>
+<pinref part="RJ45_COMM" gate="P" pin="6"/>
 <wire x1="190.5" y1="144.78" x2="190.5" y2="142.24" width="0.1524" layer="91"/>
 <label x="190.5" y="142.24" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -16981,7 +17007,7 @@ Source: www.st.com, BAT60J.pdf</description>
 </net>
 <net name="RX_ATXMEGA" class="0">
 <segment>
-<pinref part="COMMUNICATION" gate="P" pin="4"/>
+<pinref part="RJ45_COMM" gate="P" pin="4"/>
 <wire x1="185.42" y1="144.78" x2="185.42" y2="142.24" width="0.1524" layer="91"/>
 <label x="185.42" y="142.24" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -17032,7 +17058,7 @@ Source: www.st.com, BAT60J.pdf</description>
 <instance part="GND34" gate="1" x="43.18" y="63.5"/>
 <instance part="P+32" gate="VCC" x="48.26" y="86.36"/>
 <instance part="FRAME5" gate="G$1" x="0" y="0"/>
-<instance part="J3" gate="P" x="40.64" y="154.94" smashed="yes" rot="R90">
+<instance part="RJ45_BLUE" gate="P" x="40.64" y="154.94" smashed="yes" rot="R90">
 <attribute name="NAME" x="29.972" y="158.75" size="1.778" layer="95" rot="R90"/>
 </instance>
 <instance part="GND21" gate="1" x="53.34" y="137.16"/>
@@ -17040,10 +17066,10 @@ Source: www.st.com, BAT60J.pdf</description>
 <instance part="GND23" gate="1" x="86.36" y="137.16"/>
 <instance part="GND51" gate="1" x="30.48" y="137.16"/>
 <instance part="GND52" gate="1" x="96.52" y="137.16"/>
-<instance part="J4" gate="P" x="106.68" y="154.94" smashed="yes" rot="R90">
+<instance part="RJ45_RED" gate="P" x="106.68" y="154.94" smashed="yes" rot="R90">
 <attribute name="NAME" x="96.012" y="158.75" size="1.778" layer="95" rot="R90"/>
 </instance>
-<instance part="J2" gate="P" x="73.66" y="154.94" smashed="yes" rot="R90">
+<instance part="RJ45_WHITE" gate="P" x="73.66" y="154.94" smashed="yes" rot="R90">
 <attribute name="NAME" x="62.992" y="158.75" size="1.778" layer="95" rot="R90"/>
 </instance>
 <instance part="P+53" gate="1" x="76.2" y="147.32" rot="R180"/>
@@ -17084,42 +17110,42 @@ Source: www.st.com, BAT60J.pdf</description>
 <segment>
 <pinref part="GND21" gate="1" pin="GND"/>
 <wire x1="53.34" y1="139.7" x2="53.34" y2="152.4" width="0.1524" layer="91"/>
-<pinref part="J3" gate="P" pin="8"/>
+<pinref part="RJ45_BLUE" gate="P" pin="8"/>
 <wire x1="48.26" y1="152.4" x2="53.34" y2="152.4" width="0.1524" layer="91"/>
-<pinref part="J3" gate="P" pin="S1"/>
+<pinref part="RJ45_BLUE" gate="P" pin="S1"/>
 <wire x1="53.34" y1="154.94" x2="53.34" y2="152.4" width="0.1524" layer="91"/>
 <junction x="53.34" y="152.4"/>
-<pinref part="J3" gate="P" pin="S2"/>
+<pinref part="RJ45_BLUE" gate="P" pin="S2"/>
 <wire x1="53.34" y1="157.48" x2="53.34" y2="154.94" width="0.1524" layer="91"/>
 <junction x="53.34" y="154.94"/>
 </segment>
 <segment>
 <pinref part="GND23" gate="1" pin="GND"/>
 <wire x1="86.36" y1="139.7" x2="86.36" y2="154.94" width="0.1524" layer="91"/>
-<pinref part="J2" gate="P" pin="S1"/>
-<pinref part="J2" gate="P" pin="S2"/>
+<pinref part="RJ45_WHITE" gate="P" pin="S1"/>
+<pinref part="RJ45_WHITE" gate="P" pin="S2"/>
 <wire x1="86.36" y1="157.48" x2="86.36" y2="154.94" width="0.1524" layer="91"/>
 <junction x="86.36" y="154.94"/>
 </segment>
 <segment>
 <pinref part="GND51" gate="1" pin="GND"/>
-<pinref part="J3" gate="P" pin="1"/>
+<pinref part="RJ45_BLUE" gate="P" pin="1"/>
 <wire x1="30.48" y1="139.7" x2="30.48" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="J4" gate="P" pin="1"/>
+<pinref part="RJ45_RED" gate="P" pin="1"/>
 <pinref part="GND52" gate="1" pin="GND"/>
 <wire x1="96.52" y1="152.4" x2="96.52" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND22" gate="1" pin="GND"/>
-<pinref part="J4" gate="P" pin="S1"/>
+<pinref part="RJ45_RED" gate="P" pin="S1"/>
 <wire x1="119.38" y1="139.7" x2="119.38" y2="152.4" width="0.1524" layer="91"/>
-<pinref part="J4" gate="P" pin="S2"/>
+<pinref part="RJ45_RED" gate="P" pin="S2"/>
 <wire x1="119.38" y1="152.4" x2="119.38" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="154.94" x2="119.38" y2="157.48" width="0.1524" layer="91"/>
 <junction x="119.38" y="154.94"/>
-<pinref part="J4" gate="P" pin="8"/>
+<pinref part="RJ45_RED" gate="P" pin="8"/>
 <wire x1="114.3" y1="152.4" x2="119.38" y2="152.4" width="0.1524" layer="91"/>
 <junction x="119.38" y="152.4"/>
 </segment>
@@ -17302,12 +17328,12 @@ Source: www.st.com, BAT60J.pdf</description>
 <net name="+5V" class="0">
 <segment>
 <pinref part="P+53" gate="1" pin="+5V"/>
-<pinref part="J2" gate="P" pin="6"/>
+<pinref part="RJ45_WHITE" gate="P" pin="6"/>
 <wire x1="76.2" y1="149.86" x2="76.2" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="P+37" gate="1" pin="+5V"/>
-<pinref part="J2" gate="P" pin="5"/>
+<pinref part="RJ45_WHITE" gate="P" pin="5"/>
 <wire x1="73.66" y1="149.86" x2="73.66" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -17323,7 +17349,7 @@ Source: www.st.com, BAT60J.pdf</description>
 </net>
 <net name="TRIGGER_1" class="0">
 <segment>
-<pinref part="J2" gate="P" pin="3"/>
+<pinref part="RJ45_WHITE" gate="P" pin="3"/>
 <wire x1="68.58" y1="147.32" x2="68.58" y2="152.4" width="0.1524" layer="91"/>
 <label x="68.58" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -17340,7 +17366,7 @@ Source: www.st.com, BAT60J.pdf</description>
 <net name="TRIGGER_2" class="0">
 <segment>
 <label x="71.12" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J2" gate="P" pin="4"/>
+<pinref part="RJ45_WHITE" gate="P" pin="4"/>
 <wire x1="71.12" y1="152.4" x2="71.12" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -17356,48 +17382,48 @@ Source: www.st.com, BAT60J.pdf</description>
 <net name="ULTRAS1" class="0">
 <segment>
 <label x="99.06" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="2"/>
+<pinref part="RJ45_RED" gate="P" pin="2"/>
 <wire x1="99.06" y1="152.4" x2="99.06" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS2" class="0">
 <segment>
 <label x="101.6" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="3"/>
+<pinref part="RJ45_RED" gate="P" pin="3"/>
 <wire x1="101.6" y1="152.4" x2="101.6" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS3" class="0">
 <segment>
 <label x="104.14" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="4"/>
+<pinref part="RJ45_RED" gate="P" pin="4"/>
 <wire x1="104.14" y1="152.4" x2="104.14" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS4" class="0">
 <segment>
 <label x="106.68" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="5"/>
+<pinref part="RJ45_RED" gate="P" pin="5"/>
 <wire x1="106.68" y1="152.4" x2="106.68" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS5" class="0">
 <segment>
 <label x="109.22" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="6"/>
+<pinref part="RJ45_RED" gate="P" pin="6"/>
 <wire x1="109.22" y1="152.4" x2="109.22" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS6" class="0">
 <segment>
 <label x="111.76" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J4" gate="P" pin="7"/>
+<pinref part="RJ45_RED" gate="P" pin="7"/>
 <wire x1="111.76" y1="152.4" x2="111.76" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS7" class="0">
 <segment>
-<pinref part="J2" gate="P" pin="1"/>
+<pinref part="RJ45_WHITE" gate="P" pin="1"/>
 <wire x1="63.5" y1="152.4" x2="63.5" y2="147.32" width="0.1524" layer="91"/>
 <label x="63.5" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
 </segment>
@@ -17405,20 +17431,20 @@ Source: www.st.com, BAT60J.pdf</description>
 <net name="ULTRAS8" class="0">
 <segment>
 <label x="66.04" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J2" gate="P" pin="2"/>
+<pinref part="RJ45_WHITE" gate="P" pin="2"/>
 <wire x1="66.04" y1="152.4" x2="66.04" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS9" class="0">
 <segment>
 <label x="78.74" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J2" gate="P" pin="7"/>
+<pinref part="RJ45_WHITE" gate="P" pin="7"/>
 <wire x1="78.74" y1="152.4" x2="78.74" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS10" class="0">
 <segment>
-<pinref part="J2" gate="P" pin="8"/>
+<pinref part="RJ45_WHITE" gate="P" pin="8"/>
 <label x="81.28" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
 <wire x1="81.28" y1="147.32" x2="81.28" y2="152.4" width="0.1524" layer="91"/>
 </segment>
@@ -17426,42 +17452,42 @@ Source: www.st.com, BAT60J.pdf</description>
 <net name="ULTRAS11" class="0">
 <segment>
 <label x="33.02" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="2"/>
+<pinref part="RJ45_BLUE" gate="P" pin="2"/>
 <wire x1="33.02" y1="152.4" x2="33.02" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS12" class="0">
 <segment>
 <label x="35.56" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="3"/>
+<pinref part="RJ45_BLUE" gate="P" pin="3"/>
 <wire x1="35.56" y1="152.4" x2="35.56" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS13" class="0">
 <segment>
 <label x="38.1" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="4"/>
+<pinref part="RJ45_BLUE" gate="P" pin="4"/>
 <wire x1="38.1" y1="152.4" x2="38.1" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS14" class="0">
 <segment>
 <label x="40.64" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="5"/>
+<pinref part="RJ45_BLUE" gate="P" pin="5"/>
 <wire x1="40.64" y1="152.4" x2="40.64" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS15" class="0">
 <segment>
 <label x="43.18" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="6"/>
+<pinref part="RJ45_BLUE" gate="P" pin="6"/>
 <wire x1="43.18" y1="152.4" x2="43.18" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="ULTRAS16" class="0">
 <segment>
 <label x="45.72" y="147.32" size="1.016" layer="95" rot="R270" xref="yes"/>
-<pinref part="J3" gate="P" pin="7"/>
+<pinref part="RJ45_BLUE" gate="P" pin="7"/>
 <wire x1="45.72" y1="152.4" x2="45.72" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
