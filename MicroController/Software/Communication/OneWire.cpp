@@ -10,18 +10,18 @@
 uint8_t Communication::OneWire::Initialize(Gpio::Pin pin)
 {
     pinFloat(pin);
-    while (Gpio::GetPinValue(pin) == Gpio::Value::Low);       // Wait until the pin is high
+    while (Gpio::GetPinValue(pin) == Gpio::Value::Low);         // Wait until the pin is high
     
-    pinLow(pin);                                                        // Pull the pin low
+    pinLow(pin);                                                // Pull the pin low
      _delay_us(500);
      
-     pinFloat(pin);                                                     // Let the pin float
+     pinFloat(pin);                                             // Let the pin float
      _delay_us(65);
      
-     uint8_t response = (uint8_t) Gpio::GetPinValue(pin);               // Read the response
+     uint8_t response = (uint8_t) Gpio::GetPinValue(pin);       // Read the response
      _delay_us(490);
      
-     return response;                                                   // Return the response
+     return response;                                           // Return the response
 }
 
 void Communication::OneWire::WriteBit(Gpio::Pin pin, uint8_t bit)

@@ -401,7 +401,7 @@ int main()
         //_delay_ms(250);
     //}
     
-    testMotors();
+    //testMotors();
     //testFans();
     //temperatureCheckTest();
     //testDistSensor();

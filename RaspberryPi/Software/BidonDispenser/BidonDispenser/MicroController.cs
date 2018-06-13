@@ -197,7 +197,7 @@ namespace BidonDispenser {
             }
         }
 
-        public async Task<Tuple<int, List<Byte>>> sendDispenseCommand() {
+        public async Task<Tuple<int, List<Byte>>> sendDispenseCommand(byte columnNumber) {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
@@ -208,7 +208,7 @@ namespace BidonDispenser {
                 return new Tuple<int, List<Byte>>(3, null);
             }
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, 0x00 };
+            byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, columnNumber };
 
             try {
                 transmitCommand(bytesToSend);

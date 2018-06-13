@@ -1,26 +1,21 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.Devices.Enumeration;
 using Windows.Devices.Gpio;
-using Windows.Devices.SerialCommunication;
-using Windows.Storage.Streams;
 using System.Threading;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Windows.System.Profile;
-using Windows.UI.ViewManagement;
 using System.Collections.Generic;
 using Windows.UI.Core;
 using System.Diagnostics;
 using Windows.Storage;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
         private MainModel mainModel = new MainModel();
 
         private Boolean windowsIot = false;
+        private Boolean isInWbTestMode = true;
         private Boolean setupError = false;
         private int columnAmount = 0;
         
@@ -41,26 +36,40 @@ namespace BidonDispenser {
                 windowsIot = true;
             }
 
+            // Initialize the promotion timer
             initializePromotionTimer();
             
-            if (windowsIot) {
-                
-                //temperatureLoggerMode();
+            // If the device needs to go into "WerktuigBouwkundeboiis" test mode
+            if (isInWbTestMode) {
 
+                mc = new MicroController();                     // Initialize the microcontroller
+                initializeLeds();                               // Initialize the LEDs
+                Thread.Sleep(5000);                             // Wait a bit
+                return;
+            }
+
+            if (windowsIot) {
+
+                // Initialize the microcontroller and start the sense task
                 mc = new MicroController();
+                Thread.Sleep(5000);
+                //while (!mc.serialInitialized);
+                Task<bool> senseTask = mc.sense();
+
+
+                // Initialize the LEDs and turn them off
                 initializeLeds();
 
+
+                // Check how many columns are hooked up
                 columnAmount = howManyColumnsAreThere();
                 Debug.WriteLine("There are " + columnAmount + " Columns");
-
-                if (columnAmount == 0)
-                    setupError = true;
                 
-                if (!initButtons(columnAmount))
+                if (columnAmount == 0) {
+                    Debug.WriteLine("Zero columns have been detected");
                     setupError = true;
+                }
                 
-
-
 
 
 
@@ -68,38 +77,38 @@ namespace BidonDispenser {
                 //nfcModule = new Pn532Software();
                 //nfcModule = new Pn532(0);
                 //nfcModule.setup();
-            }
-        }
 
 
-        // Temperature Logger Mode //////
-        private async void temperatureLoggerMode() {
 
-            mc = new MicroController();
-            initializeLeds();
-            //while (!mc.serialInitialized);
-            Thread.Sleep(3000);
 
-            while (true) {
-                redLedState(GpioPinValue.High);
-                StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
-                StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
+                // Wait for the sense command to complete
+                try {
+                    while (!senseTask.IsCompleted);
+                    if (!senseTask.Result) {
+                        Debug.WriteLine("The sense command has failed");
+                        setupError = true;
+                    }
 
-                var result = await mc.sendTemperatureCommand();
-
-                if (result.Item2.Count > 4) {
-                    String data = result.Item2[2]/5 + "," + result.Item2[3] / 5 + "," + result.Item2[4] / 5 + "\n";
-                    await FileIO.AppendTextAsync(logFile, data);
+                } catch (Exception e) {
+                    Debug.WriteLine("EXCEPTION CAUGHT: "+e.Message+"\n"+e.StackTrace);
                 }
 
-                redLedState(GpioPinValue.Low);
-                Thread.Sleep(5 * 60 * 1000);    // Five minutes
+
+                // Only initialize the buttons if nothing went wrong
+                //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
+                if (!setupError)
+                    initButtons(columnAmount);
+
+
+                return;
             }
         }
-        
-        
-        // Serial Test //////
 
+
+        // Test Related //////
+
+        private Boolean stopCurrentTest = false;
+        
         private void serialTest(object sender, RoutedEventArgs rea) {
             Debug.WriteLine("Click: " + ((Button) sender).Name );
 
@@ -111,10 +120,89 @@ namespace BidonDispenser {
                 case "Lock":                mc.sendLockCommand();               break;
                 case "Unlock":              mc.sendUnlockCommand();             break;
                 case "Temperature":         mc.sendTemperatureCommand();        break;
-                case "Dispense":            mc.sendDispenseCommand();           break;
+                case "Dispense":            mc.sendDispenseCommand(0);          break;
                 case "Distance":            mc.sendDistanceCommand();           break;
                 default: Debug.WriteLine("Unknown button"); return;
             }
+        }
+
+        private async void wbTest(object sender, RoutedEventArgs rea) {
+            Debug.WriteLine("Click: " + ((Button) sender).Name );
+
+            if (!windowsIot)
+                return;
+            
+            switch (((Button) sender).Name) {
+                case "DispenseTest":            dispenseTest();                 break;
+                case "CoolingTest":             coolingTest();                  break;
+                case "Stop":                    stopCurrentTest = true;         break;
+                default: Debug.WriteLine("Unknown button"); return;
+            }
+        }
+
+        private async void coolingTest() {
+
+            Debug.WriteLine("Starting the cooling test");
+
+            try {
+                while (!stopCurrentTest) {
+                    orangeLedState(GpioPinValue.High);
+                    StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
+                    StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
+
+                    var result = await mc.sendTemperatureCommand();
+
+                    if (result.Item2.Count > 4) {
+                        // Log the temperatures on the USB
+                        String data = ((double) result.Item2[2]) / 5.0 + "," + ((double) result.Item2[3]) / 5.0 + "," + ((double) result.Item2[4]) / 5.0 + "\n";
+                        await FileIO.AppendTextAsync(logFile, data);
+
+                        // Update the temperature in the UI
+                        double lowerTemp = result.Item2[2];
+                        mainModel.lowerTemperature = lowerTemp / 5.0;
+                    }
+
+                    orangeLedState(GpioPinValue.Low);
+                    Thread.Sleep(60 * 1000);    // One minutes
+                }
+
+                stopCurrentTest = false;
+
+            } catch (Exception e) {
+                Debug.WriteLine("EXCEPTION CATCHED: "+e.Message);
+            } finally {
+                orangeLedState(GpioPinValue.Low);
+            }
+
+            Debug.WriteLine("Stopped the cooling test");
+        }
+
+        private async void dispenseTest() {
+
+            Debug.WriteLine("Starting the dispense test");
+            byte columnIndex = 0;
+
+            try {
+                while (!stopCurrentTest) {
+                    redLedState(GpioPinValue.High);
+
+                    await mc.sendDispenseCommand(columnIndex++);
+
+                    if (columnIndex > 7) columnIndex = 0;
+
+                    redLedState(GpioPinValue.Low);
+                    Thread.Sleep(1000);         // One second
+                }
+
+                stopCurrentTest = false;
+
+            } catch (Exception e) {
+                Debug.WriteLine("EXCEPTION CATCHED: " + e.Message);
+            } finally {
+                redLedState(GpioPinValue.Low);
+            }
+
+            Debug.WriteLine("Stopped the dispense test");
         }
 
 
@@ -138,6 +226,9 @@ namespace BidonDispenser {
 
             orangeLed.SetDriveMode(GpioPinDriveMode.Output);
             redLed.SetDriveMode(GpioPinDriveMode.Output);
+
+            orangeLed.Write(GpioPinValue.Low);
+            redLed.Write(GpioPinValue.Low);
 
             Debug.WriteLine("The LEDs have been initialized");
             return true;
@@ -172,9 +263,9 @@ namespace BidonDispenser {
             for (int i = 0; i < amount; i++) {
                 buttonPins.Add(gpio.OpenPin(BUTTON_PINS[i]));                                           // Open the button pins
 
-                // Set the buttons' drive mode to input and pulldown (if supported)
-                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullDown))
-                    buttonPins[i].SetDriveMode(GpioPinDriveMode.InputPullDown);
+                // Set the buttons' drive mode to input and pullup (if supported)
+                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                    buttonPins[i].SetDriveMode(GpioPinDriveMode.InputPullUp);
                 else
                     buttonPins[i].SetDriveMode(GpioPinDriveMode.Input);
 
@@ -188,7 +279,7 @@ namespace BidonDispenser {
 
         private void buttonValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
-            if (e.Edge == GpioPinEdge.RisingEdge) {
+            if (e.Edge == GpioPinEdge.FallingEdge) {
 
                 if (buttonsDisabled) return;
                 buttonsDisabled = true;
