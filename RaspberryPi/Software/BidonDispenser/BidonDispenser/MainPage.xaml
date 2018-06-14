@@ -14,7 +14,7 @@
         <!-- "WB Test" Panel -->
         <StackPanel
             x:Name="WbTestPanel"
-            Visibility="Visible"
+            Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE"
             Margin="10"

@@ -15,7 +15,7 @@ namespace BidonDispenser {
         private MainModel mainModel = new MainModel();
 
         private Boolean windowsIot = false;
-        private Boolean isInWbTestMode = true;
+        private Boolean isInWbTestMode = false;
         private Boolean setupError = false;
         private int columnAmount = 0;
         
@@ -38,6 +38,8 @@ namespace BidonDispenser {
 
             // Initialize the promotion timer
             initializePromotionTimer();
+
+            //return;             // <<=====
             
             // If the device needs to go into "WerktuigBouwkundeboiis" test mode
             if (isInWbTestMode) {
