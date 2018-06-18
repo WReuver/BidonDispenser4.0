@@ -57,8 +57,8 @@ namespace BidonDispenser {
 
         private readonly List<byte> IDENTIFIER = new List<byte> { 0xAB, 0xBC, 0xCD, 0xDA };
 
-        private Mutex commandRight = new Mutex();                               // The mutex which decides whether the current thread has command right or not
-        private int mutexTimeout = 15_000;                                      // How many seconds the program should wait for the mutex
+        private Semaphore commandRight = new Semaphore(1, 1);                   // The semaphore which decides whether the current thread has command right or not
+        private int semaphoreTimeout = 15_000;                                  // How many seconds the program should wait for the mutex
 
 
         public MicroController(int receiveTimeout = 1000) {
@@ -91,31 +91,30 @@ namespace BidonDispenser {
         // 0 => Everything went fine
         // 1 => Serial port is not initialized
         // 2 => Exception was catched
-        // 3 => Mutex timeout
+        // 3 => Mutex error
 
         public async Task<Tuple<int, List<Byte>>> sendSenseCommand() {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Sense, 0x00 };
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Sense, 0x00 };                         // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 
@@ -123,25 +122,24 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Lock, 0x00 };
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Lock, 0x00 };                          // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 
@@ -149,25 +147,24 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Unlock, 0x00 };
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Unlock, 0x00 };                        // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 
@@ -175,51 +172,49 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Temperature, 0x00 };
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Temperature, 0x00 };                   // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 
         public async Task<Tuple<int, List<Byte>>> sendDispenseCommand(byte columnNumber) {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
+            
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, columnNumber };        // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, columnNumber };
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
-
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 
@@ -227,25 +222,24 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            try {
-                commandRight.WaitOne(mutexTimeout);                     // Claim the mutex
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);                            // Mutex (probably) timed out
-                return new Tuple<int, List<Byte>>(3, null);
-            }
+            if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
-            byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x00 };
+                try {
+                    byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x00 };                      // Prepare the command
+                    transmitCommand(bytesToSend);                                                           // Transmit the command
+                    return await waitForResponse();                                                         // Wait for a response and return it
 
-            try {
-                transmitCommand(bytesToSend);
-                return await waitForResponse();
+                } catch (Exception ex) {
+                    Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
+                    return new Tuple<int, List<Byte>>(2, null);                                             // Exception
 
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-                return new Tuple<int, List<Byte>>(2, null);
+                } finally {
+                    commandRight.Release();                                                                 // Release the semaphore
+                }
 
-            } finally {
-                commandRight.ReleaseMutex();                            // Release the mutex
+            } else {
+                Debug.WriteLine("Could not claim the semaphore");
+                return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
 

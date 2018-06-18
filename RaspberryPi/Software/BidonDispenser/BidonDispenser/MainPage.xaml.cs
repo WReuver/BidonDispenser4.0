@@ -22,7 +22,8 @@ namespace BidonDispenser {
         private MicroController mc = null;
 
         //private Pn532Software nfcModule;
-        private Pn532 nfcModule;
+        //private Pn532 nfcModule;
+        private Pn532_I2C nfcModule;
 
         public MainPage() {
             this.InitializeComponent();
@@ -56,7 +57,7 @@ namespace BidonDispenser {
                 mc = new MicroController();
                 Thread.Sleep(5000);
                 //while (!mc.serialInitialized);
-                Task<bool> senseTask = mc.sense();
+                //Task<bool> senseTask = mc.sense();
 
 
                 // Initialize the LEDs and turn them off
@@ -71,20 +72,22 @@ namespace BidonDispenser {
                     Debug.WriteLine("Zero columns have been detected");
                     setupError = true;
                 }
-                
 
+                // Initialize the door sensor
+                initDoorSensor();
 
 
                 // Initialize the NFC module
                 //nfcModule = new Pn532Software();
-                //nfcModule = new Pn532(0);
-                //nfcModule.setup();
-
+                /*nfcModule = new Pn532_I2C();
+                Thread.Sleep(1000);
+                nfcModule.setup();
+                return;*/
 
 
 
                 // Wait for the sense command to complete
-                try {
+                /*try {
                     while (!senseTask.IsCompleted);
                     if (!senseTask.Result) {
                         Debug.WriteLine("The sense command has failed");
@@ -93,7 +96,7 @@ namespace BidonDispenser {
 
                 } catch (Exception e) {
                     Debug.WriteLine("EXCEPTION CAUGHT: "+e.Message+"\n"+e.StackTrace);
-                }
+                }*/
 
 
                 // Only initialize the buttons if nothing went wrong
@@ -299,17 +302,17 @@ namespace BidonDispenser {
                         
                         // Show the "finishing up" panel
                         showFinishingUpPanel();
-                        finish(nfcCancellationTokenSrc.Token);
+                        //finish(nfcCancellationTokenSrc.Token);
                         break;
                     
                     
                     case uiPanel.finishingUp:
                         // Cancel the operation if the user presses the left most button
                         if (buttonNo == 0) {
-                            cancel();
+                            //cancel();
                             showPickColourPanel();
                         } else if (buttonNo == 7) {                         // Work around for now
-                            cancel();                                       // Cancel the wait for the payment
+                            //cancel();                                       // Cancel the wait for the payment
                             hack((int) mainModel.selectedBottleColour);     // Dispense the selcted column
                             showThankYouPanel();                            // Show the final panel
                         }
@@ -318,7 +321,7 @@ namespace BidonDispenser {
                     
                     case uiPanel.thankYou:
                         // Return to the selection screen
-                        stopThankYouTimer(null, null);
+                        //stopThankYouTimer(null, null);         <== Does not work
                         break;
                     
                     
@@ -361,7 +364,7 @@ namespace BidonDispenser {
         private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
             GpioPinValue pinVal = doorSensorPin.Read();
 
-            if (pinVal == GpioPinValue.Low)
+            if (pinVal == GpioPinValue.High)
                 doorOpened();
             else
                 doorClosed();
@@ -369,7 +372,7 @@ namespace BidonDispenser {
 
         // Send the lock command, if it fails => retry once
         private async void doorOpened() {
-            Boolean retry = false;
+            /*Boolean retry = false;
             Boolean hasRetried = false;
 
             do {
@@ -384,12 +387,14 @@ namespace BidonDispenser {
                     case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
                     default: retry = false; break;                                                      // Should not be possible
                 }
-            } while (retry && !hasRetried);
+            } while (retry && !hasRetried);*/
+
+            mc.sendLockCommand();
         }
 
         // Send the unlock command, if it fails => retry once
         private async void doorClosed() {
-            Boolean retry = false;
+            /*Boolean retry = false;
             Boolean hasRetried = false;
 
             do {
@@ -404,7 +409,9 @@ namespace BidonDispenser {
                     case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
                     default: retry = false; break;                                                      // Should not be possible
                 }
-            } while (retry && !hasRetried);
+            } while (retry && !hasRetried);*/
+
+            mc.sendUnlockCommand();
         }
 
 
@@ -475,7 +482,7 @@ namespace BidonDispenser {
         }
 
         private void hack(int column) {
-
+            mc.sendDispenseCommand((byte) column);
         }
 
 
@@ -540,7 +547,7 @@ namespace BidonDispenser {
         
         private void startThankYouTimer() {
             thankYouTimer = new DispatcherTimer();
-            thankYouTimer.Interval = TimeSpan.FromSeconds(5);
+            thankYouTimer.Interval = TimeSpan.FromSeconds(3);
             thankYouTimer.Tick += stopThankYouTimer;
             thankYouTimer.Start();
         }

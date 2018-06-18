@@ -138,7 +138,7 @@
             </StackPanel>
 
             <Image
-                Source="ms-appx:///Assets/Images/Selections/CancelSelection.png" />
+                Source="ms-appx:///Assets/Images/Selections/AcceptCancelSelection.png" />
 
         </StackPanel>
         

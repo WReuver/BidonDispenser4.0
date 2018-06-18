@@ -103,6 +103,7 @@
     <Compile Include="MicroController.cs" />
     <Compile Include="Pn532Software.cs" />
     <Compile Include="Pn532.cs" />
+    <Compile Include="Pn532_I2C.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

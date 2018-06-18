@@ -74,16 +74,16 @@ namespace BidonDispenser {
                 var controller = await SpiController.GetDefaultAsync();
                 spiPort = controller.GetDevice(settings);
 
-                
+                System.Diagnostics.Debug.WriteLine("SPI Initialized");
+                spiIsInitialized = true;
+
+
                 //string spiAqs = SpiDevice.GetDeviceSelector();
                 //var devicesInfo = await DeviceInformation.FindAllAsync(spiAqs);
                 //System.Diagnostics.Debug.WriteLine("Device id: "+ devicesInfo[0].Id);
                 //spiPort = await SpiDevice.FromIdAsync(devicesInfo[0].Id, settings);
             } catch (Exception e) {
-                System.Diagnostics.Debug.WriteLine("SPI Initialisation Error: ", e.Message);
-            } finally {
-                System.Diagnostics.Debug.WriteLine("SPI Initialized");
-                spiIsInitialized = true;
+                System.Diagnostics.Debug.WriteLine("SPI Initialisation Error: " + e.Message);
             }
         }
 
@@ -129,6 +129,8 @@ namespace BidonDispenser {
 
         // Converts data to "least significant bit first"
         private byte[] swapBitOrder(byte[] bytes) {
+            //return bytes;
+
             byte[] newBytes = new byte[bytes.Length];
 
             for (int i = 0; i < bytes.Length; i++)
