@@ -15,7 +15,6 @@ namespace BidonDispenser {
         private MainModel mainModel = new MainModel();
 
         private Boolean windowsIot = false;
-        private Boolean isInWbTestMode = false;
         private Boolean setupError = false;
         private int columnAmount = 0;
         
@@ -25,79 +24,60 @@ namespace BidonDispenser {
         //private Pn532 nfcModule;
         private Pn532_I2C nfcModule;
 
-        public MainPage() {
-            this.InitializeComponent();
 
+        public MainPage() {
+            InitializeComponent();
+            
             // Add the "unloadMainPage" function to the callbacks when the program is shutting down
             Unloaded += unloadMainPage;
 
             // Check on which device we're running
             Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT") {
-                windowsIot = true;
-            }
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT") windowsIot = true;
 
             // Initialize the promotion timer
             initializePromotionTimer();
 
-            //return;             // <<=====
-            
-            // If the device needs to go into "WerktuigBouwkundeboiis" test mode
-            if (isInWbTestMode) {
-
-                mc = new MicroController();                     // Initialize the microcontroller
-                initializeLeds();                               // Initialize the LEDs
-                Thread.Sleep(5000);                             // Wait a bit
-                return;
-            }
-
+            // If running on windows iot...
             if (windowsIot) {
 
                 // Initialize the microcontroller and start the sense task
                 mc = new MicroController();
-                Thread.Sleep(5000);
-                //while (!mc.serialInitialized);
-                //Task<bool> senseTask = mc.sense();
+                nfcModule = new Pn532_I2C();
+                
+                // Initialize the system when the program has loaded
+                Loaded += async (sender, eventArgs) => { await initializeSystem(); };
+                
+                return;
+            }
+        }
 
+        private async Task initializeSystem() {
+            try {
+
+                // Initialize the microcontroller
+                await mc.initialize();
+
+                // Sense the microcontroller
+                //if (!(await mc.sense())) setupError = true;
+
+                // Initialize the pn532
+                //await nfcModule.initialize();
+
+                // Sense the pn532
+                //if (!(await nfcModule.sense())) setupError = true;
 
                 // Initialize the LEDs and turn them off
                 initializeLeds();
-
-
+                
                 // Check how many columns are hooked up
                 columnAmount = howManyColumnsAreThere();
                 Debug.WriteLine("There are " + columnAmount + " Columns");
-                
-                if (columnAmount == 0) {
-                    Debug.WriteLine("Zero columns have been detected");
-                    setupError = true;
-                }
+                if (columnAmount == 0) setupError = true;
 
                 // Initialize the door sensor
                 initDoorSensor();
-
-
-                // Initialize the NFC module
-                //nfcModule = new Pn532Software();
-                /*nfcModule = new Pn532_I2C();
-                Thread.Sleep(1000);
-                nfcModule.setup();
-                return;*/
-
-
-
-                // Wait for the sense command to complete
-                /*try {
-                    while (!senseTask.IsCompleted);
-                    if (!senseTask.Result) {
-                        Debug.WriteLine("The sense command has failed");
-                        setupError = true;
-                    }
-
-                } catch (Exception e) {
-                    Debug.WriteLine("EXCEPTION CAUGHT: "+e.Message+"\n"+e.StackTrace);
-                }*/
-
+                doorValueHasChanged(null, null);
 
                 // Only initialize the buttons if nothing went wrong
                 //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
@@ -105,7 +85,8 @@ namespace BidonDispenser {
                     initButtons(columnAmount);
 
 
-                return;
+            } catch (Exception ex) {
+                Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
             }
         }
 

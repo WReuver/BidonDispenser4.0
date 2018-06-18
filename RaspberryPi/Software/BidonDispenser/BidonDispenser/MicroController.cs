@@ -49,7 +49,7 @@ namespace BidonDispenser {
         };
 
 
-        public Boolean serialInitialized { get; private set; } = false;
+        private Boolean serialInitialized = false;
         private SerialDevice serialPort;
         private DataWriter serialPortTx;
         private DataReader serialPortRx;
@@ -58,15 +58,43 @@ namespace BidonDispenser {
         private readonly List<byte> IDENTIFIER = new List<byte> { 0xAB, 0xBC, 0xCD, 0xDA };
 
         private Semaphore commandRight = new Semaphore(1, 1);                   // The semaphore which decides whether the current thread has command right or not
-        private int semaphoreTimeout = 15_000;                                  // How many seconds the program should wait for the mutex
+        private int semaphoreTimeout = 10_000;                                  // How many seconds the program should wait for the mutex
 
 
-        public MicroController(int receiveTimeout = 1000) {
-            initializeSerialPort(receiveTimeout);
+        public async Task initialize(int receiveTimeout = 1000) {
+            try {
+                string aqs = SerialDevice.GetDeviceSelector();                                  // Get the device selector
+                DeviceInformation device = (await DeviceInformation.FindAllAsync(aqs))[0];      // Get the first (and only) serial device information
+                serialPort = await SerialDevice.FromIdAsync(device.Id);                         // Use the aquired device information to get the Serial Port
+
+                // If retrieving the Serial Port has failed => print an error message and return
+                if (serialPort == null) {
+                    Debug.WriteLine("Could not find the serial port");
+                    return;
+                }
+
+                // Configure serial settings
+                serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
+                serialPort.ReadTimeout = TimeSpan.FromMilliseconds(receiveTimeout);
+                serialPort.BaudRate = 9600;
+                serialPort.Parity = SerialParity.None;
+                serialPort.StopBits = SerialStopBitCount.One;
+                serialPort.DataBits = 8;
+                serialPort.Handshake = SerialHandshake.None;
+
+                serialPortTx = new DataWriter(serialPort.OutputStream);
+                serialPortRx = new DataReader(serialPort.InputStream);
+
+                Debug.WriteLine("The serial port has been initialized");
+                serialInitialized = true;
+
+            } catch (Exception e) {
+                Debug.WriteLine("Serial port initialization error: " + e.Message + "\n" + e.StackTrace);
+            }
         }
 
         public async Task<Boolean> sense() {
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 2; i++) {                       // Rertry once
                 var result = await sendSenseCommand();          // Get the result
 
                 if (
@@ -76,8 +104,7 @@ namespace BidonDispenser {
                     (result.Item2[2] == IDENTIFIER[0]) && 
                     (result.Item2[3] == IDENTIFIER[1]) && 
                     (result.Item2[4] == IDENTIFIER[2]) && 
-                    (result.Item2[5] == IDENTIFIER[3]) && 
-                    (result.Item2[6] == IDENTIFIER[4])
+                    (result.Item2[5] == IDENTIFIER[3]) 
                     ) {
                     return true;
                 }
@@ -91,7 +118,7 @@ namespace BidonDispenser {
         // 0 => Everything went fine
         // 1 => Serial port is not initialized
         // 2 => Exception was catched
-        // 3 => Mutex error
+        // 3 => Semaphore error
 
         public async Task<Tuple<int, List<Byte>>> sendSenseCommand() {
             if (!serialInitialized)
@@ -102,7 +129,20 @@ namespace BidonDispenser {
                 try {
                     byte[] bytesToSend = new byte[] { (byte) Command.Sense, 0x00 };                         // Prepare the command
                     transmitCommand(bytesToSend);                                                           // Transmit the command
-                    return await waitForResponse();                                                         // Wait for a response and return it
+
+                    var response = waitForResponse();
+
+                    // Return the response if it is received within one second
+                    for (int i = 0; i < 20; i++) {
+                        Thread.Sleep(50);
+
+                        if (response.IsCompleted)
+                            return response.Result;
+                    }
+
+                    // If not, stop the reading task and throw an exception
+                    cancelReadTask();
+                    return new Tuple<int, List<Byte>>(2, null);
 
                 } catch (Exception ex) {
                     Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
@@ -261,39 +301,7 @@ namespace BidonDispenser {
             readCancellationTokenSource = new CancellationTokenSource();    // Create a cancellation token to stop the reading
             return await receiveBytes(readCancellationTokenSource.Token);   // Read the data and store it in a list
         }
-
-        private async void initializeSerialPort(int receiveTimeout) {
-            try {
-                string aqs = SerialDevice.GetDeviceSelector();                                  // Get the device selector
-                DeviceInformation device = (await DeviceInformation.FindAllAsync(aqs))[0];      // Get the first (and only) serial device information
-                serialPort = await SerialDevice.FromIdAsync(device.Id);                         // Use the aquired device information to get the Serial Port
-
-                // If retrieving the Serial Port has failed => print an error message and return
-                if (serialPort == null) {
-                    Debug.WriteLine("Could not find the serial port");
-                    return;
-                }
-
-                // Configure serial settings
-                serialPort.WriteTimeout = TimeSpan.FromMilliseconds(1000);
-                serialPort.ReadTimeout = TimeSpan.FromMilliseconds(receiveTimeout);
-                serialPort.BaudRate = 9600;
-                serialPort.Parity = SerialParity.None;
-                serialPort.StopBits = SerialStopBitCount.One;
-                serialPort.DataBits = 8;
-                serialPort.Handshake = SerialHandshake.None;
-
-                serialPortTx = new DataWriter(serialPort.OutputStream);
-                serialPortRx = new DataReader(serialPort.InputStream);
-
-                Debug.WriteLine("The serial port has been initialized");
-                serialInitialized = true;
-
-            } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-
+        
         private async void transmitBytes(byte[] bytes) {
             try {
 
@@ -325,7 +333,7 @@ namespace BidonDispenser {
                     Debug.WriteLine("The serial port is not initialized!");
                     return new Tuple<int, List<Byte>>(1, null);
                 }
-                
+
                 cancellationToken.ThrowIfCancellationRequested();                                                                   // If task cancellation was requested, comply
                 serialPortRx.InputStreamOptions = InputStreamOptions.Partial;
                 List<Byte> response = new List<Byte>();                                                                             // Create a list of bytes to store the response in
@@ -368,8 +376,11 @@ namespace BidonDispenser {
 
                 return new Tuple<int, List<Byte>>(0, response);
 
+            } catch (TaskCanceledException) {
+                return new Tuple<int, List<Byte>>(2, null);
+
             } catch (Exception ex) {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
                 return new Tuple<int, List<Byte>>(2, null);
             }
         }
