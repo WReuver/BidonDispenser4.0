@@ -139,6 +139,7 @@
     <Content Include="Assets\Images\Promotions\HappyWaterThingy.png" />
     <Content Include="Assets\Images\Promotions\WaterKiosk.png" />
     <Content Include="Assets\Images\Promotions\WaterTaps.png" />
+    <Content Include="Assets\Images\Secret.jpg" />
     <Content Include="Assets\Images\Selections\AcceptCancelSelection.png" />
     <Content Include="Assets\Images\Selections\AcceptCancelSelectionWhite.png" />
     <Content Include="Assets\Images\Selections\BottleColourSelection.png" />

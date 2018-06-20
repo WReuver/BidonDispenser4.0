@@ -20,10 +20,6 @@ namespace BidonDispenser {
         
         private MicroController mc = null;
 
-        //private Pn532Software nfcModule;
-        //private Pn532 nfcModule;
-        private Pn532_I2C nfcModule;
-
 
         public MainPage() {
             InitializeComponent();
@@ -43,7 +39,6 @@ namespace BidonDispenser {
 
                 // Initialize the microcontroller and start the sense task
                 mc = new MicroController();
-                nfcModule = new Pn532_I2C();
                 
                 // Initialize the system when the program has loaded
                 Loaded += async (sender, eventArgs) => { await initializeSystem(); };
@@ -59,13 +54,7 @@ namespace BidonDispenser {
                 await mc.initialize();
 
                 // Sense the microcontroller
-                //if (!(await mc.sense())) setupError = true;
-
-                // Initialize the pn532
-                //await nfcModule.initialize();
-
-                // Sense the pn532
-                //if (!(await nfcModule.sense())) setupError = true;
+                if (!(await mc.sense())) setupError = true;
 
                 // Initialize the LEDs and turn them off
                 initializeLeds();
@@ -83,7 +72,8 @@ namespace BidonDispenser {
                 //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
                 if (!setupError)
                     initButtons(columnAmount);
-
+                else
+                    showBootingErrorPanel();
 
             } catch (Exception ex) {
                 Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
@@ -283,28 +273,38 @@ namespace BidonDispenser {
                         
                         // Show the "finishing up" panel
                         showFinishingUpPanel();
-                        //finish(nfcCancellationTokenSrc.Token);
                         break;
                     
                     
                     case uiPanel.finishingUp:
                         // Cancel the operation if the user presses the left most button
                         if (buttonNo == 0) {
-                            //cancel();
                             showPickColourPanel();
-                        } else if (buttonNo == 7) {                         // Work around for now
-                            //cancel();                                       // Cancel the wait for the payment
-                            hack((int) mainModel.selectedBottleColour);     // Dispense the selcted column
-                            showThankYouPanel();                            // Show the final panel
+                        } else if (buttonNo == 7) { 
+                            mc.sendDispenseCommand((byte) mainModel.selectedBottleColour);
+                            showThankYouPanel();
+                        } else {
+                            var huh = true;
+                            for (int i = 1; i < (columnAmount - 1); i++) huh &= (buttonPins[i].Read() == GpioPinValue.Low);
+                            if ( huh ) showSecretPanel();
                         }
                         break;
                     
                     
                     case uiPanel.thankYou:
                         // Return to the selection screen
-                        //stopThankYouTimer(null, null);         <== Does not work
+                        stopThankYouTimer(null, null);
                         break;
-                    
+
+                    case uiPanel.doorOpen:
+                        // Do nothing when the error screen is shown
+                        showDoorOpenErrorPanel();
+                        break;
+
+                    case uiPanel.secret:
+                        // Huh?
+                        showFinishingUpPanel();
+                        break;
                     
                     default: break;
                 }
@@ -345,54 +345,14 @@ namespace BidonDispenser {
         private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
             GpioPinValue pinVal = doorSensorPin.Read();
 
-            if (pinVal == GpioPinValue.High)
-                doorOpened();
-            else
-                doorClosed();
-        }
-
-        // Send the lock command, if it fails => retry once
-        private async void doorOpened() {
-            /*Boolean retry = false;
-            Boolean hasRetried = false;
-
-            do {
-                if (retry) hasRetried = true;                   // Update the "hasTried" variable
-                var result = await mc.sendLockCommand();        // Get the result
-                
-                switch (result.Item1) {
-
-                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
-                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
-                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
-                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
-                    default: retry = false; break;                                                      // Should not be possible
-                }
-            } while (retry && !hasRetried);*/
-
-            mc.sendLockCommand();
-        }
-
-        // Send the unlock command, if it fails => retry once
-        private async void doorClosed() {
-            /*Boolean retry = false;
-            Boolean hasRetried = false;
-
-            do {
-                if (retry) hasRetried = true;                   // Update the "hasTried" variable
-                var result = await mc.sendUnlockCommand();      // Get the result
-                
-                switch (result.Item1) {
-
-                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
-                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
-                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
-                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
-                    default: retry = false; break;                                                      // Should not be possible
-                }
-            } while (retry && !hasRetried);*/
-
-            mc.sendUnlockCommand();
+            if (pinVal == GpioPinValue.High) {
+                doNotShowTheThankYouPanel();
+                showDoorOpenErrorPanel();
+                mc.sendLockCommand();
+            } else {
+                mc.sendUnlockCommand();
+                showPickColourPanel();
+            }
         }
 
 
@@ -423,64 +383,25 @@ namespace BidonDispenser {
                 return 0;                                                           // Err = 0 columns
             }
         }
-
-
-        // Finishing Up //////
         
-        private CancellationTokenSource nfcCancellationTokenSrc;
-
-        private async void finish(CancellationToken cancellationToken, int timeout = 30) {
-            try {
-
-                cancellationToken.ThrowIfCancellationRequested();                       // If task cancellation was requested, comply
-                
-                using (var childCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)) {
-                    // await serialPortRx.LoadAsync(1).AsTask(childCancellationTokenSource.Token);
-
-                    // Wait for an NFC to be presented
-                    // Check whether it is one of "our" tags or not
-                    // Send a password ack request
-                    // Check whether it contains one or more credits
-                    // Send a password ack request
-                    // Remove one credit
-                    // If successful, dispense the requested bidon colour
-                    // If not, show an error screen?
-                    // Done
-
-                }
-                
-            } catch (Exception e) {
-                Debug.WriteLine(e.Message);
-            }
-        }
-
-        private void cancel() {
-            if (nfcCancellationTokenSrc != null) {
-                if (!nfcCancellationTokenSrc.IsCancellationRequested) {
-                    nfcCancellationTokenSrc.Cancel();
-                }
-            }
-        }
-
-        private void hack(int column) {
-            mc.sendDispenseCommand((byte) column);
-        }
-
 
         // Panel Show //////
 
         private enum uiPanel {
-            pickColour, finishingUp, thankYou
+            pickColour, finishingUp, thankYou, doorOpen, boot, secret
         }
         private uiPanel currentPanel = uiPanel.pickColour;
 
         private void showCommandTestPanel() {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: CommandTestPanel");
                 CommandTestPanel.Visibility = Visibility.Visible;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -488,11 +409,14 @@ namespace BidonDispenser {
             currentPanel = uiPanel.pickColour;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: PickColourPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Visible;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -500,11 +424,14 @@ namespace BidonDispenser {
             currentPanel = uiPanel.finishingUp;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: FinishingUpPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Visible;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -512,12 +439,60 @@ namespace BidonDispenser {
             currentPanel = uiPanel.thankYou;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: ThankYouPanel");
                 startThankYouTimer();
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Visible;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showDoorOpenErrorPanel() {
+            currentPanel = uiPanel.doorOpen;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: DoorOpenErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Visible;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showBootingErrorPanel() {
+            currentPanel = uiPanel.boot;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: BootingErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Visible;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showSecretPanel() {
+            currentPanel = uiPanel.secret;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: DoorOpenErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Visible;
             });
         }
 
@@ -534,8 +509,22 @@ namespace BidonDispenser {
         }
 
         private void stopThankYouTimer(object sender, object e) {
-            thankYouTimer.Stop();
-            showPickColourPanel();
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (thankYouTimer != null) {
+                    thankYouTimer.Stop();
+                    thankYouTimer = null;
+                    showPickColourPanel();
+                }
+            });
+        }
+
+        private void doNotShowTheThankYouPanel() {
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (thankYouTimer != null) {
+                    thankYouTimer.Stop();
+                    thankYouTimer = null;
+                }
+            });
         }
 
 
@@ -619,8 +608,7 @@ namespace BidonDispenser {
 
         private void unloadMainPage(object sender, object args) {
 
-            // Dispose the NFC module and the microcontroller
-            nfcModule?.dispose();
+            // Dispose the microcontroller
             mc?.dispose();
 
 

@@ -122,7 +122,7 @@
                         FontWeight="SemiBold"/>
                     
                     <TextBlock
-                        Text="         Present your credit wallet to finish the payment."
+                        Text="         Continue or cancel?"
                         Foreground="#AAAAAA"
                         FontSize="32"
                         FontFamily="Segoe UI"
@@ -158,22 +158,71 @@
 
         </StackPanel>
 
-        <!-- "Thank You Fam" Panel -->
+        <!-- "The door is open error" Panel -->
         <StackPanel
-            Name="ThankYouFamPanel"
+            Name="DoorOpenError"
             Visibility="Collapsed"
-            Orientation="Vertical"
-            Background="#FEFEFE"
-            Margin="15, 15, 15, 15">
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
 
-            <Image 
-                Source="ms-appx:///Assets/Images/ThxFam.png"
+            <TextBlock
+                Text="THE DOOR IS OPEN"
+                Foreground="#FF0000"
+                FontSize="72"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Width="750"/>
+                FontFamily="Segoe UI"
+                FontWeight="Bold"
+                Padding="0, 200, 0, 0"/>
+            
+            <TextBlock
+                Text="Please close the door to continue regular opertion"
+                Foreground="#FF0000"
+                FontSize="20"
+                HorizontalAlignment="Center"
+                FontFamily="Segoe UI"/>
+
+        </StackPanel>
+        
+        <!-- "Booting error" Panel -->
+        <StackPanel
+            Name="BootingError"
+            Visibility="Collapsed"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+
+            <TextBlock
+                Text="AN ERROR OCCURRED WHILE BOOTING"
+                Foreground="#FF0000"
+                FontSize="48"
+                HorizontalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontWeight="Bold"
+                Padding="0, 200, 0, 0"/>
+
+            <TextBlock
+                Text="Please restart the machine"
+                Foreground="#FF0000"
+                FontSize="20"
+                HorizontalAlignment="Center"
+                FontFamily="Segoe UI"/>
 
         </StackPanel>
 
+        <!-- "Secret" Panel -->
+        <StackPanel
+            Name="SecretPanel"
+            Visibility="Collapsed"
+            Orientation="Vertical"
+            Background="#FEFEFE"
+            Margin="-8, 0, 0, 0">
+
+            <Image 
+                Source="ms-appx:///Assets/Images/Secret.jpg"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="1080"/>
+
+        </StackPanel>
 
     </StackPanel>
 </Page>
