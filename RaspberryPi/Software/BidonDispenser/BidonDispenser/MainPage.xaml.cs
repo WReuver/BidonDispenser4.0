@@ -53,8 +53,13 @@ namespace BidonDispenser {
                 // Initialize the microcontroller
                 await mc.initialize();
 
-                // Sense the microcontroller
-                if (!(await mc.sense())) setupError = true;
+                // Sense the microcontroller, if it failed => retry once
+                if (!(await mc.sense())) {
+                    if (!(await mc.sense())) {
+                        setupError = true;
+                        Debug.WriteLine("Could not sense the microcontroller");
+                    }
+                }
 
                 // Initialize the LEDs and turn them off
                 initializeLeds();
@@ -64,12 +69,13 @@ namespace BidonDispenser {
                 Debug.WriteLine("There are " + columnAmount + " Columns");
                 if (columnAmount == 0) setupError = true;
 
-                // Initialize the door sensor
+                // Initialize the door sensor and use the "doorValueHasChanged" method to trick the system
                 initDoorSensor();
                 doorValueHasChanged(null, null);
 
                 // Only initialize the buttons if nothing went wrong
                 //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
+                // But if something went wrong => show the "booting error" panel
                 if (!setupError)
                     initButtons(columnAmount);
                 else

@@ -93,23 +93,22 @@ namespace BidonDispenser {
         }
 
         public async Task<Boolean> sense() {
-            for (int i = 0; i < 2; i++) {                       // Rertry once
-                var result = await sendSenseCommand();          // Get the result
+            var result = await sendSenseCommand();          // Get the result
 
-                if (
-                    (result.Item1 == 0) && 
-                    (result.Item2.Count > 1) && 
-                    (result.Item2[1] == 4) && 
-                    (result.Item2[2] == IDENTIFIER[0]) && 
-                    (result.Item2[3] == IDENTIFIER[1]) && 
-                    (result.Item2[4] == IDENTIFIER[2]) && 
-                    (result.Item2[5] == IDENTIFIER[3]) 
-                    ) {
-                    return true;
-                }
+            if (
+                (result.Item1 == 0) &&
+                (result.Item2.Count > 1) &&
+                (result.Item2[1] == 4) &&
+                (result.Item2[2] == IDENTIFIER[0]) &&
+                (result.Item2[3] == IDENTIFIER[1]) &&
+                (result.Item2[4] == IDENTIFIER[2]) &&
+                (result.Item2[5] == IDENTIFIER[3])
+                ) {
+                return true;
+
+            } else {
+                return false;
             }
-
-            return false;
         }
 
 

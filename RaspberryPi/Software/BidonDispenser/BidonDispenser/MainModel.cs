@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BidonDispenser {
     internal class MainModel : INotifyPropertyChanged {
@@ -50,6 +46,11 @@ namespace BidonDispenser {
             [bottleColourName.black]    = "ms-appx:///Assets/Images/BottleColours/BlackBottle.png"
         };
         public ReadOnlyDictionary<bottleColourName, String> bottleColourImage => new ReadOnlyDictionary<bottleColourName, String>(_bottleColourImage);
+
+        private Dictionary<byte, String> outOfStockOrNotImage = new Dictionary<byte, string>() {
+            [0b00000000] = "ms-appx:///Assets/Images/Misc/Nothing.png",
+            [0b00000001] = "ms-appx:///Assets/Images/Misc/RedX.png"
+        };
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -99,7 +100,25 @@ namespace BidonDispenser {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(selectedColourText)));
             }
         }
-        
+
+        private List<String> bottleStringBindingNames = new List<String>() { nameof(bottleString0), nameof(bottleString1), nameof(bottleString2), nameof(bottleString3), nameof(bottleString4), nameof(bottleString5), nameof(bottleString6), nameof(bottleString7) };
+        private byte _bottleOutOfStock = 0x00;
+        public byte bottleOutOfStock {
+            get => _bottleOutOfStock;
+            set {
+                if (value != _bottleOutOfStock) {
+
+                    // Check which value has changed an update the binding of said value
+                    for (int i = 0; i < 8; i++) {
+                        if ((value >> i) != (_bottleOutOfStock >> i)) PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(bottleStringBindingNames[i]));
+                    }
+
+                    // Update the variable with the new value
+                    _bottleOutOfStock = value;
+                }
+            }
+        }
+
         // Bindings
         public int progressBarValue         => promotionTimerTickCounter;                   // Progressbar
         public double bottleTemperature     => lowerTemperature;                            // Bottle Temperature
@@ -107,6 +126,15 @@ namespace BidonDispenser {
         public String promotionImagePreload => promotionMedia[promotionSourcePreload];      // Promotion image - preload
         public String selectedColourText    => bottleColourText[selectedBottleColour];      // Selected bottle colour text
         public String selectedColourImage   => bottleColourImage[selectedBottleColour];     // Selected bottle colour image
+        
+        public String bottleString0         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00000001)];
+        public String bottleString1         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00000010)];
+        public String bottleString2         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00000100)];
+        public String bottleString3         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00001000)];
+        public String bottleString4         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00010000)];
+        public String bottleString5         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b00100000)];
+        public String bottleString6         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b01000000)];
+        public String bottleString7         => outOfStockOrNotImage[(byte) (bottleOutOfStock & 0b10000000)];
 
     }
 }
