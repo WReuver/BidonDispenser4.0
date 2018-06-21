@@ -50,7 +50,7 @@ TC coolingTc = TC::TC0C;                                                        
 
 //// Motor Controller Variables
 MotorController* motorController;                                                                           // The motor controller object
-Pin rotationSensorPins[8] = { Pin::A0, Pin::A1, Pin::B2, Pin::B3, Pin::B4, Pin::B5, Pin::B6, Pin::B7 };     // The pins the rotation sensor are connected to
+Pin rotationSensorPins[8] = { Pin::A0, Pin::A1, Pin::A2, Pin::A3, Pin::A4, Pin::A5, Pin::A6, Pin::A7 };     // The pins the rotation sensor are connected to
 Pin motorMultiplexPins[3] = { Pin::F2, Pin::F1, Pin::F0 };                                                  // The pins the motor multiplexer is connected to
 TC motorTimerCounter = TC::TC0D;                                                                            // The timercounter the motor controller uses
 Pin motorTcPin = Pin::D1;                                                                                   // The pin the PWM signal has to be transmitted on for the motor controller
