@@ -26,12 +26,12 @@ namespace Controllers
         Gpio::Pin multiplexPin[3];
         TC timerCounter;
         Gpio::Pin tcPin;
+        RotationSensor* rotationSensor;
         uint8_t motorNumberToMuxChannel[8] = { 5, 7, 6, 4, 2, 1, 0, 3 };
-        uint8_t rotationSensorChannel[8] = { 0, 1, 10, 11, 12, 13, 14, 15 };
         
 		// Methods
 		public:
-		MotorController(Gpio::Pin* motorMultiplexPin, TC motorTimerCounter, Gpio::Pin motorTcPin);
+		MotorController(Gpio::Pin* motorMultiplexPin, TC motorTimerCounter, Gpio::Pin motorTcPin, Gpio::Pin* rotationSensorPins);
 		~MotorController() {};
         void rotateMotor(uint8_t motor);                                                                // Rotate the specified motor
         
@@ -39,7 +39,6 @@ namespace Controllers
 		private:
 		void setMuxChannel(uint8_t channel);                                                            // Set the specified multiplex channel
         void waitForRotation(uint8_t channelNumber);                                                    // Wait for the cylinder to rotate 180 degrees
-        uint8_t sampleData(uint8_t amount);                                                             // Sample an x amount of times
 
 	}; //MotorController
 }

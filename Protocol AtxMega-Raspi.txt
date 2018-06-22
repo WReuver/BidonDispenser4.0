@@ -6,6 +6,8 @@ SLAVE						= Micro Controller
 LENGTH						= Length of the payload
 COLUMNNUMBER 				= 0 ~ 7
 EMPTY STATUS OF ALL COLUMNS	= 0b76543210, each bit indicates if a column is empty or not (0b00100111 => column 0, 1, 2 and 5 are empty)
+NEW EMPTY DISTANCE			= From which distance the column will be seen as empty
+LOWER TARGET TEMEPRATURE	= Which lower temperature the machine should aim for
 ==============================================================================================================================================
 
 
@@ -52,7 +54,7 @@ SLAVE PARAMETERS:	[0xAB] [0xBC] [0xCD] [0xDA]
 COMMANDNAME: 		Temperature
 DESCRIPTION:		Command the slave to return the three temperature values
 MASTER COMMAND:		[0x08]
-MASTER PARAMATERS:	-
+MASTER PARAMATERS:	[LOWER TARGET TEMEPRATURE * 5]
 SLAVE COMMAND:		[0x09]
 SLAVE PARAMETERS:	[LOWER TEMPERATURE * 5] [MIDDLE TEMPERATURE * 5] [UPPER TEMPERATURE * 5]
 
@@ -62,14 +64,13 @@ DESCRIPTION:		Command the slave to dispense a bidon from the given column and to
 MASTER COMMAND:		[0x0A]
 MASTER PARAMETERS:	[COLUMN-NUMBER]
 SLAVE COMMAND:		[0x0B]
-SLAVE PARAMETERS:	if the column is empty:		[0x01]
-					if the column is not empty:	[0x00]
+SLAVE PARAMETERS:	[EMPTY STATUS OF ALL COLUMNS]
 
 
 COMMANDNAME: 		Distance
 DESCRIPTION:		Command the slave to return all column distances
 MASTER COMMAND:		[0x0C]
-MASTER PARAMETERS:	-
+MASTER PARAMETERS:	[NEW EMPTY DISTANCE (optional)]
 SLAVE COMMAND:		[0x0D]
 SLAVE PARAMETERS:	[EMPTY STATUS OF ALL COLUMNS]
 ==============================================================================================================================================

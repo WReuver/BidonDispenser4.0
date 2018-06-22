@@ -7,10 +7,11 @@
 
 #include "RotationSensor.h"
 
- Sensors::RotationSensor::RotationSensor(Gpio::Pin* pins) : pins(pins)
+ Sensors::RotationSensor::RotationSensor(Gpio::Pin* sensorPins) 
 {
     for (int i = 0; i < 8; i++) 
     {
+        pins[i] = sensorPins[i];
         Gpio::SetPinDirection(pins[i], Gpio::Dir::Input);
         Gpio::SetPinMode(pins[i], Gpio::Mode::PullDown);
     }        
