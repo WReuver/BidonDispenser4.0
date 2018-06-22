@@ -22,7 +22,7 @@
  * 
  */
 
-Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPins, Gpio::Pin echoPins, Gpio::Pin* multiplexPins, float theEmptyDistance) 
+Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPins, Gpio::Pin echoPins, Gpio::Pin* multiplexPins) 
 {
     for (int i = 0; i < 2; i++) 
     {
@@ -38,8 +38,6 @@ Sensors::DistanceSensor::DistanceSensor(Gpio::Pin* triggerPins, Gpio::Pin echoPi
         multiplexPin[i] = multiplexPins[i];
         Gpio::SetPinDirection(multiplexPin[i], Gpio::Dir::Output);      // Configure the mux pins as output
     }
-    
-    emptyDistance = theEmptyDistance;
 }
 
 float* Sensors::DistanceSensor::getData()
@@ -58,7 +56,7 @@ float Sensors::DistanceSensor::getOneData(uint8_t channel)
     return getDistance(channel);
 }
 
-uint8_t Sensors::DistanceSensor::getSimpleData()
+uint8_t Sensors::DistanceSensor::getSimpleData(float emptyDistance)
 {
     uint8_t simpleData = 0b00000000;
     getData();

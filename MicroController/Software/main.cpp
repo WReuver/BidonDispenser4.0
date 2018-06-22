@@ -61,7 +61,7 @@ DistanceSensor* distanceSensor;                                                 
 Pin triggerPins[2] = { Pin::C3, Pin::C2 };                                                                  // The pins the distance sensors' triggers are connected to
 Pin echoPin = Pin::D0;                                                                                      // The pin the distance sensors' echoes are connected to
 Pin distanceMultiplexPins[4] = { Pin::C7, Pin::C6, Pin::C5, Pin::C4 };                                      // The pins the distance sensors' multiplexer is connected to
-float emptyDistance = 100.0;                                                                                // After which distance a column is seen as "empty"
+float emptyDistance = 105.0;                                                                                // After which distance a column is seen as "empty", can be changed using the "distance" command
 
 
 //// Miscellaneous Variables
@@ -119,6 +119,8 @@ void executeTemperatureCommand(uint8_t* response, uint8_t* receivedCommand)
     }
     else
     {
+        if ( receivedCommand[1] == 1 ) coolingController->setLowerTargetTemperature(receivedCommand[2] / 5) ;           // Update the empty distance (if supplied)
+        
         response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Temperature);           // Add the equivalent command response
         response[1] = 0x03;                                                                                             // Add the amount of parameters
         
@@ -141,7 +143,7 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
     }
     else
     {
-        if (receivedCommand[2] > 7) 
+        if ( (receivedCommand[1] == 0) || (receivedCommand[2] > 7) ) 
         {
             errorLed(1);                                                                                                // Turn on the "error" LED
             response[0] = (uint8_t) RaspberryPi::ComException::Parameter;                                               // Add the "Not enough or wrong parameters" exception
@@ -154,14 +156,16 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
             
             motorController->rotateMotor(receivedCommand[2]);                                                           // Rotate the requested motor
             
-            if ( distanceSensor->getSimpleData() & (1 << receivedCommand[2]) ) response[2] = 0x01;                      // The column just became empty
-            else response[2] = 0x00;                                                                                    // The column still contains bottles
+            // Do this three times, it looks like the distance sensors sometimes need to "warm up"
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
         }
     }
 }
 
 // Measure the distances in all columns and return whether the the columns are empty or not
-void executeDistanceCommand(uint8_t* response)
+void executeDistanceCommand(uint8_t* response, uint8_t* receivedCommand)
 {
     if (locked)
     {
@@ -171,9 +175,24 @@ void executeDistanceCommand(uint8_t* response)
     }
     else 
     {
-        response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Distance);              // Add the equivalent command response
-        response[1] = 0x01;                                                                                             // Add the amount of parameters
-        response[2] = distanceSensor->getSimpleData();                                                                  // Add the empty state of all eight columns
+        if ( receivedCommand[1] > 1 )
+        {
+            errorLed(1);                                                                                                // Turn on the "error" LED
+            response[0] = (uint8_t) RaspberryPi::ComException::Parameter;                                               // Add the "Not enough or wrong parameters" exception
+            response[1] = 0x00;                                                                                         // Add the amount of parameters
+        } 
+        else 
+        {
+            if ( receivedCommand[1] == 1 ) emptyDistance = receivedCommand[3];                                          // Update the empty distance (if supplied)
+            
+            response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Distance);          // Add the equivalent command response
+            response[1] = 0x01;                                                                                         // Add the amount of parameters
+            
+            // Do this three times, it looks like the distance sensors sometimes need to "warm up"
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+        }
     }
 }
 
@@ -187,7 +206,7 @@ void executecommand(uint8_t* response, uint8_t* receivedCommand)
         case RaspberryPi::Command::Sense:               executeSenseCommand(response);                                  break;      // Received a sense command
         case RaspberryPi::Command::Temperature:         executeTemperatureCommand(response, receivedCommand);           break;      // Received a temperature command
         case RaspberryPi::Command::Dispense:            executeDispenseCommand(response, receivedCommand);              break;      // Received a dispense command
-        case RaspberryPi::Command::Distance:            executeDistanceCommand(response);                               break;      // Received a distance command
+        case RaspberryPi::Command::Distance:            executeDistanceCommand(response, receivedCommand);              break;      // Received a distance command
         default:                                                                                                        break;      // Impossible
     }
 }
@@ -250,8 +269,8 @@ void initializeHardware(void)
     // Initialize all the other hardware
     raspberryPi = new RaspberryPi(raspberrySerialPort);
     coolingController = new CoolingController(temperatureSensorPins, fanGroupPins, coolingTc);
-    motorController = new MotorController(motorMultiplexPins, motorTimerCounter, motorTcPin);
-    distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins, emptyDistance);
+    motorController = new MotorController(motorMultiplexPins, motorTimerCounter, motorTcPin, rotationSensorPins);
+    distanceSensor = new DistanceSensor(triggerPins, echoPin, distanceMultiplexPins);
 }
 
 // Raspberry Pi test command
@@ -375,16 +394,18 @@ void testDistSensor(void)
     {
         busyLed(1);
         
+        volatile uint8_t emptyStatuss = distanceSensor->getSimpleData(emptyDistance); 
+        
         volatile float distances[16] = { 0.0 };
         float* resultLocation = distanceSensor->getData();
         
         for (int i = 0; i < 16; i++)
             distances[i] = resultLocation[i];
         
-        const int sensorNo = 0;
+        //const int sensorNo = 0;
         
-        for (int i = sensorNo; i < (sensorNo+1); i++)
-            distances[i] = distanceSensor->getOneData(i);
+        //for (int i = sensorNo; i < (sensorNo+1); i++)
+        //    distances[i] = distanceSensor->getOneData(i);
         
         
         busyLed(0);

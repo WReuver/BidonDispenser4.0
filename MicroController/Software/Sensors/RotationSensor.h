@@ -21,14 +21,14 @@ namespace Sensors
 		public:
 		protected:
 		private:
-		Hardware::Gpio::Pin* pins;                      // The pins the sensor is connected to
+		Gpio::Pin pins[8];                      // The pins the sensor is connected to
         
         
 		// Methods
 		public:
-        RotationSensor(Hardware::Gpio::Pin* pins);      // Default constructor
-		~RotationSensor() {};                           // Default destructor
-		uint8_t getData();                              // Get the data from the sensor
+        RotationSensor(Gpio::Pin* sensorPins);  // Default constructor
+		~RotationSensor() {};                   // Default destructor
+		uint8_t getData();                      // Get the data from the sensor
 		
 		protected:
 		private:
