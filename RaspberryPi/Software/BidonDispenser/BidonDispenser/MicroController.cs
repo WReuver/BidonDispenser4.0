@@ -151,7 +151,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the sense command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
@@ -176,7 +176,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the lock command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
@@ -201,7 +201,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the unlock command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
@@ -226,7 +226,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the temperature command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
@@ -251,7 +251,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the dispense command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }
@@ -276,7 +276,7 @@ namespace BidonDispenser {
                 }
 
             } else {
-                Debug.WriteLine("Could not claim the semaphore");
+                Debug.WriteLine("Could not claim the semaphore for the distance command");
                 return new Tuple<int, List<Byte>>(3, null);                                                 // Mutex error
             }
         }

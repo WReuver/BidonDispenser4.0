@@ -123,25 +123,30 @@ namespace BidonDispenser {
         }
 
         public Boolean isBottleAvailable(int bottleNo) {
-            return false;
+
+            if ((bottleOutOfStock & (1 << bottleNo)) == 0)
+                return true;
+            else
+                return false;
         }
 
+
         // Bindings
-        public int progressBarValue         => promotionTimerTickCounter;                                       // Progressbar
-        public double bottleTemperature     => lowerTemperature;                                                // Bottle Temperature
-        public String promotionImage        => promotionMedia[promotionSource];                                 // Promotion image
-        public String promotionImagePreload => promotionMedia[promotionSourcePreload];                          // Promotion image - preload
-        public String selectedColourText    => bottleColourText[selectedBottleColour];                          // Selected bottle colour text
-        public String selectedColourImage   => bottleColourImage[selectedBottleColour];                         // Selected bottle colour image
+        public int progressBarValue         => promotionTimerTickCounter;                                                           // Progressbar
+        public double bottleTemperature     => lowerTemperature;                                                                    // Bottle Temperature
+        public String promotionImage        => promotionMedia[promotionSource];                                                     // Promotion image
+        public String promotionImagePreload => promotionMedia[promotionSourcePreload];                                              // Promotion image - preload
+        public String selectedColourText    => bottleColourText[selectedBottleColour];                                              // Selected bottle colour text
+        public String selectedColourImage   => bottleColourImage[selectedBottleColour];                                             // Selected bottle colour image
         
-        public String bottleString0         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000001)) >> 0)];
-        public String bottleString1         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000010)) >> 1)];
-        public String bottleString2         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000100)) >> 2)];
-        public String bottleString3         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00001000)) >> 3)];
-        public String bottleString4         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00010000)) >> 4)];
-        public String bottleString5         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00100000)) >> 5)];
-        public String bottleString6         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b01000000)) >> 6)];
-        public String bottleString7         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b10000000)) >> 7)];
+        public String bottleString0         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000001)) >> 0)];        // Bottle Out of stock overlay for bottle 0
+        public String bottleString1         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000010)) >> 1)];        // Bottle Out of stock overlay for bottle 1
+        public String bottleString2         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00000100)) >> 2)];        // Bottle Out of stock overlay for bottle 2
+        public String bottleString3         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00001000)) >> 3)];        // Bottle Out of stock overlay for bottle 3
+        public String bottleString4         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00010000)) >> 4)];        // Bottle Out of stock overlay for bottle 4
+        public String bottleString5         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b00100000)) >> 5)];        // Bottle Out of stock overlay for bottle 5
+        public String bottleString6         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b01000000)) >> 6)];        // Bottle Out of stock overlay for bottle 6
+        public String bottleString7         => outOfStockOrNotImage[(byte) (((byte) (bottleOutOfStock & 0b10000000)) >> 7)];        // Bottle Out of stock overlay for bottle 7
 
     }
 }

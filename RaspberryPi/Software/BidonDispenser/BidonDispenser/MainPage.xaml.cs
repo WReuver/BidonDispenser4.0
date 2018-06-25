@@ -54,14 +54,6 @@ namespace BidonDispenser {
                 // Initialize the microcontroller
                 await mc.initialize();
 
-                // Sense the microcontroller, if it failed => retry once
-                if (!(await mc.sense())) {
-                    if (!(await mc.sense())) {
-                        setupError = true;
-                        Debug.WriteLine("Could not sense the microcontroller");
-                    }
-                }
-
                 // Initialize the LEDs and turn them off
                 initializeLeds();
                 
@@ -70,7 +62,15 @@ namespace BidonDispenser {
                 Debug.WriteLine("There are " + columnAmount + " Columns");
                 if (columnAmount == 0) setupError = true;
 
-                // Initialize the door sensor and use the "doorValueHasChanged" method to trick the system
+                // Sense the microcontroller, if it failed => retry once
+                if (!(await mc.sense())) {
+                    if (!(await mc.sense())) {
+                        setupError = true;
+                        Debug.WriteLine("Could not sense the microcontroller");
+                    }
+                }
+
+                // Initialize the door sensor and use the "doorValueHasChanged" method to initalize certain sub-parts of the system
                 initDoorSensor();
                 doorValueHasChanged(null, null);
                 
@@ -79,16 +79,6 @@ namespace BidonDispenser {
                 //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
                 // But if something went wrong => show the "booting error" panel
                 if (!setupError) {
-
-                    //var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
-                    //
-                    //if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
-                    //    mainModel.bottleOutOfStock = distanceResult.Item2[2];
-                    //} else {
-                    //    Debug.WriteLine("An error occurred while checking for the empty status of the columns");
-                    //}
-
-                    initializeMaintenanceTimer();
                     initButtons(columnAmount);
 
                 } else {
@@ -267,7 +257,6 @@ namespace BidonDispenser {
 
                 buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);                          // Set a debounce timeout of 50ms
                 buttonPins[i].ValueChanged += buttonValueHasChanged;                                    // Add a callback
-                //buttonPins[i].ValueChanged += buttonTestCallback;
             }
 
             Debug.WriteLine(amount+" buttons have been initialized");
@@ -287,13 +276,17 @@ namespace BidonDispenser {
                 switch (currentPanel) {
 
                     case uiPanel.pickColour:
-                        // Update which colour has been selected
-                        var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                            mainModel.selectedBottleColour = (MainModel.bottleColourName) buttonNo;
-                        });
+                        if (mainModel.isBottleAvailable(buttonNo)) {
+                            // Update which colour has been selected
+                            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                                mainModel.selectedBottleColour = (MainModel.bottleColourName) buttonNo;
+                            });
                         
-                        // Show the "finishing up" panel
-                        showFinishingUpPanel();
+                            // Show the "finishing up" panel
+                            showFinishingUpPanel();
+
+                        }
+                        
                         break;
                     
                     
@@ -302,7 +295,7 @@ namespace BidonDispenser {
                         if (buttonNo == 0) {
                             showPickColourPanel();
                         } else if (buttonNo == 7) { 
-                            mc.sendDispenseCommand((byte) mainModel.selectedBottleColour);
+                            dispenseBottle((byte) mainModel.selectedBottleColour);
                             showThankYouPanel();
                         } else {
                             var huh = true;
@@ -333,27 +326,37 @@ namespace BidonDispenser {
                 buttonsDisabled = false;
             }
         }
+        
 
-        private void buttonTestCallback(GpioPin sender, GpioPinValueChangedEventArgs e) {
-            if (e.Edge == GpioPinEdge.FallingEdge) {
+        // Columns related //////
 
-                if (buttonsDisabled) return;
-                buttonsDisabled = true;
+        private void setColumnEmptyStatus(byte byteVar) {
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                mainModel.bottleOutOfStock = byteVar;
+            });
+        }
 
-                int buttonNo = buttonPins.IndexOf(sender);
-                Debug.WriteLine("Button " + buttonNo + " has been pressed");
+        private async Task updateColumnEmptyStatus() {
+            var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
 
-                
-                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                    maintenanceTimerTick(null, null);
-                });
+            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                setColumnEmptyStatus(distanceResult.Item2[2]);
 
-
-                buttonsDisabled = false;
+            } else {
+                Debug.WriteLine("An error occurred while checking for the empty status of the columns");
             }
         }
         
+        private async void dispenseBottle(byte columnNo) {
+            var distanceResult = await mc.sendDispenseCommand(columnNo);
 
+            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                setColumnEmptyStatus(distanceResult.Item2[2]);
+            } else {
+                Debug.WriteLine("An error occurred while checking for the empty status of the columns after the dispensing");
+            }
+        }
+        
         // Door Sensor //////
 
         private readonly int DOOR_PIN = 5;
@@ -382,16 +385,23 @@ namespace BidonDispenser {
             return true;
         }
 
-        private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+        private async void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
             GpioPinValue pinVal = doorSensorPin.Read();
 
             if (pinVal == GpioPinValue.High) {
                 doNotShowTheThankYouPanel();
                 showDoorOpenErrorPanel();
                 mc.sendLockCommand();
+                stopMaintenanceTimer();
             } else {
                 mc.sendUnlockCommand();
+                await updateColumnEmptyStatus();
                 showPickColourPanel();
+
+                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    maintenanceTimerTick(null, null);
+                    initializeMaintenanceTimer();
+                });
             }
         }
 
@@ -573,6 +583,7 @@ namespace BidonDispenser {
         private DispatcherTimer promotionTimer;
         private const Double promotionMsPerTick = 200;
         private const int msUntilPromotionMediaSwitch = 30_000;
+        static int currentPromotionSource = 0;
 
         private void initializePromotionTimer() {
             promotionTimer = new DispatcherTimer();
@@ -582,9 +593,7 @@ namespace BidonDispenser {
 
             Debug.WriteLine("The promotion timer has been initialized");
         }
-
-        static int currentPromotionSource = 0;
-
+        
         private void promotionTimerTick(object sender, object e) {
             if (mainModel.promotionTimerTickCounter >= msUntilPromotionMediaSwitch) {
                 mainModel.promotionTimerTickCounter = 0;
@@ -612,7 +621,6 @@ namespace BidonDispenser {
         private void initializeMaintenanceTimer() {
             maintenanceTimer = new DispatcherTimer();
             maintenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
-            //maintenanceTimer.Interval = TimeSpan.FromSeconds(5);
             maintenanceTimer.Tick += maintenanceTimerTick;
             maintenanceTimer.Start();
 
@@ -621,15 +629,24 @@ namespace BidonDispenser {
 
         private async void maintenanceTimerTick(object sender, object e) {
 
-            var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
+            var distanceResult = await mc.sendTemperatureCommand();
 
-            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
-                mainModel.bottleOutOfStock = distanceResult.Item2[2];
+            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 3) && (distanceResult.Item2.Count > 4)) {
+                mainModel.lowerTemperature = ((float) distanceResult.Item2[2]) / 5;
             } else {
-                Debug.WriteLine("An error occurred while checking for the empty status of the columns");
+                Debug.WriteLine("An error occurred while updating the temperature ");
             }
         }
         
+        private void stopMaintenanceTimer() {
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (maintenanceTimer != null) {
+                    maintenanceTimer.Stop();
+                    maintenanceTimer = null;
+                }
+            });
+        }
+
         
         // Program shutdown //////
 
