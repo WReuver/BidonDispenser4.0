@@ -1,127 +1,288 @@
 ﻿using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.Devices.Enumeration;
-using Windows.Devices.Gpio;
-using Windows.Devices.SerialCommunication;
-using Windows.Storage.Streams;
 using System.Threading;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.System.Profile;
-using Windows.UI.ViewManagement;
 using System.Collections.Generic;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.Devices.Gpio;
+using Windows.System.Profile;
+using Windows.Storage;
 
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
         private MainModel mainModel = new MainModel();
-        private Boolean windowsIot = false;
 
-        private const Double promotionMsPerTick = 200;
-        private const int msUntilPromotionMediaSwitch = 30_000;
+        private Boolean windowsIot = false;
+        private Boolean setupError = false;
+        private int columnAmount = 0;
+        private int emptyDistance = 109;
         
-        //private Pn532Software nfcModule;
-        private Pn532 nfcModule;
         private MicroController mc = null;
 
-        public MainPage() {
-            this.InitializeComponent();
 
+        public MainPage() {
+            InitializeComponent();
+            
+            // Add the "unloadMainPage" function to the callbacks when the program is shutting down
             Unloaded += unloadMainPage;
 
             // Check on which device we're running
-            System.Diagnostics.Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT") {
-                windowsIot = true;
-            }
+            Debug.WriteLine("Running on "+AnalyticsInfo.VersionInfo.DeviceFamily);
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.IoT") windowsIot = true;
 
+            // Initialize the promotion timer
             initializePromotionTimer();
-            
-            if (windowsIot) {
-                initButtons();
-                mc = new MicroController();
 
-                // Initialize the NFC module
-                //nfcModule = new Pn532Software();
-                //nfcModule = new Pn532(0);
-                //nfcModule.setup();
+            // If running on windows iot...
+            if (windowsIot) {
+
+                // Initialize the microcontroller and start the sense task
+                mc = new MicroController();
                 
+                // Initialize the system when the program has loaded
+                Loaded += async (sender, eventArgs) => { await initializeSystem(); };
+                
+                return;
+            }
+        }
+
+        private async Task initializeSystem() {
+            try {
+
+                // Initialize the microcontroller
+                await mc.initialize();
+
+                // Sense the microcontroller, if it failed => retry once
+                if (!(await mc.sense())) {
+                    if (!(await mc.sense())) {
+                        setupError = true;
+                        Debug.WriteLine("Could not sense the microcontroller");
+                    }
+                }
+
+                // Initialize the LEDs and turn them off
+                initializeLeds();
+                
+                // Check how many columns are hooked up
+                columnAmount = howManyColumnsAreThere();
+                Debug.WriteLine("There are " + columnAmount + " Columns");
+                if (columnAmount == 0) setupError = true;
+
+                // Initialize the door sensor and use the "doorValueHasChanged" method to trick the system
+                initDoorSensor();
+                doorValueHasChanged(null, null);
+                
+
+                // Only initialize the buttons if nothing went wrong
+                //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
+                // But if something went wrong => show the "booting error" panel
+                if (!setupError) {
+
+                    //var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
+                    //
+                    //if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                    //    mainModel.bottleOutOfStock = distanceResult.Item2[2];
+                    //} else {
+                    //    Debug.WriteLine("An error occurred while checking for the empty status of the columns");
+                    //}
+
+                    initializeMaintenanceTimer();
+                    initButtons(columnAmount);
+
+                } else {
+                    showBootingErrorPanel();
+                }
+
+            } catch (Exception ex) {
+                Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
             }
         }
 
 
-        // Serial Test //////
+        // Test Related //////
 
+        private Boolean stopCurrentTest = false;
+        
         private void serialTest(object sender, RoutedEventArgs rea) {
-            System.Diagnostics.Debug.WriteLine("Click: " + ((Button) sender).Name );
+            Debug.WriteLine("Click: " + ((Button) sender).Name );
 
             if (!windowsIot)
                 return;
+            
+            switch (((Button) sender).Name) {
+                case "Sense":               mc.sendSenseCommand();                          break;
+                case "Lock":                mc.sendLockCommand();                           break;
+                case "Unlock":              mc.sendUnlockCommand();                         break;
+                case "Temperature":         mc.sendTemperatureCommand();                    break;
+                case "Dispense":            mc.sendDispenseCommand(0);                      break;
+                case "Distance":            mc.sendDistanceCommand((byte) emptyDistance);   break;
+                default: Debug.WriteLine("Unknown button"); return;
+            }
+        }
 
-            //////////////////////////////////////////////////////
-            nfcModule.setup();
-            return;
-            //////////////////////////////////////////////////////
+        private async void wbTest(object sender, RoutedEventArgs rea) {
+            Debug.WriteLine("Click: " + ((Button) sender).Name );
 
-            String buttonFunction = ((Button) sender).Name;
-            byte[] data;
+            if (!windowsIot)
+                return;
+            
+            switch (((Button) sender).Name) {
+                case "DispenseTest":            dispenseTest();                 break;
+                case "CoolingTest":             coolingTest();                  break;
+                case "Stop":                    stopCurrentTest = true;         break;
+                default: Debug.WriteLine("Unknown button"); return;
+            }
+        }
 
-            switch (buttonFunction) {
-                case "Sense":               data = new byte[] { (byte) MicroController.Command.Sense, 0x00 };                   break;
-                case "Lock":                data = new byte[] { (byte) MicroController.Command.Lock, 0x00 };                    break;
-                case "Unlock":              data = new byte[] { (byte) MicroController.Command.Unlock, 0x00 };                  break;
-                case "TemperatureCheck":    data = new byte[] { (byte) MicroController.Command.TemperatureCheck, 0x01, 0x07 };  break;
-                case "Dispense":            data = new byte[] { (byte) MicroController.Command.Dispense, 0x01, 0x00 };          break;
-                case "Distance":            data = new byte[] { (byte) MicroController.Command.Distance, 0x00 };                break;
-                default: System.Diagnostics.Debug.WriteLine("Unknown button"); return;
+        private async void coolingTest() {
+
+            Debug.WriteLine("Starting the cooling test");
+
+            try {
+                while (!stopCurrentTest) {
+                    orangeLedState(GpioPinValue.High);
+                    StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
+                    StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
+
+                    var result = await mc.sendTemperatureCommand();
+
+                    if (result.Item2.Count > 4) {
+                        // Log the temperatures on the USB
+                        String data = ((double) result.Item2[2]) / 5.0 + "," + ((double) result.Item2[3]) / 5.0 + "," + ((double) result.Item2[4]) / 5.0 + "\n";
+                        await FileIO.AppendTextAsync(logFile, data);
+
+                        // Update the temperature in the UI
+                        double lowerTemp = result.Item2[2];
+                        mainModel.lowerTemperature = lowerTemp / 5.0;
+                    }
+
+                    orangeLedState(GpioPinValue.Low);
+                    Thread.Sleep(60 * 1000);    // One minutes
+                }
+
+                stopCurrentTest = false;
+
+            } catch (Exception e) {
+                Debug.WriteLine("EXCEPTION CATCHED: "+e.Message);
+            } finally {
+                orangeLedState(GpioPinValue.Low);
             }
 
-            while (!mc.serialInitialized);
-            mc.transmitCommand(data);
-            mc.waitForResponse();
+            Debug.WriteLine("Stopped the cooling test");
+        }
+
+        private async void dispenseTest() {
+
+            Debug.WriteLine("Starting the dispense test");
+            byte columnIndex = 0;
+
+            try {
+                while (!stopCurrentTest) {
+                    redLedState(GpioPinValue.High);
+
+                    await mc.sendDispenseCommand(columnIndex++);
+
+                    if (columnIndex > 7) columnIndex = 0;
+
+                    redLedState(GpioPinValue.Low);
+                    Thread.Sleep(1000);         // One second
+                }
+
+                stopCurrentTest = false;
+
+            } catch (Exception e) {
+                Debug.WriteLine("EXCEPTION CATCHED: " + e.Message);
+            } finally {
+                redLedState(GpioPinValue.Low);
+            }
+
+            Debug.WriteLine("Stopped the dispense test");
         }
 
 
-        // Buttons //////
+        // LEDs //////
 
-        private Boolean buttonPressed = false;
-        private readonly int[] BUTTON_PIN = { 20, 21, 26, 16, 19, 13, 12, 6 };
-        private List<GpioPin> buttonPins = new List<GpioPin>();
+        private readonly int ORANGELED_PIN = 27;
+        private readonly int REDLED_PIN = 22;
+        private GpioPin orangeLed;
+        private GpioPin redLed;
 
-        private void initButtons() {
-            GpioController gpio = GpioController.GetDefault();
+        private Boolean initializeLeds() {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
 
             if (gpio == null) {
-                System.Diagnostics.Debug.WriteLine("There is no Gpio controller on this device");
-                return;
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return false;
             }
+
+            orangeLed = gpio.OpenPin(ORANGELED_PIN);
+            redLed = gpio.OpenPin(REDLED_PIN);
+
+            orangeLed.SetDriveMode(GpioPinDriveMode.Output);
+            redLed.SetDriveMode(GpioPinDriveMode.Output);
+
+            orangeLed.Write(GpioPinValue.Low);
+            redLed.Write(GpioPinValue.Low);
+
+            Debug.WriteLine("The LEDs have been initialized");
+            return true;
+        }
+
+        private void orangeLedState(GpioPinValue val) {
+            orangeLed?.Write(val);
+        }
+
+        private void redLedState(GpioPinValue val) {
+            redLed?.Write(val);
+        }
+        
+        
+        // Buttons //////
+
+        private Boolean buttonsDisabled = false;
+        private readonly int[] BUTTON_PINS = { 20, 21, 26, 16, 19, 13, 12, 6 };
+        private List<GpioPin> buttonPins = new List<GpioPin>();
+
+        private Boolean initButtons(int amount) {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
+
+            if (gpio == null) {
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return false;
+            }
+
+            if (amount > 8)         amount = 8;                                                         // Max amount of eight
+            else if (amount < 0)    amount = 0;                                                         // Min amount of zero
             
-            for (int i = 0; i < BUTTON_PIN.Length; i++) {
-                buttonPins.Add(gpio.OpenPin(BUTTON_PIN[i]));                                // Open all the button pins
+            for (int i = 0; i < amount; i++) {
+                buttonPins.Add(gpio.OpenPin(BUTTON_PINS[i]));                                           // Open the button pins
 
-                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullDown)) {   // Set the buttons' drive mode to input and pulldown (if supported)
-                    buttonPins[i].SetDriveMode(GpioPinDriveMode.InputPullDown);
-                } else {
+                // Set the buttons' drive mode to input and pullup (if supported)
+                if (buttonPins[i].IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                    buttonPins[i].SetDriveMode(GpioPinDriveMode.InputPullUp);
+                else
                     buttonPins[i].SetDriveMode(GpioPinDriveMode.Input);
-                }
 
-                buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);              // Set the buttons' debouncetimeout
-                buttonPins[i].ValueChanged += buttonValueHasChanged;                        // Configure which method has to be called when the button value has changed
+                buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);                          // Set a debounce timeout of 50ms
+                buttonPins[i].ValueChanged += buttonValueHasChanged;                                    // Add a callback
+                //buttonPins[i].ValueChanged += buttonTestCallback;
             }
 
-            System.Diagnostics.Debug.WriteLine("The buttons have been initialized");
+            Debug.WriteLine(amount+" buttons have been initialized");
+            return true;
         }
 
         private void buttonValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
-            if (e.Edge == GpioPinEdge.RisingEdge) {
+            if (e.Edge == GpioPinEdge.FallingEdge) {
 
-                if (buttonPressed) return;
-                buttonPressed = true;
+                if (buttonsDisabled) return;
+                buttonsDisabled = true;
 
                 int buttonNo = buttonPins.IndexOf(sender);
-                System.Diagnostics.Debug.WriteLine("Button " + buttonNo + " has been pressed");
+                Debug.WriteLine("Button " + buttonNo + " has been pressed");
 
                 switch (currentPanel) {
 
@@ -138,8 +299,16 @@ namespace BidonDispenser {
                     
                     case uiPanel.finishingUp:
                         // Cancel the operation if the user presses the left most button
-                        if (buttonNo == 0)
+                        if (buttonNo == 0) {
                             showPickColourPanel();
+                        } else if (buttonNo == 7) { 
+                            mc.sendDispenseCommand((byte) mainModel.selectedBottleColour);
+                            showThankYouPanel();
+                        } else {
+                            var huh = true;
+                            for (int i = 1; i < (columnAmount - 1); i++) huh &= (buttonPins[i].Read() == GpioPinValue.Low);
+                            if ( huh ) showSecretPanel();
+                        }
                         break;
                     
                     
@@ -147,30 +316,132 @@ namespace BidonDispenser {
                         // Return to the selection screen
                         stopThankYouTimer(null, null);
                         break;
-                    
+
+                    case uiPanel.doorOpen:
+                        // Do nothing when the error screen is shown
+                        showDoorOpenErrorPanel();
+                        break;
+
+                    case uiPanel.secret:
+                        // Huh?
+                        showFinishingUpPanel();
+                        break;
                     
                     default: break;
                 }
 
-                buttonPressed = false;
+                buttonsDisabled = false;
+            }
+        }
+
+        private void buttonTestCallback(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            if (e.Edge == GpioPinEdge.FallingEdge) {
+
+                if (buttonsDisabled) return;
+                buttonsDisabled = true;
+
+                int buttonNo = buttonPins.IndexOf(sender);
+                Debug.WriteLine("Button " + buttonNo + " has been pressed");
+
+                
+                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    maintenanceTimerTick(null, null);
+                });
+
+
+                buttonsDisabled = false;
+            }
+        }
+        
+
+        // Door Sensor //////
+
+        private readonly int DOOR_PIN = 5;
+        private GpioPin doorSensorPin;
+        
+        private Boolean initDoorSensor() {
+            GpioController gpio = GpioController.GetDefault();                                          // Get the default Gpio Controller
+
+            if (gpio == null) {
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return false;
+            }
+
+            doorSensorPin = gpio.OpenPin(DOOR_PIN);                                                     // Open the door sensor pin
+
+            // Set the doorpin's drive mode to input and pullup (if supported)
+            if (doorSensorPin.IsDriveModeSupported(GpioPinDriveMode.InputPullUp))
+                doorSensorPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+            else
+                doorSensorPin.SetDriveMode(GpioPinDriveMode.Input);
+
+            doorSensorPin.DebounceTimeout = TimeSpan.FromMilliseconds(50);                              // Set a debounce timeout of 50ms
+            doorSensorPin.ValueChanged += doorValueHasChanged;                                          // Add a callback
+
+            Debug.WriteLine("The misc gpio has been initialized");
+            return true;
+        }
+
+        private void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            GpioPinValue pinVal = doorSensorPin.Read();
+
+            if (pinVal == GpioPinValue.High) {
+                doNotShowTheThankYouPanel();
+                showDoorOpenErrorPanel();
+                mc.sendLockCommand();
+            } else {
+                mc.sendUnlockCommand();
+                showPickColourPanel();
             }
         }
 
 
+        // Column Amount Selector Jumper //////
+
+        private readonly int COLUMNSELECTOR_PIN = 23;
+        
+        private int howManyColumnsAreThere() {
+            GpioController gpio = GpioController.GetDefault();                      // Get the default Gpio Controller
+
+            if (gpio != null) {
+
+                GpioPin columnSelectorPin = gpio.OpenPin(COLUMNSELECTOR_PIN);       // Open the column selector pin
+                columnSelectorPin.SetDriveMode(GpioPinDriveMode.Input);             // Set the pin to input
+
+                GpioPinValue pinVal = columnSelectorPin.Read();                     // Read the pin value
+                columnSelectorPin.Dispose();                                        // Dispose the pin again
+
+                if (pinVal == GpioPinValue.High)                                    // High = 4 columns
+                    return 4;
+                else if (pinVal == GpioPinValue.Low)                                // Low = 8 columns
+                    return 8;
+                else
+                    return 0;                                                       // Err = 0 columns
+
+            } else {
+                Debug.WriteLine("There is no Gpio controller on this device");
+                return 0;                                                           // Err = 0 columns
+            }
+        }
+        
+
         // Panel Show //////
 
         private enum uiPanel {
-            pickColour, finishingUp, thankYou
+            pickColour, finishingUp, thankYou, doorOpen, boot, secret
         }
         private uiPanel currentPanel = uiPanel.pickColour;
 
         private void showCommandTestPanel() {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: CommandTestPanel");
                 CommandTestPanel.Visibility = Visibility.Visible;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -178,11 +449,14 @@ namespace BidonDispenser {
             currentPanel = uiPanel.pickColour;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: PickColourPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Visible;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -190,11 +464,14 @@ namespace BidonDispenser {
             currentPanel = uiPanel.finishingUp;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: FinishingUpPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Visible;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
@@ -202,42 +479,108 @@ namespace BidonDispenser {
             currentPanel = uiPanel.thankYou;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: ThankYouPanel");
                 startThankYouTimer();
                 CommandTestPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Visible;
-                ThankYouFamPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showDoorOpenErrorPanel() {
+            currentPanel = uiPanel.doorOpen;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: DoorOpenErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Visible;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showBootingErrorPanel() {
+            currentPanel = uiPanel.boot;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: BootingErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Visible;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showSecretPanel() {
+            currentPanel = uiPanel.secret;
+
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: DoorOpenErrorPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenError.Visibility = Visibility.Collapsed;
+                BootingError.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Visible;
             });
         }
 
 
         // Thank You Timer //////
 
-        DispatcherTimer thankYouTimer;
+        private DispatcherTimer thankYouTimer;
         
         private void startThankYouTimer() {
             thankYouTimer = new DispatcherTimer();
-            thankYouTimer.Interval = TimeSpan.FromSeconds(5);
+            thankYouTimer.Interval = TimeSpan.FromSeconds(3);
             thankYouTimer.Tick += stopThankYouTimer;
             thankYouTimer.Start();
         }
 
         private void stopThankYouTimer(object sender, object e) {
-            thankYouTimer.Stop();
-            showPickColourPanel();
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (thankYouTimer != null) {
+                    thankYouTimer.Stop();
+                    thankYouTimer = null;
+                    showPickColourPanel();
+                }
+            });
         }
-        
-        
+
+        private void doNotShowTheThankYouPanel() {
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                if (thankYouTimer != null) {
+                    thankYouTimer.Stop();
+                    thankYouTimer = null;
+                }
+            });
+        }
+
+
         // Promotion Timer //////
 
+        private DispatcherTimer promotionTimer;
+        private const Double promotionMsPerTick = 200;
+        private const int msUntilPromotionMediaSwitch = 30_000;
+
         private void initializePromotionTimer() {
-            DispatcherTimer promotionTimer = new DispatcherTimer();
+            promotionTimer = new DispatcherTimer();
             promotionTimer.Interval = TimeSpan.FromMilliseconds(promotionMsPerTick);
             promotionTimer.Tick += promotionTimerTick;
             promotionTimer.Start();
 
-            System.Diagnostics.Debug.WriteLine("The promotion timer has been initialized");
+            Debug.WriteLine("The promotion timer has been initialized");
         }
 
         static int currentPromotionSource = 0;
@@ -259,16 +602,54 @@ namespace BidonDispenser {
                 mainModel.promotionSource = (MainModel.promotionMediaName) (currentPromotionSource);            // Load the promotion source
             }
         }
+
+
+        // Maintenance Timer //////
+
+        private DispatcherTimer maintenanceTimer;
+        private const int maintenanceMinutesPerTick = 10;
+
+        private void initializeMaintenanceTimer() {
+            maintenanceTimer = new DispatcherTimer();
+            maintenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
+            //maintenanceTimer.Interval = TimeSpan.FromSeconds(5);
+            maintenanceTimer.Tick += maintenanceTimerTick;
+            maintenanceTimer.Start();
+
+            Debug.WriteLine("The maintenance timer has been initialized");
+        }
+
+        private async void maintenanceTimerTick(object sender, object e) {
+
+            var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
+
+            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                mainModel.bottleOutOfStock = distanceResult.Item2[2];
+            } else {
+                Debug.WriteLine("An error occurred while checking for the empty status of the columns");
+            }
+        }
         
         
         // Program shutdown //////
 
         private void unloadMainPage(object sender, object args) {
-            nfcModule.dispose();
-            mc.dispose();
 
+            // Dispose the microcontroller
+            mc?.dispose();
+
+
+            // Dispose all pins
             foreach (GpioPin button in buttonPins)
-                button.Dispose();
+                button?.Dispose();
+
+            doorSensorPin?.Dispose();
+
+
+            // Stop all timers
+            thankYouTimer?.Stop();
+            promotionTimer?.Stop();
+            maintenanceTimer?.Stop();
         }
 
     }
