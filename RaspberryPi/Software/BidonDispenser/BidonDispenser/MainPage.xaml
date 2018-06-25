@@ -47,7 +47,7 @@
         </StackPanel>
 
         <!-- A relative panel for the promotion images -->
-        <RelativePanel>
+        <RelativePanel Visibility="Visible">
             <Image
                 Source="{x:Bind mainModel.promotionImagePreload, Mode=OneWay}"
                 VerticalAlignment="Top" />
@@ -91,9 +91,19 @@
                 Padding="0, 48, 0, 0"
                 HorizontalAlignment="Center"/>
 
-            <Image
-                Source="ms-appx:///Assets/Images/Selections/BottleColourSelection.png"
-                Margin="0, 110, 0, 0"/>
+            <RelativePanel Margin="0, 110, 0, 0" >
+
+                <Image Height="250" Source="ms-appx:///Assets/Images/Selections/BottleColourSelection.png" />
+                <Image Height="250" Margin="037, 0, 0, 0" Source="{x:Bind mainModel.bottleString0, Mode=OneWay}" />
+                <Image Height="250" Margin="171, 0, 0, 0" Source="{x:Bind mainModel.bottleString1, Mode=OneWay}" />
+                <Image Height="250" Margin="305, 0, 0, 0" Source="{x:Bind mainModel.bottleString2, Mode=OneWay}" />
+                <Image Height="250" Margin="439, 0, 0, 0" Source="{x:Bind mainModel.bottleString3, Mode=OneWay}" />
+                <Image Height="250" Margin="573, 0, 0, 0" Source="{x:Bind mainModel.bottleString4, Mode=OneWay}" />
+                <Image Height="250" Margin="707, 0, 0, 0" Source="{x:Bind mainModel.bottleString5, Mode=OneWay}" />
+                <Image Height="250" Margin="841, 0, 0, 0" Source="{x:Bind mainModel.bottleString6, Mode=OneWay}" />
+                <Image Height="250" Margin="975, 0, 0, 0" Source="{x:Bind mainModel.bottleString7, Mode=OneWay}" />
+
+            </RelativePanel>
 
         </StackPanel>
         

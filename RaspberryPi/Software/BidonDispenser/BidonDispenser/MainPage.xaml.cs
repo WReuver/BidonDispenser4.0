@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Threading;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Devices.Gpio;
-using System.Threading;
 using Windows.System.Profile;
-using System.Collections.Generic;
-using Windows.UI.Core;
-using System.Diagnostics;
 using Windows.Storage;
-using System.Threading.Tasks;
 
 namespace BidonDispenser {
     public sealed partial class MainPage: Page {
@@ -17,6 +17,7 @@ namespace BidonDispenser {
         private Boolean windowsIot = false;
         private Boolean setupError = false;
         private int columnAmount = 0;
+        private int emptyDistance = 109;
         
         private MicroController mc = null;
 
@@ -72,14 +73,27 @@ namespace BidonDispenser {
                 // Initialize the door sensor and use the "doorValueHasChanged" method to trick the system
                 initDoorSensor();
                 doorValueHasChanged(null, null);
+                
 
                 // Only initialize the buttons if nothing went wrong
                 //      By not initializing the buttons when something went wrong, we can ensure the user cannot interact with the machine in any way
                 // But if something went wrong => show the "booting error" panel
-                if (!setupError)
+                if (!setupError) {
+
+                    //var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
+                    //
+                    //if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                    //    mainModel.bottleOutOfStock = distanceResult.Item2[2];
+                    //} else {
+                    //    Debug.WriteLine("An error occurred while checking for the empty status of the columns");
+                    //}
+
+                    initializeMaintenanceTimer();
                     initButtons(columnAmount);
-                else
+
+                } else {
                     showBootingErrorPanel();
+                }
 
             } catch (Exception ex) {
                 Debug.WriteLine("EXCEPTION: " + ex.Message + "\n" + ex.StackTrace);
@@ -98,12 +112,12 @@ namespace BidonDispenser {
                 return;
             
             switch (((Button) sender).Name) {
-                case "Sense":               mc.sendSenseCommand();              break;
-                case "Lock":                mc.sendLockCommand();               break;
-                case "Unlock":              mc.sendUnlockCommand();             break;
-                case "Temperature":         mc.sendTemperatureCommand();        break;
-                case "Dispense":            mc.sendDispenseCommand(0);          break;
-                case "Distance":            mc.sendDistanceCommand();           break;
+                case "Sense":               mc.sendSenseCommand();                          break;
+                case "Lock":                mc.sendLockCommand();                           break;
+                case "Unlock":              mc.sendUnlockCommand();                         break;
+                case "Temperature":         mc.sendTemperatureCommand();                    break;
+                case "Dispense":            mc.sendDispenseCommand(0);                      break;
+                case "Distance":            mc.sendDistanceCommand((byte) emptyDistance);   break;
                 default: Debug.WriteLine("Unknown button"); return;
             }
         }
@@ -253,6 +267,7 @@ namespace BidonDispenser {
 
                 buttonPins[i].DebounceTimeout = TimeSpan.FromMilliseconds(50);                          // Set a debounce timeout of 50ms
                 buttonPins[i].ValueChanged += buttonValueHasChanged;                                    // Add a callback
+                //buttonPins[i].ValueChanged += buttonTestCallback;
             }
 
             Debug.WriteLine(amount+" buttons have been initialized");
@@ -319,6 +334,25 @@ namespace BidonDispenser {
             }
         }
 
+        private void buttonTestCallback(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            if (e.Edge == GpioPinEdge.FallingEdge) {
+
+                if (buttonsDisabled) return;
+                buttonsDisabled = true;
+
+                int buttonNo = buttonPins.IndexOf(sender);
+                Debug.WriteLine("Button " + buttonNo + " has been pressed");
+
+                
+                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    maintenanceTimerTick(null, null);
+                });
+
+
+                buttonsDisabled = false;
+            }
+        }
+        
 
         // Door Sensor //////
 
@@ -578,6 +612,7 @@ namespace BidonDispenser {
         private void initializeMaintenanceTimer() {
             maintenanceTimer = new DispatcherTimer();
             maintenanceTimer.Interval = TimeSpan.FromMinutes(maintenanceMinutesPerTick);
+            //maintenanceTimer.Interval = TimeSpan.FromSeconds(5);
             maintenanceTimer.Tick += maintenanceTimerTick;
             maintenanceTimer.Start();
 
@@ -586,26 +621,12 @@ namespace BidonDispenser {
 
         private async void maintenanceTimerTick(object sender, object e) {
 
-            Tuple<int, List<Byte>> result;
-            Boolean retry = false;
-            Boolean hasRetried = false;
+            var distanceResult = await mc.sendDistanceCommand((byte) emptyDistance);
 
-            do {
-                if (retry) hasRetried = true;                   // Update the "hasTried" variable
-                result = await mc.sendLockCommand();            // Get the result
-                
-                switch (result.Item1) {
-
-                    case 0:  retry = MicroController.isImportantException(result.Item2[0]); break;      // If there was an excpetion in the physical microcontroller => retry
-                    case 1:  retry = false; break;                                                      // If the serial port was not initialized => stop
-                    case 2:  retry = true;  break;                                                      // If there was an exception in the microcontroller class => retry
-                    case 3:  retry = true;  break;                                                      // If the mutex has timed out => retry
-                    default: retry = false; break;                                                      // Should not be possible
-                }
-            } while (retry && !hasRetried);
-
-            if ((result.Item1 == 0) && (result.Item2.Count > 2)) {
-                mainModel.lowerTemperature = result.Item2[2] / 5;                                       // Update the lower temperature
+            if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 1) && (distanceResult.Item2.Count > 2)) {
+                mainModel.bottleOutOfStock = distanceResult.Item2[2];
+            } else {
+                Debug.WriteLine("An error occurred while checking for the empty status of the columns");
             }
         }
         

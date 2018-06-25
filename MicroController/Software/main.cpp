@@ -183,13 +183,12 @@ void executeDistanceCommand(uint8_t* response, uint8_t* receivedCommand)
         } 
         else 
         {
-            if ( receivedCommand[1] == 1 ) emptyDistance = receivedCommand[3];                                          // Update the empty distance (if supplied)
+            if ( receivedCommand[1] == 1 ) emptyDistance = receivedCommand[2];                                          // Update the empty distance (if supplied)
             
             response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Distance);          // Add the equivalent command response
             response[1] = 0x01;                                                                                         // Add the amount of parameters
             
-            // Do this three times, it looks like the distance sensors sometimes need to "warm up"
-            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            // Do this two times, it looks like the distance sensors sometimes need to "warm up"
             response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
             response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
         }
@@ -394,7 +393,7 @@ void testDistSensor(void)
     {
         busyLed(1);
         
-        volatile uint8_t emptyStatuss = distanceSensor->getSimpleData(emptyDistance); 
+        volatile uint8_t emptyStatuss = distanceSensor->getSimpleData(emptyDistance);
         
         volatile float distances[16] = { 0.0 };
         float* resultLocation = distanceSensor->getData();

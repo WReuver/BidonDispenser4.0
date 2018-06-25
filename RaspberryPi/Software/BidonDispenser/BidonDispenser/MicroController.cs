@@ -256,14 +256,14 @@ namespace BidonDispenser {
             }
         }
 
-        public async Task<Tuple<int, List<Byte>>> sendDistanceCommand() {
+        public async Task<Tuple<int, List<Byte>>> sendDistanceCommand(byte emptyDistance) {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
             if (commandRight.WaitOne(semaphoreTimeout)) {                                                   // Claim the semaphore
 
                 try {
-                    byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x00 };                      // Prepare the command
+                    byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x01, emptyDistance };       // Prepare the command
                     transmitCommand(bytesToSend);                                                           // Transmit the command
                     return await waitForResponse();                                                         // Wait for a response and return it
 
