@@ -26,6 +26,10 @@ namespace Controllers
         TemperatureSensor* temperatureSensor[3];
         Gpio::Pin fanGroup[2];
         TC timerCounter;
+        
+        int idleFanSpeed = 25;
+        int fullFanSpeed = 100;
+        
         float lowerTargetTemperature = 3.0;
         float lowerTemperature = 50.0;
         float middleTemperature = 50.0;

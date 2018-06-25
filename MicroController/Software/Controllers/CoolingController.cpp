@@ -25,6 +25,10 @@ Controllers::CoolingController::CoolingController(Gpio::Pin* temperatureSensorPi
     TimerCounter::EnableOnPin(timerCounter, Gpio::GetPinNumber(fanGroup[1]));           // Enable the TC signal on the fangroup 1 pin
     TimerCounter::SetPeriod(timerCounter, 532);                                         // Set the period to 532 (Source Clock / (Prescaler * (Period + 1)) = 60.037)
                                                                                         // Set the period to 250 (Source Clock / (Prescaler * (Period + 1)) = 127.490)
+    
+    // Set both fan groups to the idle speed
+    setFangroupSpeed(0, idleFanSpeed);
+    setFangroupSpeed(1, idleFanSpeed);
 }
 
 void Controllers::CoolingController::updateFanSpeed()
@@ -33,13 +37,15 @@ void Controllers::CoolingController::updateFanSpeed()
     
     if (lowerTargetTemperature < lowerTemperature) 
     {
-        //setFangroupSpeed(0, 100);
-        //setFangroupSpeed(1, 100);
+        // Full fan speed
+        setFangroupSpeed(0, fullFanSpeed);
+        setFangroupSpeed(1, fullFanSpeed);
     }
     else
     {
-        //setFangroupSpeed(0, 40);
-        //setFangroupSpeed(1, 0);
+        // Idle fan speed
+        setFangroupSpeed(0, idleFanSpeed);
+        setFangroupSpeed(1, idleFanSpeed);
     }
 }
 

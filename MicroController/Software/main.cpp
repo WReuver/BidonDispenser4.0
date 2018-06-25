@@ -120,6 +120,7 @@ void executeTemperatureCommand(uint8_t* response, uint8_t* receivedCommand)
     else
     {
         if ( receivedCommand[1] == 1 ) coolingController->setLowerTargetTemperature(receivedCommand[2] / 5) ;           // Update the empty distance (if supplied)
+        coolingController->updateFanSpeed();
         
         response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Temperature);           // Add the equivalent command response
         response[1] = 0x03;                                                                                             // Add the amount of parameters
@@ -156,8 +157,7 @@ void executeDispenseCommand(uint8_t* response, uint8_t* receivedCommand)
             
             motorController->rotateMotor(receivedCommand[2]);                                                           // Rotate the requested motor
             
-            // Do this three times, it looks like the distance sensors sometimes need to "warm up"
-            response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
+            // Do this two times, it looks like the distance sensors sometimes need to "warm up"
             response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
             response[2] = distanceSensor->getSimpleData(emptyDistance);                                                 // Add the empty state of all eight columns
         }
@@ -349,22 +349,27 @@ void testMotors(void)
 // Test both fan groups
 void testFans(void) 
 {
-    //coolingController->setFangroupSpeed(0, 50);        // Lower fans
-    //coolingController->setFangroupSpeed(1, 50);        // Upper fans
+    busyLed(1);
+        
+    coolingController->setFangroupSpeed(0, 25);         // Lower fans
+    coolingController->setFangroupSpeed(1, 25);         // Upper fans
     
-    do 
-    {
-        busyLed(1);
-        
-        coolingController->setFangroupSpeed(0, 100);
-        coolingController->setFangroupSpeed(1, 100);
-        _delay_ms(5000);
-        coolingController->setFangroupSpeed(0, 0);
-        coolingController->setFangroupSpeed(1, 0);
-        _delay_ms(5000);
-        
-        busyLed(0);
-    } while (infiniteTest);
+    while (infiniteTest);
+    busyLed(0);
+    
+    //do 
+    //{
+        //busyLed(1);
+        //
+        //coolingController->setFangroupSpeed(0, 100);
+        //coolingController->setFangroupSpeed(1, 100);
+        //_delay_ms(5000);
+        //coolingController->setFangroupSpeed(0, 0);
+        //coolingController->setFangroupSpeed(1, 0);
+        //_delay_ms(5000);
+        //
+        //busyLed(0);
+    //} while (infiniteTest);
     
 }
 
