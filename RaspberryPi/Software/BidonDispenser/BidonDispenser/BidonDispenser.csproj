@@ -134,6 +134,8 @@
     <Content Include="Assets\Images\Misc\Nothing.png" />
     <Content Include="Assets\Images\Misc\RedX.png" />
     <Content Include="Assets\Images\Misc\RedX2.png" />
+    <Content Include="Assets\Images\Misc\TemperatureFrame.png" />
+    <Content Include="Assets\Images\Misc\TemperatureFrameBare.png" />
     <Content Include="Assets\Images\Promotions\BuyOneGiveOne.png" />
     <Content Include="Assets\Images\Promotions\CleanUp.png" />
     <Content Include="Assets\Images\Promotions\HappyWaterThingy.png" />

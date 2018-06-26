@@ -11,23 +11,6 @@
          Orientation="Vertical"
          Background="#FEFEFE" >
 
-        <!-- "WB Test" Panel -->
-        <StackPanel
-            x:Name="WbTestPanel"
-            Visibility="Collapsed"
-            Orientation="Vertical"
-            Background="#FEFEFE"
-            Margin="10"
-            Spacing="14">
-
-            <Button Name="DispenseTest"     FontSize="50"   HorizontalAlignment="Center"    Content="Dispense Test"     Click="wbTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="CoolingTest"      FontSize="50"   HorizontalAlignment="Center"    Content="Cooling Test"      Click="wbTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            <Button Name="Stop"             FontSize="50"   HorizontalAlignment="Center"    Content="Stop"              Click="wbTest"      Width="1000"    Height="80"     Foreground="#FEFEFE"    Background="#53C5CF"/>
-            
-            <TextBlock      Text="{x:Bind mainModel.bottleTemperature, Mode=OneWay}"        HorizontalAlignment="Center"        FontSize="50"       Foreground="#53C5CF"/>
-
-        </StackPanel>
-
         <!-- "Command Test" Panel -->
         <StackPanel
             x:Name="CommandTestPanel"
@@ -55,6 +38,20 @@
             <Image
                 Source="{x:Bind mainModel.promotionImage, Mode=OneWay}"
                 VerticalAlignment="Top" />
+
+            <Image
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                Stretch="None"
+                Source="ms-appx:///Assets/Images/Misc/TemperatureFrameBare.png" />
+
+            <TextBlock
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                Text="{x:Bind mainModel.bottleTemperature, Mode=OneWay}"
+                Foreground="#53C5CF"
+                FontSize="40"
+                FontFamily="Segoe UI"/>
+
+
         </RelativePanel>
         
         <!-- A progress bar to indicate when the next promotion image is going to show -->
@@ -65,11 +62,36 @@
             Maximum="30000" 
             Background="#EEEEEE" 
             Foreground="#DFDFDF"/>
-        
+
+        <!-- "Booting" Panel -->
+        <StackPanel
+            x:Name="BootingPanel"
+            Visibility="Visible"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+
+            <TextBlock
+                Text="Booting..."
+                Foreground="#53C5CF"
+                FontSize="80"
+                HorizontalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontWeight="Bold"
+                Padding="0, 180, 0, 0"/>
+
+            <TextBlock
+                Text="Please be patient"
+                Foreground="#AAAAAA"
+                FontSize="32"
+                HorizontalAlignment="Center"
+                FontFamily="Segoe UI"/>
+
+        </StackPanel>
+
         <!-- "Pick A Colour" Panel -->
         <StackPanel
             x:Name="PickColourPanel"
-            Visibility="Visible"
+            Visibility="Collapsed"
             Orientation="Vertical"
             Background="#FEFEFE">
 
@@ -170,7 +192,7 @@
 
         <!-- "The door is open error" Panel -->
         <StackPanel
-            Name="DoorOpenError"
+            x:Name="DoorOpenErrorPanel"
             Visibility="Collapsed"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
@@ -195,7 +217,7 @@
         
         <!-- "Booting error" Panel -->
         <StackPanel
-            Name="BootingError"
+            x:Name="BootingErrorPanel"
             Visibility="Collapsed"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
