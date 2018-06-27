@@ -40,9 +40,9 @@ the microcontroller probably was broken or something but the decision was made t
 After the Smart Solutions Festival one of the distance sensors broke, this sensor was distance sensor number five.
 
 /** Distance Sensor Layout Layout (Top view, from the front):
- * Column:        00  01  02  03  04  05  06  07
- * Dist Sensor:	 [08][01][10][03][12][05][14][07]
- * Dist Sensor:  [00][09][02][11][04][13][06][15]
+ Column:        00  01  02  03  04  05  06  07
+ Dist Sensor:  [08][01][10][03][12][05][14][07]
+ Dist Sensor:  [00][09][02][11][04][13][06][15]
  */
 
 
@@ -55,7 +55,8 @@ There is no easter egg.
 
 
 # Regarding the UI Assets
-All UI Assets were made using Paint dot net. 
+All UI Assets were made using Paint dot net, you can get it here https://www.dotpdn.com/downloads/pdn.html
 
 
 
+![image](TeamPhoto\TeamPhoto.png "The team.")
