@@ -59,4 +59,4 @@ All UI Assets were made using Paint dot net, you can get it here https://www.dot
 
 
 
-![image](TeamPhoto\TeamPhoto.png "The team.")
+![](TeamPhoto/TeamPhoto.png "The team.")
