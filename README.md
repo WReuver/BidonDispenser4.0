@@ -30,17 +30,17 @@ All the while loops in the Microcontroller's program:
 
 ### Important
 Not all code on the "microcontroller/software/develop" branch works with all the microcontroller hardware:  
-	- All the commits BEFORE the tag "MCU_Festival" only works on the controller PCB v1.1  
-	- All the commits AFTER  the tag "MCU_Festival" only works on the controller PCB v2.0  
+	- All the commits **BEFORE** the tag "MCU_Festival" only works on the controller PCB v1.1  
+	- All the commits **AFTER** the tag "MCU_Festival" only works on the controller PCB v2.0  
   
 Another thing that's definitely worth mentioning is that on the microcontroller PCB v1.1 the ADC was used to read a 1 or 0.
 This was done because for some weird reason it was not possible to read one of the digital pins, 
 the microcontroller probably was broken or something but the decision was made to work around it for the time being.  
   
 After the Smart Solutions Festival one of the distance sensors broke, this sensor was distance sensor number five.  
-Distance Sensor Layout Layout (Top view, from the front):
-_Dist Sensor: [08] [01] [10] [03] [12] [05] [14] [07]_
-_Dist Sensor: [00] [09] [02] [11] [04] [13] [06] [15]_
+Distance Sensor Layout Layout (Top view, from the front):  
+_Dist Sensor: [08] [01] [10] [03] [12] [05] [14] [07]_  
+_Dist Sensor: [00] [09] [02] [11] [04] [13] [06] [15]_  
   
   
   
