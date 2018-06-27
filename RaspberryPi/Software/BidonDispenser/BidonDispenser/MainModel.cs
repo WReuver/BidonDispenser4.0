@@ -64,6 +64,9 @@ namespace BidonDispenser {
             }
         }
 
+        private String lowerBottleTemperature {
+            get { return string.Format("{0:00.0}", lowerTemperature) + "°C"; }
+        }
         private double _lowerTemperature = 30.0;
         public double lowerTemperature {
             get => _lowerTemperature;
@@ -133,7 +136,7 @@ namespace BidonDispenser {
 
         // Bindings
         public int progressBarValue         => promotionTimerTickCounter;                                                           // Progressbar
-        public double bottleTemperature     => lowerTemperature;                                                                    // Bottle Temperature
+        public String bottleTemperature     => lowerBottleTemperature;                                                              // Bottle Temperature
         public String promotionImage        => promotionMedia[promotionSource];                                                     // Promotion image
         public String promotionImagePreload => promotionMedia[promotionSourcePreload];                                              // Promotion image - preload
         public String selectedColourText    => bottleColourText[selectedBottleColour];                                              // Selected bottle colour text

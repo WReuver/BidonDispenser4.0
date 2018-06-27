@@ -44,7 +44,8 @@ float* Sensors::DistanceSensor::getData()
 {
     for (int i = 0; i < 16; i++) 
     {
-        buffer[i] = getDistance(i);         // Get the distance of each sensor
+        if (i != 5)
+            buffer[i] = getDistance(i);         // Get the distance of each sensor
         _delay_ms(40);                      // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
     }
     

@@ -64,6 +64,8 @@ namespace BidonDispenser {
 
                 // Sense the microcontroller, if it failed => retry once
                 if (!(await mc.sense())) {
+                    Thread.Sleep(500);
+
                     if (!(await mc.sense())) {
                         setupError = true;
                         Debug.WriteLine("Could not sense the microcontroller");
@@ -80,6 +82,9 @@ namespace BidonDispenser {
                 // But if something went wrong => show the "booting error" panel
                 if (!setupError) {
                     initButtons(columnAmount);
+                    Thread.Sleep(500);
+                    if (currentPanel != uiPanel.doorOpenError)
+                        showPickColourPanel();
 
                 } else {
                     showBootingErrorPanel();
@@ -92,8 +97,6 @@ namespace BidonDispenser {
 
 
         // Test Related //////
-
-        private Boolean stopCurrentTest = false;
         
         private void serialTest(object sender, RoutedEventArgs rea) {
             Debug.WriteLine("Click: " + ((Button) sender).Name );
@@ -110,85 +113,6 @@ namespace BidonDispenser {
                 case "Distance":            mc.sendDistanceCommand((byte) emptyDistance);   break;
                 default: Debug.WriteLine("Unknown button"); return;
             }
-        }
-
-        private async void wbTest(object sender, RoutedEventArgs rea) {
-            Debug.WriteLine("Click: " + ((Button) sender).Name );
-
-            if (!windowsIot)
-                return;
-            
-            switch (((Button) sender).Name) {
-                case "DispenseTest":            dispenseTest();                 break;
-                case "CoolingTest":             coolingTest();                  break;
-                case "Stop":                    stopCurrentTest = true;         break;
-                default: Debug.WriteLine("Unknown button"); return;
-            }
-        }
-
-        private async void coolingTest() {
-
-            Debug.WriteLine("Starting the cooling test");
-
-            try {
-                while (!stopCurrentTest) {
-                    orangeLedState(GpioPinValue.High);
-                    StorageFolder usb = (await KnownFolders.RemovableDevices.GetFoldersAsync())[0];
-                    StorageFile logFile = await usb.CreateFileAsync("log.txt", CreationCollisionOption.OpenIfExists);
-
-                    var result = await mc.sendTemperatureCommand();
-
-                    if (result.Item2.Count > 4) {
-                        // Log the temperatures on the USB
-                        String data = ((double) result.Item2[2]) / 5.0 + "," + ((double) result.Item2[3]) / 5.0 + "," + ((double) result.Item2[4]) / 5.0 + "\n";
-                        await FileIO.AppendTextAsync(logFile, data);
-
-                        // Update the temperature in the UI
-                        double lowerTemp = result.Item2[2];
-                        mainModel.lowerTemperature = lowerTemp / 5.0;
-                    }
-
-                    orangeLedState(GpioPinValue.Low);
-                    Thread.Sleep(60 * 1000);    // One minutes
-                }
-
-                stopCurrentTest = false;
-
-            } catch (Exception e) {
-                Debug.WriteLine("EXCEPTION CATCHED: "+e.Message);
-            } finally {
-                orangeLedState(GpioPinValue.Low);
-            }
-
-            Debug.WriteLine("Stopped the cooling test");
-        }
-
-        private async void dispenseTest() {
-
-            Debug.WriteLine("Starting the dispense test");
-            byte columnIndex = 0;
-
-            try {
-                while (!stopCurrentTest) {
-                    redLedState(GpioPinValue.High);
-
-                    await mc.sendDispenseCommand(columnIndex++);
-
-                    if (columnIndex > 7) columnIndex = 0;
-
-                    redLedState(GpioPinValue.Low);
-                    Thread.Sleep(1000);         // One second
-                }
-
-                stopCurrentTest = false;
-
-            } catch (Exception e) {
-                Debug.WriteLine("EXCEPTION CATCHED: " + e.Message);
-            } finally {
-                redLedState(GpioPinValue.Low);
-            }
-
-            Debug.WriteLine("Stopped the dispense test");
         }
 
 
@@ -286,7 +210,6 @@ namespace BidonDispenser {
                             showFinishingUpPanel();
 
                         }
-                        
                         break;
                     
                     
@@ -310,10 +233,6 @@ namespace BidonDispenser {
                         stopThankYouTimer(null, null);
                         break;
 
-                    case uiPanel.doorOpen:
-                        // Do nothing when the error screen is shown
-                        showDoorOpenErrorPanel();
-                        break;
 
                     case uiPanel.secret:
                         // Huh?
@@ -386,17 +305,22 @@ namespace BidonDispenser {
         }
 
         private async void doorValueHasChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            if (currentPanel == uiPanel.bootingError)
+                return;
+
             GpioPinValue pinVal = doorSensorPin.Read();
 
             if (pinVal == GpioPinValue.High) {
                 doNotShowTheThankYouPanel();
                 showDoorOpenErrorPanel();
-                mc.sendLockCommand();
+                await mc.sendLockCommand();
                 stopMaintenanceTimer();
             } else {
-                mc.sendUnlockCommand();
+                await mc.sendUnlockCommand();
                 await updateColumnEmptyStatus();
-                showPickColourPanel();
+
+                if (currentPanel == uiPanel.doorOpenError)
+                    showPickColourPanel();
 
                 var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                     maintenanceTimerTick(null, null);
@@ -438,19 +362,34 @@ namespace BidonDispenser {
         // Panel Show //////
 
         private enum uiPanel {
-            pickColour, finishingUp, thankYou, doorOpen, boot, secret
+            booting, pickColour, finishingUp, thankYou, doorOpenError, bootingError, secret
         }
-        private uiPanel currentPanel = uiPanel.pickColour;
+        private uiPanel currentPanel = uiPanel.booting;
 
         private void showCommandTestPanel() {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: CommandTestPanel");
                 CommandTestPanel.Visibility = Visibility.Visible;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
+                SecretPanel.Visibility = Visibility.Collapsed;
+            });
+        }
+
+        private void showBootingPanel() {
+            var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                Debug.WriteLine("Showing: BootingPanel");
+                CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Visible;
+                PickColourPanel.Visibility = Visibility.Collapsed;
+                FinishingUpPanel.Visibility = Visibility.Collapsed;
+                ThankYouPanel.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
@@ -461,11 +400,12 @@ namespace BidonDispenser {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: PickColourPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Visible;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
@@ -476,11 +416,12 @@ namespace BidonDispenser {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: FinishingUpPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Visible;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
@@ -492,41 +433,44 @@ namespace BidonDispenser {
                 Debug.WriteLine("Showing: ThankYouPanel");
                 startThankYouTimer();
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Visible;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
         private void showDoorOpenErrorPanel() {
-            currentPanel = uiPanel.doorOpen;
+            currentPanel = uiPanel.doorOpenError;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: DoorOpenErrorPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Visible;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Visible;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
 
         private void showBootingErrorPanel() {
-            currentPanel = uiPanel.boot;
+            currentPanel = uiPanel.bootingError;
 
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: BootingErrorPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Visible;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Visible;
                 SecretPanel.Visibility = Visibility.Collapsed;
             });
         }
@@ -537,11 +481,12 @@ namespace BidonDispenser {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 Debug.WriteLine("Showing: DoorOpenErrorPanel");
                 CommandTestPanel.Visibility = Visibility.Collapsed;
+                BootingPanel.Visibility = Visibility.Collapsed;
                 PickColourPanel.Visibility = Visibility.Collapsed;
                 FinishingUpPanel.Visibility = Visibility.Collapsed;
                 ThankYouPanel.Visibility = Visibility.Collapsed;
-                DoorOpenError.Visibility = Visibility.Collapsed;
-                BootingError.Visibility = Visibility.Collapsed;
+                DoorOpenErrorPanel.Visibility = Visibility.Collapsed;
+                BootingErrorPanel.Visibility = Visibility.Collapsed;
                 SecretPanel.Visibility = Visibility.Visible;
             });
         }
@@ -616,7 +561,7 @@ namespace BidonDispenser {
         // Maintenance Timer //////
 
         private DispatcherTimer maintenanceTimer;
-        private const int maintenanceMinutesPerTick = 10;
+        private const int maintenanceMinutesPerTick = 5;
 
         private void initializeMaintenanceTimer() {
             maintenanceTimer = new DispatcherTimer();
@@ -633,11 +578,28 @@ namespace BidonDispenser {
 
             if ((distanceResult.Item1 == 0) && (distanceResult.Item2[1] == 3) && (distanceResult.Item2.Count > 4)) {
                 mainModel.lowerTemperature = ((float) distanceResult.Item2[2]) / 5;
+
+                logData("logFile", 
+                    string.Format("{0:00.0}", (((float) distanceResult.Item2[2]) / 5)) + "," + 
+                    string.Format("{0:00.0}", (((float) distanceResult.Item2[3]) / 5)) + "," + 
+                    string.Format("{0:00.0}", (((float) distanceResult.Item2[4]) / 5)) + "\n"
+                );
+
             } else {
                 Debug.WriteLine("An error occurred while updating the temperature ");
             }
         }
         
+        private async void logData(String documentName, String text) {
+            try {
+                StorageFile logFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(documentName + ".txt", CreationCollisionOption.OpenIfExists);
+                await FileIO.AppendTextAsync(logFile, text);
+
+            } catch (Exception e) {
+                Debug.WriteLine("An exception occurred while logging the temperatures: "+e.Message+"\n"+e.StackTrace);
+            }
+        }
+
         private void stopMaintenanceTimer() {
             var task = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                 if (maintenanceTimer != null) {
