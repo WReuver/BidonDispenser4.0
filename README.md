@@ -30,8 +30,8 @@ All the while loops in the Microcontroller's program:
 
 ### Important
 Not all code on the "microcontroller/software/develop" branch works with all the microcontroller hardware:  
-	- All the commits **BEFORE** the tag "MCU_Festival" only works on the controller PCB v1.1  
-	- All the commits **AFTER** the tag "MCU_Festival" only works on the controller PCB v2.0  
+	- All the commits **BEFORE** the tag "MCU_Festival" only work on the controller PCB v1.1  
+	- All the commits **AFTER** the tag "MCU_Festival" only work on the controller PCB v2.0  
   
 Another thing that's definitely worth mentioning is that on the microcontroller PCB v1.1 the ADC was used to read a 1 or 0.
 This was done because for some weird reason it was not possible to read one of the digital pins, 
