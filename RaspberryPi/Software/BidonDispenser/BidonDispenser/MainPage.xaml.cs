@@ -582,7 +582,7 @@ namespace BidonDispenser {
                 logData("logFile", 
                     string.Format("{0:00.0}", (((float) distanceResult.Item2[2]) / 5)) + "," + 
                     string.Format("{0:00.0}", (((float) distanceResult.Item2[3]) / 5)) + "," + 
-                    string.Format("{0:00.0}", (((float) distanceResult.Item2[4]) / 5))
+                    string.Format("{0:00.0}", (((float) distanceResult.Item2[4]) / 5)) + "\n"
                 );
 
             } else {
@@ -593,7 +593,7 @@ namespace BidonDispenser {
         private async void logData(String documentName, String text) {
             try {
                 StorageFile logFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(documentName + ".txt", CreationCollisionOption.OpenIfExists);
-                await FileIO.WriteTextAsync(logFile, text);
+                await FileIO.AppendTextAsync(logFile, text);
 
             } catch (Exception e) {
                 Debug.WriteLine("An exception occurred while logging the temperatures: "+e.Message+"\n"+e.StackTrace);
