@@ -122,16 +122,14 @@ namespace BidonDispenser {
         public async Task<Tuple<int, List<Byte>>> sendSenseCommand() {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
-            
 
+            // Would this work?
             for (int i = 0; i <= 20; i++) {
                 if (!commandLeft && i == 20)
                     return new Tuple<int, List<Byte>>(3, null);
                 else if (commandLeft) {
                     commandLeft = false;
                     i = 21;
-                } else {
-                    Thread.Sleep(50);
                 }
             }
             
@@ -168,16 +166,8 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            for (int i = 0; i <= 20; i++) {
-                if (!commandLeft && i == 20)
-                    return new Tuple<int, List<Byte>>(3, null);
-                else if (commandLeft) {
-                    commandLeft = false;
-                    i = 21;
-                } else {
-                    Thread.Sleep(50);
-                }
-            }
+            while (!commandLeft);
+            commandLeft = false;
 
             try {
                 byte[] bytesToSend = new byte[] { (byte) Command.Lock, 0x00 };                          // Prepare the command
@@ -198,17 +188,9 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            for (int i = 0; i <= 20; i++) {
-                if (!commandLeft && i == 20)
-                    return new Tuple<int, List<Byte>>(3, null);
-                else if (commandLeft) {
-                    commandLeft = false;
-                    i = 21;
-                } else {
-                    Thread.Sleep(50);
-                }
-            }
-
+            while (!commandLeft);
+            commandLeft = false;
+            
             try {
                 byte[] bytesToSend = new byte[] { (byte) Command.Unlock, 0x00 };                        // Prepare the command
                 transmitCommand(bytesToSend);                                                           // Transmit the command
@@ -227,16 +209,8 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            for (int i = 0; i <= 20; i++) {
-                if (!commandLeft && i == 20)
-                    return new Tuple<int, List<Byte>>(3, null);
-                else if (commandLeft) {
-                    commandLeft = false;
-                    i = 21;
-                } else {
-                    Thread.Sleep(50);
-                }
-            }
+            while (!commandLeft);
+            commandLeft = false;
 
             try {
                 byte[] bytesToSend = new byte[] { (byte) Command.Temperature, 0x00 };                   // Prepare the command
@@ -256,17 +230,9 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            for (int i = 0; i <= 20; i++) {
-                if (!commandLeft && i == 20)
-                    return new Tuple<int, List<Byte>>(3, null);
-                else if (commandLeft) {
-                    commandLeft = false;
-                    i = 21;
-                } else {
-                    Thread.Sleep(50);
-                }
-            }
-
+            while (!commandLeft);
+            commandLeft = false;
+            
             try {
                 byte[] bytesToSend = new byte[] { (byte) Command.Dispense, 0x01, columnNumber };        // Prepare the command
                 transmitCommand(bytesToSend);                                                           // Transmit the command
@@ -285,16 +251,8 @@ namespace BidonDispenser {
             if (!serialInitialized)
                 return new Tuple<int, List<Byte>>(1, null);
 
-            for (int i = 0; i <= 20; i++) {
-                if (!commandLeft && i == 20)
-                    return new Tuple<int, List<Byte>>(3, null);
-                else if (commandLeft) {
-                    commandLeft = false;
-                    i = 21;
-                } else {
-                    Thread.Sleep(50);
-                }
-            }
+            while (!commandLeft);
+            commandLeft = false;
 
             try {
                 byte[] bytesToSend = new byte[] { (byte) Command.Distance, 0x01, emptyDistance };       // Prepare the command
