@@ -596,7 +596,7 @@ namespace BidonDispenser {
                 await FileIO.AppendTextAsync(logFile, text);
 
             } catch (Exception e) {
-                Debug.WriteLine("An exception occurred while logging the temperatures: "+e.Message+"\n"+e.StackTrace);
+                Debug.WriteLine("An exception occurred while logging the data: "+e.Message+"\n"+e.StackTrace);
             }
         }
 
