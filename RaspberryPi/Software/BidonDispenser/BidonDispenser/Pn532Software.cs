@@ -9,6 +9,8 @@ using Windows.Devices.Gpio;
 using Windows.Devices.Spi;
 
 namespace BidonDispenser {
+
+    [Obsolete("This class never worked, do NOT use it!")]
     class Pn532Software {
         public enum Operation {
             DataWrite = 0x01,

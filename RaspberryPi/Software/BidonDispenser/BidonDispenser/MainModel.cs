@@ -6,14 +6,17 @@ using System.ComponentModel;
 namespace BidonDispenser {
     internal class MainModel : INotifyPropertyChanged {
 
+        // Enum for the promotion media
         public enum promotionMediaName {
             whyJoinThePipe, buyOneGiveOne, cityCleanUp, waterTaps, waterKiosk
         }
 
+        // Enum for the bottle colour names
         public enum bottleColourName {
             blue, yellow, green, orange, red, pink, white, black
         }
 
+        // Dictionary for the promotion media
         private Dictionary<promotionMediaName, String> _promotionMedia = new Dictionary<promotionMediaName, String>() {
             [promotionMediaName.whyJoinThePipe] = "ms-appx:///Assets/Images/Promotions/HappyWaterThingy.png",
             [promotionMediaName.buyOneGiveOne]  = "ms-appx:///Assets/Images/Promotions/BuyOneGiveOne.png",
@@ -22,7 +25,8 @@ namespace BidonDispenser {
             [promotionMediaName.waterKiosk]     = "ms-appx:///Assets/Images/Promotions/WaterKiosk.png"
         };
         public ReadOnlyDictionary<promotionMediaName, String> promotionMedia => new ReadOnlyDictionary<promotionMediaName, String> (_promotionMedia);
-        
+
+        // Dictionary for the bottle colour texts
         private Dictionary<bottleColourName, String> _bottleColourText = new Dictionary<bottleColourName, String>() {
             [bottleColourName.blue]     = "You have selected the blue bottle.",
             [bottleColourName.yellow]   = "You have selected the yellow bottle.",
@@ -35,6 +39,7 @@ namespace BidonDispenser {
         };
         public ReadOnlyDictionary<bottleColourName, String> bottleColourText => new ReadOnlyDictionary<bottleColourName, String>(_bottleColourText);
 
+        // Dictionary for the bottle colour images
         private Dictionary<bottleColourName, String> _bottleColourImage = new Dictionary<bottleColourName, String>() {
             [bottleColourName.blue]     = "ms-appx:///Assets/Images/BottleColours/BlueBottle.png",
             [bottleColourName.yellow]   = "ms-appx:///Assets/Images/BottleColours/YellowBottle.png",
@@ -47,14 +52,18 @@ namespace BidonDispenser {
         };
         public ReadOnlyDictionary<bottleColourName, String> bottleColourImage => new ReadOnlyDictionary<bottleColourName, String>(_bottleColourImage);
 
+        // Dictionary for the out of stock or not images
         private Dictionary<byte, String> outOfStockOrNotImage = new Dictionary<byte, string>() {
             [0b00000000] = "ms-appx:///Assets/Images/Misc/Nothing.png",
             [0b00000001] = "ms-appx:///Assets/Images/Misc/RedX.png"
         };
 
 
+
+        // An event handler used to make the binding update
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // Promotion timer stuff for the progressbar
         private int _promotionTimerTickCounter = 0;
         public int promotionTimerTickCounter {
             get => _promotionTimerTickCounter;
@@ -64,8 +73,9 @@ namespace BidonDispenser {
             }
         }
 
+        // Temperature related stuff
         private String lowerBottleTemperature {
-            get { return string.Format("{0:00.0}", lowerTemperature) + "°C"; }
+            get { return string.Format("{0:0.0}", lowerTemperature) + "°C"; }
         }
         private double _lowerTemperature = 30.0;
         public double lowerTemperature {
@@ -76,6 +86,7 @@ namespace BidonDispenser {
             }
         }
 
+        // Promotion media related stuff
         private promotionMediaName _promotionSource = 0;
         public promotionMediaName promotionSource {
             get => _promotionSource;
@@ -85,6 +96,7 @@ namespace BidonDispenser {
             }
         }
         
+        // Promotion media preload related stuff
         private promotionMediaName _promotionSourcePreload = 0;
         public promotionMediaName promotionSourcePreload {
             get => _promotionSourcePreload;
@@ -94,6 +106,7 @@ namespace BidonDispenser {
             }
         }
 
+        // Selected bottle colour related stuff
         private bottleColourName _selectedBottleColour = 0;
         public bottleColourName selectedBottleColour {
             get => _selectedBottleColour;
@@ -104,6 +117,7 @@ namespace BidonDispenser {
             }
         }
 
+        // Column empty status related sutff
         private List<String> bottleStringBindingNames = new List<String>() { nameof(bottleString0), nameof(bottleString1), nameof(bottleString2), nameof(bottleString3), nameof(bottleString4), nameof(bottleString5), nameof(bottleString6), nameof(bottleString7) };
         private byte _bottleOutOfStock = 0b00000000;
         public byte bottleOutOfStock {
@@ -125,6 +139,7 @@ namespace BidonDispenser {
             }
         }
 
+        // Method used to check if bottle n is out of stock
         public Boolean isBottleAvailable(int bottleNo) {
 
             if ((bottleOutOfStock & (1 << bottleNo)) == 0)
@@ -132,6 +147,7 @@ namespace BidonDispenser {
             else
                 return false;
         }
+
 
 
         // Bindings

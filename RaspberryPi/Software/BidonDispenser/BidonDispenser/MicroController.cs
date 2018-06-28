@@ -48,16 +48,16 @@ namespace BidonDispenser {
         };
 
 
-        private Boolean serialInitialized = false;
-        private SerialDevice serialPort;
-        private DataWriter serialPortTx;
-        private DataReader serialPortRx;
-        private CancellationTokenSource readCancellationTokenSource;
+        private Boolean serialInitialized = false;                                              // Boolean used to indicate whether the serial port is initialized or not
+        private SerialDevice serialPort;                                                        // Variable used to store the serial port object in
+        private DataWriter serialPortTx;                                                        // Datawriter for the serial port
+        private DataReader serialPortRx;                                                        // Datareader for the serial port
+        private CancellationTokenSource readCancellationTokenSource;                            // A cancellation token to stop read or write operations
 
-        private readonly List<byte> IDENTIFIER = new List<byte> { 0xAB, 0xBC, 0xCD, 0xDA };
+        private readonly List<byte> IDENTIFIER = new List<byte> { 0xAB, 0xBC, 0xCD, 0xDA };     // The microcontroller's identifier
 
-        private Semaphore commandRight = new Semaphore(1, 1);                   // The semaphore which decides whether the current thread has command right or not
-        private int semaphoreTimeout = 10_000;                                  // How many seconds the program should wait for the mutex
+        private Semaphore commandRight = new Semaphore(1, 1);                                   // The semaphore which decides whether the current thread has command right or not
+        private int semaphoreTimeout = 10_000;                                                  // How many seconds the program should wait for the mutex
 
 
         public async Task initialize(int receiveTimeout = 1000) {
@@ -93,21 +93,21 @@ namespace BidonDispenser {
         }
 
         public async Task<Boolean> sense() {
-            var result = await sendSenseCommand();          // Get the result
+            var result = await sendSenseCommand();              // Get the result
 
             if (
-                (result.Item1 == 0) &&
-                (result.Item2.Count > 1) &&
-                (result.Item2[1] == 4) &&
-                (result.Item2[2] == IDENTIFIER[0]) &&
-                (result.Item2[3] == IDENTIFIER[1]) &&
-                (result.Item2[4] == IDENTIFIER[2]) &&
-                (result.Item2[5] == IDENTIFIER[3])
+                (result.Item1 == 0) &&                          // Check if there was no error
+                (result.Item2.Count > 1) &&                     // Check if enough parameters were supplied
+                (result.Item2[1] == 4) &&                       // Check if there were 4 parameters supplied
+                (result.Item2[2] == IDENTIFIER[0]) &&           // Check if the first identifier is correct
+                (result.Item2[3] == IDENTIFIER[1]) &&           // Check if the second identifier is correct
+                (result.Item2[4] == IDENTIFIER[2]) &&           // Check if the third identifier is correct
+                (result.Item2[5] == IDENTIFIER[3])              // Check if the fourth identifier is correct
                 ) {
-                return true;
+                return true;                                    // Success!
 
             } else {
-                return false;
+                return false;                                   // Error
             }
         }
 
@@ -308,7 +308,7 @@ namespace BidonDispenser {
                     return;
                 }
 
-                serialPortTx.WriteBytes(bytes);
+                serialPortTx.WriteBytes(bytes);                             // Write the bytes to the serial port
 
                 Task<uint> storeAsyncTask = serialPortTx.StoreAsync().AsTask();
                 uint bytesWritten = await storeAsyncTask;

@@ -9,6 +9,8 @@ using Windows.Devices.Enumeration;
 using Windows.Devices.I2c;
 
 namespace BidonDispenser {
+
+    [Obsolete("This class was never finsihed, do NOT use it!")]
     class Pn532_I2C {
 
         public enum Operation {

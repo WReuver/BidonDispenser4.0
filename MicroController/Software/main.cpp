@@ -111,7 +111,7 @@ void executeSenseCommand(uint8_t* response)
 // Measure the temperatures and return them to the master
 void executeTemperatureCommand(uint8_t* response, uint8_t* receivedCommand)
 {
-    if ( receivedCommand[1] == 1 ) coolingController->setLowerTargetTemperature(receivedCommand[2] / 5) ;           // Update the empty distance (if supplied)
+    if ( receivedCommand[1] == 1 ) coolingController->setLowerTargetTemperature(receivedCommand[2] / 2) ;           // Update the new target temperature (if supplied)
     coolingController->updateFanSpeed();
     
     response[0] = (uint8_t) raspberryPi->getEquivalentCommandResponse(RaspberryPi::Command::Temperature);           // Add the equivalent command response
@@ -119,9 +119,9 @@ void executeTemperatureCommand(uint8_t* response, uint8_t* receivedCommand)
     
     coolingController->gatherTemperatures();                                                                        // Refresh all t he temperature variables
     
-    response[2] = (uint8_t) ( coolingController->getLowerTemperature() * 5.0 );                                     // Add the lower temperature to the response
-    response[3] = (uint8_t) ( coolingController->getMiddleTemperature() * 5.0 );                                    // Add the middle temperature to the response
-    response[4] = (uint8_t) ( coolingController->getUpperTemperature() * 5.0 );                                     // Add the upper temperature to the response
+    response[2] = (uint8_t) ( coolingController->getLowerTemperature() * 2.0 );                                     // Add the lower temperature to the response
+    response[3] = (uint8_t) ( coolingController->getMiddleTemperature() * 2.0 );                                    // Add the middle temperature to the response
+    response[4] = (uint8_t) ( coolingController->getUpperTemperature() * 2.0 );                                     // Add the upper temperature to the response
 }
 
 // Dispense one bottle from the selected column
