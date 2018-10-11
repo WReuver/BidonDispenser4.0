@@ -44,7 +44,7 @@ float* Sensors::DistanceSensor::getData()
 {
     for (int i = 0; i < 16; i++) 
     {
-        if (i != 5)
+        if (i != 5 && i != 14 && i != 12)
             buffer[i] = getDistance(i);         // Get the distance of each sensor
         _delay_ms(40);                      // Wait a bit to make sure trigger 0 and trigger 1 do not get mixed
     }
@@ -67,7 +67,10 @@ uint8_t Sensors::DistanceSensor::getSimpleData(float emptyDistance)
     {
         if ( (buffer[i] > emptyDistance) || (buffer[i+8] > emptyDistance) )     // Every column consists out of two column sections, an even and an odd section. We need to check them both!
             simpleData |= ( 1 << i );                                           // Bit-shift the column status to the correct bit
-    }
+    }     // i will try to take one raw out of the sensors and make use of only one sensor for two c.s. 
+	//try to fix the empty distance  variable 
+	//if ( ( buffer[i] > emptyDistance))
+	//simpleData |=(1 <<i); figure out a way to use the loop between 2 0 4 6 9 11 13 15
     
     return simpleData;
 }

@@ -6347,18 +6347,18 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\robin\\.nuget\\packages\\": {},
+    "C:\\Users\\gebruiker\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\": {},
     "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Git\\BidonDispenser4.0\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\BidonDispenser.csproj",
+      "projectUniqueName": "C:\\Users\\gebruiker\\Desktop\\sss\\159\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\BidonDispenser.csproj",
       "projectName": "BidonDispenser",
-      "projectPath": "C:\\Git\\BidonDispenser4.0\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\BidonDispenser.csproj",
-      "packagesPath": "C:\\Users\\robin\\.nuget\\packages\\",
-      "outputPath": "C:\\Git\\BidonDispenser4.0\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\obj\\",
+      "projectPath": "C:\\Users\\gebruiker\\Desktop\\sss\\159\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\BidonDispenser.csproj",
+      "packagesPath": "C:\\Users\\gebruiker\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\gebruiker\\Desktop\\sss\\159\\RaspberryPi\\Software\\BidonDispenser\\BidonDispenser\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
@@ -6366,7 +6366,7 @@
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\robin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\gebruiker\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.Fallback.config"
       ],
