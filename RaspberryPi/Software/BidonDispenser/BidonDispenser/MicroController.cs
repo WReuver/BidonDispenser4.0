@@ -414,6 +414,14 @@ namespace BidonDispenser {
                     return CommandResponse.Dispense;
                 case Command.Distance:
                     return CommandResponse.Distance;
+                case Command.Calibrate:
+                    return CommandResponse.Calibrate;
+                case Command.Accept:
+                    return CommandResponse.Accept;
+                case Command.Reject:
+                    return CommandResponse.Reject;
+                case Command.Demo:
+                    return CommandResponse.Demo;
                 default:
                     return CommandResponse.ERROR;
             }
@@ -428,6 +436,10 @@ namespace BidonDispenser {
                 case CommandResponse.Temperature:   return true;
                 case CommandResponse.Dispense:      return true;
                 case CommandResponse.Distance:      return true;
+                case CommandResponse.Calibrate:     return true;
+                case CommandResponse.Accept:        return true;
+                case CommandResponse.Reject:        return true;
+                case CommandResponse.Demo:          return true;
                 default:                            return false;
             }
         }
